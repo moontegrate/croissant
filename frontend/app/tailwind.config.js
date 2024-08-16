@@ -4,7 +4,8 @@ const flowbite = require("flowbite-react/tailwind");
 module.exports = {
     content: [
         "./src/**/*.{js,jsx,ts,tsx}",
-        flowbite.content(),
+        './public/index.html',
+        flowbite.content()
     ],
     theme: {
         extend: {
@@ -16,8 +17,6 @@ module.exports = {
             }
         },
     },
-    plugins: [
-        flowbite.plugin(),
-    ],
+    plugins: [flowbite.plugin()],
 }
 
