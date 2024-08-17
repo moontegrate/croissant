@@ -3,7 +3,7 @@ export const sidebarTheme = {
         "base": "h-full",
         "collapsed": {
             "on": "w-16",
-            "off": "w-64"
+            "off": "w-16"
         },
         "inner": "h-full overflow-y-auto overflow-x-hidden rounded bg-gray-50 px-3 py-4 dark:bg-gray-800"
     },
@@ -52,7 +52,7 @@ export const sidebarTheme = {
             "noIcon": "font-bold"
         },
         "content": {
-            "base": "flex-1 whitespace-nowrap px-3"
+            "base": "flex-1 whitespace-nowrap flex justify-center"
         },
         "icon": {
             "base": "h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white",
@@ -62,7 +62,7 @@ export const sidebarTheme = {
         "listItem": ""
     },
     "items": {
-        "base": ""
+        "base": "flex flex-col justify-between h-full"
     },
     "itemGroup": {
         "base": "mt-4 space-y-2 border-t border-gray-200 pt-4 first:mt-0 first:border-t-0 first:pt-0 dark:border-gray-700"

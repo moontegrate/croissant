@@ -1,4 +1,5 @@
 // Стилистические компоненты
+import './publicPage.scss';
 
 import Spinner from '../components/Spinner';
 

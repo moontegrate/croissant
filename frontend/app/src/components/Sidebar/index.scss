@@ -1,6 +1,23 @@
 .sidebar {
     &__logo {
-        max-width: 40px;
-        opacity: 0.5;
+        padding: 12px 0;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        cursor: pointer;
+        border-radius: 50%;
+        
+        img {
+            max-width: 40px;
+            opacity: 0.5;
+        }
+    }
+
+    &__profile {
+        cursor: pointer;
+        background-color: rgb(188, 188, 188);
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
     }
 }
