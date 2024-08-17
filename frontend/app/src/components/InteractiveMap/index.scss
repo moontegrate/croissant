@@ -1,0 +1,28 @@
+@import '../../style/variables.scss';
+
+.flow {
+    overflow: hidden;
+
+    &-control {
+        position: fixed;
+        z-index: 10;
+        top: 50%;
+        right: 30px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        transform: translateY(-50%);
+    
+        &__inc, &__dec {
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 20%;
+            background-color: white;
+            font-size: 30px;
+            text-align: center;
+            line-height: 115%;
+            border: 1px solid $border-color;
+        }
+    }
+}
