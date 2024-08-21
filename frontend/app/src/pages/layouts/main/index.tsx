@@ -1,16 +1,17 @@
 import { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
+import { useAppSelector } from "../../../hooks/state";
 
 import InteractiveMap from "../../../components/InteractiveMap";
-
-const isAuthorized = true;
 
 const MainPageLayout = () => {
     const navigate = useNavigate();
 
+    const isAuthenticated = useAppSelector((state) => state.appSlice.isAuthenticated);
+
     useEffect(() => {
-        if (!isAuthorized) {
+        if (!isAuthenticated) {
             navigate('/signin');
         }
     // eslint-disable-next-line

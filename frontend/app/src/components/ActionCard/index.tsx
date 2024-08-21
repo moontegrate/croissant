@@ -1,31 +1,33 @@
+// Style imports
 import './index.scss';
-import { GoComment } from "react-icons/go";
+import { GoRocket } from "react-icons/go";
 import { Button } from 'flowbite-react';
 import { flowCardButtonTheme } from '../../style/flowbiteThemes';
+
 import { CardProps } from '../InteractiveMap/interfaces';
 
-const MessageCard: React.FC<CardProps> = ({
+const ActionCard: React.FC<CardProps> = ({
     onMouseDown,
     onMouseMove,
-    onMouseUp,
+    onMouseUp
 }) => {
     return (
         <div
-            className='flow-card message-card'
+            className='flow-card action-card'
             onMouseDown={onMouseDown}
             onMouseMove={onMouseMove}
             onMouseUp={onMouseUp}
         >
             <div className='flow-card__head'>
-                <GoComment color='#2F71F0' size={20} />
+                <GoRocket color='#FFC93F' size={20} />
                 <h5 className='flow-card__title'>Message</h5>
             </div>
             <div className='flow-card__bottom'>
-                <Button theme={flowCardButtonTheme} className='mb-2 enabled:hover:border-message-card-accent'>Add content</Button>
-                <div className='flow-card__connect message-card__connect'></div>
+                <Button theme={flowCardButtonTheme} className='mb-2 enabled:hover:border-action-card-accent'>Add content</Button>
+                <div className='flow-card__connect action-card__connect'></div>
             </div>
         </div>
     );
 };
 
-export default MessageCard;
+export default ActionCard;

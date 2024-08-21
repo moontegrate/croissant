@@ -1,32 +1,68 @@
-import React, { useRef, useState } from 'react';
-import { Stage, Layer, Group } from 'react-konva';
+import React, { useEffect, useRef } from 'react';
+import { Stage, Layer } from 'react-konva';
 import { KonvaEventObject } from 'konva/lib/Node';
+
 import MessageCard from '../MessageCard';
+import ActionCard from '../ActionCard';
+
+import { Group } from 'react-konva';
+import { Html } from 'react-konva-utils';
 
 import './index.scss';
+import '../ActionCard/index.scss';
+import '../MessageCard/index.scss';
 
-interface NodeData {
-    id: string;
-    label: string;
-    x: number;
-    y: number;
-}
+import { NodeData, NodeTypes } from './interfaces';
 
-const initialNodes: NodeData[] = [
-    { id: '1', label: 'Начало', x: 50, y: 100 },
-    { id: '2', label: 'Шаг 1', x: 200, y: 100 },
-];
+// Redux
+import { useAppDispatch, useAppSelector } from '../../hooks/state';
+import { setDragId, setIsDragging, setNodes, setScale } from './interactiveMapSlice';
 
 const InteractiveMap = () => {
-    const [nodes, setNodes] = useState<NodeData[]>(initialNodes);
+    const dispatch = useAppDispatch();
+    const nodes = useAppSelector((state) => state.interactiveMapSlice.nodes);
+    const isDragging = useAppSelector((state) => state.interactiveMapSlice.isDragging);
+    const dragId = useAppSelector((state) => state.interactiveMapSlice.dragId);
+    const scale = useAppSelector((state) => state.interactiveMapSlice.scale);
+
     const stageRef = useRef<any>(null);
 
-    const handleDragMove = (id: string, pos: { x: number; y: number }) => {
-        setNodes(prevNodes =>
-            prevNodes.map(node =>
-                node.id === id ? { ...node, x: pos.x, y: pos.y } : node
-            )
-        );
+    useEffect(() => {
+        const handleDragMove = (e: MouseEvent) => {
+            if (isDragging && dragId !== null) {
+                const newNodes = nodes.map((node: NodeData) => {
+                    if (node.id === dragId) {
+                        return { ...node, x: node.x + e.movementX / scale, y: node.y + e.movementY / scale };
+                    };
+                    return node;
+                });
+                dispatch(setNodes(newNodes));
+            };
+        };
+    
+        document.addEventListener('mousemove', handleDragMove);
+    
+        return () => {
+            document.removeEventListener('mousemove', handleDragMove);
+        };
+    }, [isDragging, dragId, nodes, dispatch]);
+
+    const handleDragStart = (id: number) => {
+        dispatch(setIsDragging(true));
+        dispatch(setDragId(id));
+
+        const newNodes = nodes.map((a: NodeData) => {
+            return {
+                ...a,
+                zIndex: a.id === id ? 2 : 1
+            };
+        });
+        dispatch(setNodes(newNodes));
+    };
+
+    const handleDragEnd = () => {
+        dispatch(setIsDragging(false));
+        dispatch(setDragId(undefined));
     };
 
     const handleWheel = (e: KonvaEventObject<WheelEvent>) => {
@@ -45,26 +81,35 @@ const InteractiveMap = () => {
                 y: stage.y() - (mousePos.y - stage.y()) * (newScale / oldScale - 1),
             };
 
-            stage.scale({ x: newScale, y: newScale });
-            stage.position(newPos);
-            stage.batchDraw();
-        }
+            if (newScale < 4 && newScale > 0.5) {
+                dispatch(setScale(newScale));
+                stage.scale({ x: newScale, y: newScale });
+                stage.position(newPos);
+                stage.batchDraw();
+            };
+        };
     };
 
-    // const handleScale = (type: string) => {
-    //     if (stage) {
-    //         const oldScale = stage.scaleX();
+    const handleScale = ( type: string) => {
+        const stage = stageRef.current;
+        const scaleBy = 1.1;
+
+        if (stage) {
+            const oldScale = stage.scaleX();
             
-    //         const newScale = e.evt.deltaY < 0 ? oldScale * scaleBy : oldScale / scaleBy;
-    //         const newPos = {
-    //             x: stage.x() - (mousePos.x - stage.x()) * (newScale / oldScale - 1),
-    //             y: stage.y() - (mousePos.y - stage.y()) * (newScale / oldScale - 1),
-    //         };
-    //         stage.scale({ x: newScale, y: newScale });
-    //         stage.position(newPos);
-    //         stage.batchDraw();
-    //     }
-    // }
+            const newScale = type === 'inc' ? oldScale * scaleBy : oldScale / scaleBy;
+            const newPos = {
+                x: stage.x() - stage.x() * (newScale / oldScale - 1),
+                y: stage.y() - stage.y() * (newScale / oldScale - 1),
+            };
+            if (newScale < 4 && newScale > 0.5) {
+                dispatch(setScale(newScale));
+                stage.scale({ x: newScale, y: newScale });
+                stage.position(newPos);
+                stage.batchDraw();
+            };
+        };
+    };
 
     return (
         <div className='flow'>
@@ -79,16 +124,65 @@ const InteractiveMap = () => {
                 style={{ backgroundColor: '#f9f9f9' }}
             >
                 <Layer>
-                    {nodes.map(node => (
-                        <React.Fragment key={node.id}>
-                            <MessageCard/>
-                        </React.Fragment>
-                    ))}
+                    {nodes.map((node: NodeData) => {
+                        switch (node.type) {
+                            case NodeTypes.Message:
+                                return (
+                                    <React.Fragment key={node.id}>
+                                        <Group
+                                            x={node.x}
+                                            y={node.y}
+                                            width={500}
+                                            height={300}                                        
+                                        >
+                                            <Html
+                                                divProps={{
+                                                    style: {
+                                                        zIndex: node.zIndex
+                                                    }
+                                                }}
+                                            >
+                                                <MessageCard
+                                                    onMouseDown={() => handleDragStart(node.id)}
+                                                    onMouseUp={handleDragEnd}
+                                                />
+                                            </Html>
+                                        </Group>
+                                    </React.Fragment>
+                                );
+                            case NodeTypes.Action:
+                                return (
+                                    <React.Fragment key={node.id}>
+                                        <Group
+                                            x={node.x}
+                                            y={node.y}
+                                            width={500}
+                                            height={300}
+                                        >
+                                            <Html
+                                                divProps={{
+                                                    style: {
+                                                        zIndex: node.zIndex
+                                                    }
+                                                }}
+                                            >
+                                                <ActionCard
+                                                    onMouseDown={() => handleDragStart(node.id)}
+                                                    onMouseUp={handleDragEnd}
+                                                />
+                                            </Html>
+                                        </Group>
+                                    </React.Fragment>
+                                );
+                            default:
+                                return <div>error</div>;
+                        }
+                    })}
                 </Layer>
             </Stage>
             <div className='flow-control'>
-                <div className='flow-control__inc'>+</div>
-                <div className='flow-control__dec'>-</div>
+                <div className='flow-control__inc' onClick={() => handleScale('inc')}>+</div>
+                <div className='flow-control__dec' onClick={() => handleScale('dec')}>-</div>
             </div>
         </div>
     );

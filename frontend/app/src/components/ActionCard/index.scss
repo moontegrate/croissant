@@ -1,13 +1,13 @@
 @import '../../style/variables.scss';
 
-.message-card {
+.action-card {
     &:hover {
-        border-color: $message-card-accent;
+        border-color: $action-card-accent;
     }
 
     &__connect {
         &:hover {
-            border-color: $message-card-accent;
+            border-color: $action-card-accent;
         }
     }
 }

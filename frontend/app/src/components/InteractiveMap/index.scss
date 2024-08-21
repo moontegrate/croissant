@@ -2,6 +2,7 @@
 
 .flow {
     overflow: hidden;
+    user-select: none;
 
     &-control {
         position: fixed;
@@ -23,6 +24,51 @@
             text-align: center;
             line-height: 115%;
             border: 1px solid $border-color;
+            box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.05);
         }
     }
+
+    &-card {
+        cursor: pointer;
+        min-width: 350px;
+        padding: 15px 15px 8px;
+        background-color: white;
+        border-radius: 10px;
+        border: 1px solid $border-color;
+
+        &__head {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        &__title {
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        &__bottom {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+
+        &__connect {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: 2px solid $border-color;
+            transition-duration: .2s;
+            transform: translateX(7px);
+        }
+    }
+}
+
+.no-drag {
+    pointer-events: auto; /* Активируем другие события, например, hover */
+    user-select: none; /* Отключаем выделение текста */
+    -webkit-user-drag: none; /* Отключаем перетаскивание на WebKit-браузерах */
+    -khtml-user-drag: none; /* Отключаем перетаскивание на KHTML-браузерах */
+    -moz-user-drag: none; /* Отключаем перетаскивание на Mozilla-браузерах */
+    -o-user-drag: none; /* Отключаем перетаскивание на Opera */
 }

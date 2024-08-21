@@ -1,5 +1,5 @@
 // Стилистические компоненты
-import './publicPage.scss';
+import './privatePage.scss';
 
 import Spinner from '../components/Spinner';
 
@@ -7,11 +7,14 @@ import Spinner from '../components/Spinner';
 import { lazy, Suspense } from "react";
 import { Route, Routes } from "react-router-dom";
 
-const SignInPageLayout = lazy(() => import("./layouts/signIn"));
+import SidebarComponent from '../components/Sidebar';
 
-const PublicPage = () => {
+const MainPageLayout = lazy(() => import("./layouts/main"));
+
+const PrivatePage = () => {
     return (
         <>
+            <SidebarComponent />
             <Suspense
                 fallback={
                     <div className="page-loading-spinner">
@@ -20,11 +23,12 @@ const PublicPage = () => {
                 }
             >
                 <Routes>
-                    <Route path="/" element={<SignInPageLayout />} />
+                    
+                    <Route path="/" element={<MainPageLayout />} />
                 </Routes>
             </Suspense>
         </>
     );
 };
 
-export default PublicPage;
+export default PrivatePage;
