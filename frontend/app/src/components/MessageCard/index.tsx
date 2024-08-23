@@ -1,19 +1,19 @@
+// Style imports
 import './index.scss';
 import { GoComment } from "react-icons/go";
 import { Button } from 'flowbite-react';
 import { flowCardButtonTheme } from '../../style/flowbiteThemes';
+
 import { CardProps } from '../InteractiveMap/interfaces';
 
 const MessageCard: React.FC<CardProps> = ({
     onMouseDown,
-    onMouseMove,
-    onMouseUp,
+    onMouseUp
 }) => {
     return (
         <div
             className='flow-card message-card'
             onMouseDown={onMouseDown}
-            onMouseMove={onMouseMove}
             onMouseUp={onMouseUp}
         >
             <div className='flow-card__head'>

@@ -19,6 +19,5 @@ export interface InitialState {
 
 export interface CardProps {
     onMouseDown: MouseEventHandler<HTMLDivElement>,
-    onMouseMove?: MouseEventHandler<HTMLDivElement>,
     onMouseUp: MouseEventHandler<HTMLDivElement>
 }

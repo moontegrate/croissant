@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { Stage, Layer } from 'react-konva';
 import { KonvaEventObject } from 'konva/lib/Node';
 
+import FlowCardContainer from '../FlowCardContainer';
 import MessageCard from '../MessageCard';
 import ActionCard from '../ActionCard';
 
@@ -45,7 +46,7 @@ const InteractiveMap = () => {
         return () => {
             document.removeEventListener('mousemove', handleDragMove);
         };
-    }, [isDragging, dragId, nodes, dispatch]);
+    }, [isDragging, dragId, nodes, dispatch, scale]);
 
     const handleDragStart = (id: number) => {
         dispatch(setIsDragging(true));
@@ -69,7 +70,7 @@ const InteractiveMap = () => {
         e.evt.preventDefault();
 
         const stage = stageRef.current;
-        const scaleBy = 1.1;
+        const scaleBy = 1.05;
 
         if (stage) {
             const oldScale = stage.scaleX();
@@ -92,7 +93,7 @@ const InteractiveMap = () => {
 
     const handleScale = ( type: string) => {
         const stage = stageRef.current;
-        const scaleBy = 1.1;
+        const scaleBy = 1.05;
 
         if (stage) {
             const oldScale = stage.scaleX();
@@ -138,14 +139,18 @@ const InteractiveMap = () => {
                                             <Html
                                                 divProps={{
                                                     style: {
+                                                        pointerEvents: "auto",
                                                         zIndex: node.zIndex
                                                     }
                                                 }}
+                                                
                                             >
-                                                <MessageCard
-                                                    onMouseDown={() => handleDragStart(node.id)}
-                                                    onMouseUp={handleDragEnd}
-                                                />
+                                                <FlowCardContainer stageRef={stageRef}>
+                                                    <MessageCard
+                                                        onMouseDown={() => handleDragStart(node.id)}
+                                                        onMouseUp={handleDragEnd}
+                                                    />
+                                                </FlowCardContainer>
                                             </Html>
                                         </Group>
                                     </React.Fragment>
@@ -166,10 +171,12 @@ const InteractiveMap = () => {
                                                     }
                                                 }}
                                             >
-                                                <ActionCard
-                                                    onMouseDown={() => handleDragStart(node.id)}
-                                                    onMouseUp={handleDragEnd}
-                                                />
+                                                <FlowCardContainer stageRef={stageRef}>
+                                                    <ActionCard
+                                                        onMouseDown={() => handleDragStart(node.id)}
+                                                        onMouseUp={handleDragEnd}
+                                                    />
+                                                </FlowCardContainer>
                                             </Html>
                                         </Group>
                                     </React.Fragment>
