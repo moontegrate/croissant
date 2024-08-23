@@ -18,6 +18,7 @@ import { NodeData, NodeTypes } from './interfaces';
 // Redux
 import { useAppDispatch, useAppSelector } from '../../hooks/state';
 import { setDragId, setIsDragging, setNodes, setScale } from './interactiveMapSlice';
+import ConditionCard from '../ConditionCard';
 
 const InteractiveMap = () => {
     const dispatch = useAppDispatch();
@@ -123,6 +124,7 @@ const InteractiveMap = () => {
                 onWheel={handleWheel}
                 draggable
                 style={{ backgroundColor: '#f9f9f9' }}
+                onDragMove={() => {}}
             >
                 <Layer>
                     {nodes.map((node: NodeData) => {
@@ -181,6 +183,32 @@ const InteractiveMap = () => {
                                         </Group>
                                     </React.Fragment>
                                 );
+                                case NodeTypes.Condition:
+                                    return (
+                                        <React.Fragment key={node.id}>
+                                            <Group
+                                                x={node.x}
+                                                y={node.y}
+                                                width={500}
+                                                height={300}
+                                            >
+                                                <Html
+                                                    divProps={{
+                                                        style: {
+                                                            zIndex: node.zIndex
+                                                        }
+                                                    }}
+                                                >
+                                                    <FlowCardContainer stageRef={stageRef}>
+                                                        <ConditionCard
+                                                            onMouseDown={() => handleDragStart(node.id)}
+                                                            onMouseUp={handleDragEnd}
+                                                        />
+                                                    </FlowCardContainer>
+                                                </Html>
+                                            </Group>
+                                        </React.Fragment>
+                                    );
                             default:
                                 return <div>error</div>;
                         }

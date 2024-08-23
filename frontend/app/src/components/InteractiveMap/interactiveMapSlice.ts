@@ -7,7 +7,8 @@ const initialState: InitialState = {
     scale: 1,
     nodes: [
         { id: 1, type: NodeTypes.Message, x: 50, y: 100, zIndex: 1 },
-        { id: 2, type: NodeTypes.Action, x: 200, y: 100, zIndex: 1 }
+        { id: 2, type: NodeTypes.Action, x: 200, y: 200, zIndex: 1 },
+        { id: 3, type: NodeTypes.Condition, x: 400, y: 700, zIndex: 1 }
     ]
 };
 

@@ -15,7 +15,8 @@ module.exports = {
                 'light-gray-text': '#898989',
                 'border-color': '#E5E5E5',
                 'message-card-accent': '#2F71F0',
-                'action-card-accent': "#FFC93F"
+                'action-card-accent': "#FFC93F",
+                'condition-card-accent': '#4CE99E'
             }
         },
     },

@@ -21,7 +21,7 @@ const MessageCard: React.FC<CardProps> = ({
                 <h5 className='flow-card__title'>Message</h5>
             </div>
             <div className='flow-card__bottom'>
-                <Button theme={flowCardButtonTheme} className='mb-2 enabled:hover:border-message-card-accent'>Add content</Button>
+                <Button theme={flowCardButtonTheme} className='mb-2 enabled:hover:border-message-card-accent'>+ Add content</Button>
                 <div className='flow-card__connect message-card__connect'></div>
             </div>
         </div>

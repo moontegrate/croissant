@@ -21,7 +21,7 @@ const ActionCard: React.FC<CardProps> = ({
                 <h5 className='flow-card__title'>Action</h5>
             </div>
             <div className='flow-card__bottom'>
-                <Button theme={flowCardButtonTheme} className='mb-2 enabled:hover:border-action-card-accent'>Add content</Button>
+                <Button theme={flowCardButtonTheme} className='mb-2 enabled:hover:border-action-card-accent'>Click to add an action</Button>
                 <div className='flow-card__connect action-card__connect'></div>
             </div>
         </div>
