@@ -1,24 +1,28 @@
+// React imports
 import React, { useEffect, useRef } from 'react';
-import { Stage, Layer } from 'react-konva';
-import { KonvaEventObject } from 'konva/lib/Node';
 
-import FlowCardContainer from '../FlowCardContainer';
-import MessageCard from '../MessageCard';
-import ActionCard from '../ActionCard';
-
-import { Group } from 'react-konva';
-import { Html } from 'react-konva-utils';
-
+// Style imports
 import './index.scss';
-import '../ActionCard/index.scss';
-import '../MessageCard/index.scss';
 
+// Components
+import FlowCardContainer from '../FlowCardContainer';
+import MessageCard from '../FlowCards/MessageCard';
+import ActionCard from '../FlowCards/ActionCard';
+import ConditionCard from '../FlowCards/ConditionCard';
+import NoteCard from '../FlowCards/NoteCard';
+
+// Interfaces
 import { NodeData, NodeTypes } from './interfaces';
 
 // Redux
 import { useAppDispatch, useAppSelector } from '../../hooks/state';
 import { setDragId, setIsDragging, setNodes, setScale } from './interactiveMapSlice';
-import ConditionCard from '../ConditionCard';
+
+// Map library
+import { Group, Layer, Stage  } from 'react-konva';
+import { Html } from 'react-konva-utils';
+import { KonvaEventObject } from 'konva/lib/Node';
+
 
 const InteractiveMap = () => {
     const dispatch = useAppDispatch();
@@ -53,12 +57,25 @@ const InteractiveMap = () => {
         dispatch(setIsDragging(true));
         dispatch(setDragId(id));
 
-        const newNodes = nodes.map((a: NodeData) => {
-            return {
-                ...a,
-                zIndex: a.id === id ? 2 : 1
-            };
+        const indexes = nodes.map((a: NodeData) => {
+            return a.zIndex;
         });
+
+        const newNodes = nodes.map((a: NodeData) => {
+            if (a.id === id) {
+                return { ...a, zIndex: nodes.length };
+            };
+        
+            if (a.zIndex === nodes.length) {
+                const newZIndex = indexes.find((i) => !indexes.includes(i)) || a.zIndex - 1;
+                return { ...a, zIndex: newZIndex };
+            };
+        
+            return a;
+        });
+
+        console.log(nodes.length)
+        console.log(indexes)
         dispatch(setNodes(newNodes));
     };
 
@@ -183,32 +200,59 @@ const InteractiveMap = () => {
                                         </Group>
                                     </React.Fragment>
                                 );
-                                case NodeTypes.Condition:
-                                    return (
-                                        <React.Fragment key={node.id}>
-                                            <Group
-                                                x={node.x}
-                                                y={node.y}
-                                                width={500}
-                                                height={300}
+                            case NodeTypes.Condition:
+                                return (
+                                    <React.Fragment key={node.id}>
+                                        <Group
+                                            x={node.x}
+                                            y={node.y}
+                                            width={500}
+                                            height={300}
+                                        >
+                                            <Html
+                                                divProps={{
+                                                    style: {
+                                                        zIndex: node.zIndex
+                                                    }
+                                                }}
                                             >
-                                                <Html
-                                                    divProps={{
-                                                        style: {
-                                                            zIndex: node.zIndex
-                                                        }
-                                                    }}
-                                                >
-                                                    <FlowCardContainer stageRef={stageRef}>
-                                                        <ConditionCard
-                                                            onMouseDown={() => handleDragStart(node.id)}
-                                                            onMouseUp={handleDragEnd}
-                                                        />
-                                                    </FlowCardContainer>
-                                                </Html>
-                                            </Group>
-                                        </React.Fragment>
-                                    );
+                                                <FlowCardContainer stageRef={stageRef}>
+                                                    <ConditionCard
+                                                        onMouseDown={() => handleDragStart(node.id)}
+                                                        onMouseUp={handleDragEnd}
+                                                    />
+                                                </FlowCardContainer>
+                                            </Html>
+                                        </Group>
+                                    </React.Fragment>
+                                );
+                            case NodeTypes.Note:
+                                return (
+                                    <React.Fragment key={node.id}>
+                                        <Group
+                                            x={node.x}
+                                            y={node.y}
+                                            width={500}
+                                            height={300}
+                                        >
+                                            <Html
+                                                divProps={{
+                                                    style: {
+                                                        zIndex: node.zIndex
+                                                    }
+                                                }}
+                                            >
+                                                <FlowCardContainer stageRef={stageRef}>
+                                                    <NoteCard
+                                                        onMouseDown={() => handleDragStart(node.id)}
+                                                        onMouseUp={handleDragEnd}
+                                                        content={node.noteContent}
+                                                    />
+                                                </FlowCardContainer>
+                                            </Html>
+                                        </Group>
+                                    </React.Fragment>
+                                );
                             default:
                                 return <div>error</div>;
                         }

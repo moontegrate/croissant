@@ -7,7 +7,8 @@ export interface NodeData {
     type: NodeTypes;
     x: number;
     y: number;
-    zIndex: number
+    zIndex: number;
+    noteContent?: string;
 }
 
 export interface InitialState {
@@ -19,5 +20,6 @@ export interface InitialState {
 
 export interface CardProps {
     onMouseDown: MouseEventHandler<HTMLDivElement>,
-    onMouseUp: MouseEventHandler<HTMLDivElement>
+    onMouseUp: MouseEventHandler<HTMLDivElement>,
+    content?: string
 }

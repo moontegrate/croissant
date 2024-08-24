@@ -1,10 +1,13 @@
 // Style imports
 import './index.scss';
 import { GoComment } from "react-icons/go";
-import { Button } from 'flowbite-react';
-import { flowCardButtonTheme } from '../../style/flowbiteThemes';
+import { flowCardButtonTheme } from '../../../style/flowbiteThemes';
 
-import { CardProps } from '../InteractiveMap/interfaces';
+// Components
+import { Button } from 'flowbite-react';
+
+// Interfaces
+import { CardProps } from '../../InteractiveMap/interfaces';
 
 const MessageCard: React.FC<CardProps> = ({
     onMouseDown,

@@ -1,10 +1,13 @@
 // Style imports
 import './index.scss';
 import { GoRepoForked } from "react-icons/go";
-import { Button } from 'flowbite-react';
-import { flowCardButtonTheme } from '../../style/flowbiteThemes';
+import { flowCardButtonTheme } from '../../../style/flowbiteThemes';
 
-import { CardProps } from '../InteractiveMap/interfaces';
+// Components
+import { Button } from 'flowbite-react';
+
+// Interfaces
+import { CardProps } from '../../InteractiveMap/interfaces';
 
 const ConditionCard: React.FC<CardProps> = ({
     onMouseDown,
