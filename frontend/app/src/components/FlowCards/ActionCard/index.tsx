@@ -9,16 +9,9 @@ import { Button } from 'flowbite-react';
 // Interfaces
 import { CardProps } from '../../InteractiveMap/interfaces';
 
-const ActionCard: React.FC<CardProps> = ({
-    onMouseDown,
-    onMouseUp
-}) => {
+const ActionCard: React.FC<CardProps> = () => {
     return (
-        <div
-            className='flow-card action-card'
-            onMouseDown={onMouseDown}
-            onMouseUp={onMouseUp}
-        >
+        <div className='flow-card action-card'>
             <div className='flow-card__head'>
                 <GoRocket color='#FFC93F' size={20} />
                 <h5 className='flow-card__title'>Action</h5>

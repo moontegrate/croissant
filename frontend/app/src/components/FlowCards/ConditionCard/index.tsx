@@ -9,16 +9,9 @@ import { Button } from 'flowbite-react';
 // Interfaces
 import { CardProps } from '../../InteractiveMap/interfaces';
 
-const ConditionCard: React.FC<CardProps> = ({
-    onMouseDown,
-    onMouseUp
-}) => {
+const ConditionCard: React.FC<CardProps> = () => {
     return (
-        <div
-            className='flow-card condition-card'
-            onMouseDown={onMouseDown}
-            onMouseUp={onMouseUp}
-        >
+        <div className='flow-card condition-card'>
             <div className='flow-card__head'>
                 <GoRepoForked color='#4CE99E' size={20} />
                 <h5 className='flow-card__title'>Condition</h5>

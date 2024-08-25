@@ -1,13 +1,10 @@
-import { MouseEventHandler } from "react";
-
-export enum NodeTypes { Action, Message, Condition, Note }
-
 export interface NodeData {
     id: number;
-    type: NodeTypes;
+    type: string;
     x: number;
     y: number;
     zIndex: number;
+    isEntryPoint: boolean;
     noteContent?: string;
 }
 
@@ -19,7 +16,5 @@ export interface InitialState {
 };
 
 export interface CardProps {
-    onMouseDown: MouseEventHandler<HTMLDivElement>,
-    onMouseUp: MouseEventHandler<HTMLDivElement>,
     content?: string
 }

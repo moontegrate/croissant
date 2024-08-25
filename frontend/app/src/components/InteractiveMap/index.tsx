@@ -12,7 +12,7 @@ import ConditionCard from '../FlowCards/ConditionCard';
 import NoteCard from '../FlowCards/NoteCard';
 
 // Interfaces
-import { NodeData, NodeTypes } from './interfaces';
+import { NodeData } from './interfaces';
 
 // Redux
 import { useAppDispatch, useAppSelector } from '../../hooks/state';
@@ -73,9 +73,6 @@ const InteractiveMap = () => {
         
             return a;
         });
-
-        console.log(nodes.length)
-        console.log(indexes)
         dispatch(setNodes(newNodes));
     };
 
@@ -130,6 +127,69 @@ const InteractiveMap = () => {
         };
     };
 
+    function renderCards(nodes: NodeData[]) {
+        function renderCardBody(node: NodeData): JSX.Element {
+            switch (node.type) {
+                case "Message":
+                    return (
+                        <MessageCard/>
+                    );
+                case "Action":
+                    return (
+                        <ActionCard/>
+                    );
+                case "Condition":
+                    return (
+                        <ConditionCard/>
+                    );
+                case "Note":
+                    return (
+                        <NoteCard
+                            content={node.noteContent}
+                        />
+                    );
+                default:
+                    return (
+                        <div>Error while card rendering</div>
+                    )
+            }
+        }
+
+        const result = nodes.map((node: NodeData) => {
+            return (
+                <React.Fragment key={node.id}>
+                    <Group
+                        x={node.x}
+                        y={node.y}
+                        width={500}
+                        height={300}                                        
+                    >
+                        <Html
+                            divProps={{
+                                style: {
+                                    pointerEvents: "auto",
+                                    zIndex: node.zIndex
+                                }
+                            }}
+                            
+                        >
+                            <FlowCardContainer
+                                stageRef={stageRef}
+                                isEntryPoint={node.isEntryPoint}
+                                onMouseDown={() => handleDragStart(node.id)}
+                                onMouseUp={handleDragEnd}
+                            >
+                                {renderCardBody(node)}
+                            </FlowCardContainer>
+                        </Html>
+                    </Group>
+                </React.Fragment>
+            );
+        })
+
+        return result;
+    };
+
     return (
         <div className='flow'>
             <Stage
@@ -144,119 +204,7 @@ const InteractiveMap = () => {
                 onDragMove={() => {}}
             >
                 <Layer>
-                    {nodes.map((node: NodeData) => {
-                        switch (node.type) {
-                            case NodeTypes.Message:
-                                return (
-                                    <React.Fragment key={node.id}>
-                                        <Group
-                                            x={node.x}
-                                            y={node.y}
-                                            width={500}
-                                            height={300}                                        
-                                        >
-                                            <Html
-                                                divProps={{
-                                                    style: {
-                                                        pointerEvents: "auto",
-                                                        zIndex: node.zIndex
-                                                    }
-                                                }}
-                                                
-                                            >
-                                                <FlowCardContainer stageRef={stageRef}>
-                                                    <MessageCard
-                                                        onMouseDown={() => handleDragStart(node.id)}
-                                                        onMouseUp={handleDragEnd}
-                                                    />
-                                                </FlowCardContainer>
-                                            </Html>
-                                        </Group>
-                                    </React.Fragment>
-                                );
-                            case NodeTypes.Action:
-                                return (
-                                    <React.Fragment key={node.id}>
-                                        <Group
-                                            x={node.x}
-                                            y={node.y}
-                                            width={500}
-                                            height={300}
-                                        >
-                                            <Html
-                                                divProps={{
-                                                    style: {
-                                                        zIndex: node.zIndex
-                                                    }
-                                                }}
-                                            >
-                                                <FlowCardContainer stageRef={stageRef}>
-                                                    <ActionCard
-                                                        onMouseDown={() => handleDragStart(node.id)}
-                                                        onMouseUp={handleDragEnd}
-                                                    />
-                                                </FlowCardContainer>
-                                            </Html>
-                                        </Group>
-                                    </React.Fragment>
-                                );
-                            case NodeTypes.Condition:
-                                return (
-                                    <React.Fragment key={node.id}>
-                                        <Group
-                                            x={node.x}
-                                            y={node.y}
-                                            width={500}
-                                            height={300}
-                                        >
-                                            <Html
-                                                divProps={{
-                                                    style: {
-                                                        zIndex: node.zIndex
-                                                    }
-                                                }}
-                                            >
-                                                <FlowCardContainer stageRef={stageRef}>
-                                                    <ConditionCard
-                                                        onMouseDown={() => handleDragStart(node.id)}
-                                                        onMouseUp={handleDragEnd}
-                                                    />
-                                                </FlowCardContainer>
-                                            </Html>
-                                        </Group>
-                                    </React.Fragment>
-                                );
-                            case NodeTypes.Note:
-                                return (
-                                    <React.Fragment key={node.id}>
-                                        <Group
-                                            x={node.x}
-                                            y={node.y}
-                                            width={500}
-                                            height={300}
-                                        >
-                                            <Html
-                                                divProps={{
-                                                    style: {
-                                                        zIndex: node.zIndex
-                                                    }
-                                                }}
-                                            >
-                                                <FlowCardContainer stageRef={stageRef}>
-                                                    <NoteCard
-                                                        onMouseDown={() => handleDragStart(node.id)}
-                                                        onMouseUp={handleDragEnd}
-                                                        content={node.noteContent}
-                                                    />
-                                                </FlowCardContainer>
-                                            </Html>
-                                        </Group>
-                                    </React.Fragment>
-                                );
-                            default:
-                                return <div>error</div>;
-                        }
-                    })}
+                    {renderCards(nodes)}
                 </Layer>
             </Stage>
             <div className='flow-control'>

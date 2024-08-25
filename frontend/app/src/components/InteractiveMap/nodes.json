@@ -1,0 +1,37 @@
+{
+    "nodes": [
+        {
+            "id": 1,
+            "type": "Message",
+            "x": 50,
+            "y": 100,
+            "zIndex": 1,
+            "isEntryPoint": true
+        },
+        {
+            "id": 2,
+            "type": "Action",
+            "x": 200,
+            "y": 200,
+            "zIndex": 2,
+            "isEntryPoint": false
+        },
+        {
+            "id": 3,
+            "type": "Condition",
+            "x": 400,
+            "y": 700,
+            "zIndex": 3,
+            "isEntryPoint": false
+        },
+        {
+            "id": 4,
+            "type": "Note",
+            "x": 300,
+            "y": 400,
+            "zIndex": 4,
+            "isEntryPoint": false,
+            "noteContent": "Test note text"
+        }
+    ]
+}

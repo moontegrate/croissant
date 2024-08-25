@@ -1,6 +1,6 @@
 export const sidebarTheme = {
     "root": {
-        "base": "h-full",
+        "base": "h-full border-0 border-r border-border-color border-solid",
         "collapsed": {
             "on": "w-16",
             "off": "w-18"

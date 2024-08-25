@@ -9,16 +9,9 @@ import { Button } from 'flowbite-react';
 // Interfaces
 import { CardProps } from '../../InteractiveMap/interfaces';
 
-const MessageCard: React.FC<CardProps> = ({
-    onMouseDown,
-    onMouseUp
-}) => {
+const MessageCard: React.FC<CardProps> = () => {
     return (
-        <div
-            className='flow-card message-card'
-            onMouseDown={onMouseDown}
-            onMouseUp={onMouseUp}
-        >
+        <div className='flow-card message-card'>
             <div className='flow-card__head'>
                 <GoComment color='#2F71F0' size={20} />
                 <h5 className='flow-card__title'>Message</h5>
