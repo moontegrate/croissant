@@ -1,10 +1,13 @@
-// Style improts
+// Style imports
 import './index.scss';
 
 import { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../../hooks/state";
+
+// Components
+import AutomationsSidebar from '../../../components/AutomationsSidebar';
 
 const AutomationsPageLayout = () => {
     const navigate = useNavigate();
@@ -19,11 +22,12 @@ const AutomationsPageLayout = () => {
     }, []);
 
     return (
-        <div className="public-page main-page">
+        <div className="public-page automations-page">
             <Helmet>
                 <meta name="description" content="auto chat bot" />
                 <title>Automations</title>
             </Helmet>
+            <AutomationsSidebar/>
         </div>
     );
 };
