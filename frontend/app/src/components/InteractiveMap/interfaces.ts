@@ -16,5 +16,5 @@ export interface InitialState {
 };
 
 export interface CardProps {
-    content?: string
+    node?: NodeData
 }

@@ -11,6 +11,7 @@ import { Helmet } from "react-helmet-async";
 
 // Components
 import InteractiveMap from "../../../components/InteractiveMap";
+import NoteCardModal from '../../../components/NoteCardModal';
 
 const BuilderPageLayout = () => {
     const navigate = useNavigate();
@@ -39,6 +40,7 @@ const BuilderPageLayout = () => {
                     <div className="builder-page__nav-subtitle">flow name</div>
                 </div>
             </div>
+            <NoteCardModal/>
             <InteractiveMap/>
         </div>
     );

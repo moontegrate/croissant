@@ -145,7 +145,7 @@ const InteractiveMap = () => {
                 case "Note":
                     return (
                         <NoteCard
-                            content={node.noteContent}
+                            node={node}
                         />
                     );
                 default:
@@ -200,7 +200,7 @@ const InteractiveMap = () => {
                 ref={stageRef}
                 onWheel={handleWheel}
                 draggable
-                style={{ backgroundColor: '#f9f9f9' }}
+                style={{ backgroundColor: '#fafafa' }}
                 onDragMove={() => {}}
             >
                 <Layer>

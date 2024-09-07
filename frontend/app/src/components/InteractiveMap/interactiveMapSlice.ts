@@ -21,4 +21,4 @@ const interactiveMapSlice = createSlice({
 });
 
 export default interactiveMapSlice.reducer;
-export const {setDragId, setIsDragging, setNodes, setScale } = interactiveMapSlice.actions;
+export const { setDragId, setIsDragging, setNodes, setScale } = interactiveMapSlice.actions;
