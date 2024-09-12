@@ -13,7 +13,7 @@ import { NodeData } from './interfaces';
 
 // Redux
 import { useAppDispatch, useAppSelector } from '../../hooks/state';
-import { setDragId, setIsDragging, setIsBinding, setIsAddModal, setNodes, setScale } from './interactiveMapSlice';
+import { setBlockCardClick, setDragId, setIsDragging, setIsBinding, setIsAddModal, setNodes, setScale } from './interactiveMapSlice';
 
 // Map library
 import { Group, Layer, Stage  } from 'react-konva';
@@ -30,6 +30,7 @@ const InteractiveMap = () => {
     const isDragging = useAppSelector((state) => state.interactiveMapSlice.isDragging);
     const isBinding = useAppSelector((state) => state.interactiveMapSlice.isBinding);
     const bindingFrom = useAppSelector((state) => state.interactiveMapSlice.bindingFrom);
+    const blockClick = useAppSelector((state) => state.interactiveMapSlice.blockCardClick);
     const isAddModal = useAppSelector((state) => state.interactiveMapSlice.isAddModal);
     const dragId = useAppSelector((state) => state.interactiveMapSlice.dragId);
     const scale = useAppSelector((state) => state.interactiveMapSlice.scale);
@@ -38,6 +39,8 @@ const InteractiveMap = () => {
 
     const handleDragMove = (e: MouseEvent) => {
         if (isDragging && dragId !== null) {
+            if (!blockClick) dispatch(setBlockCardClick(true));
+
             const newNodes = nodes.map((node: NodeData) => {
                 if (node.id === dragId) {
                     return { ...node, x: node.x + e.movementX / scale, y: node.y + e.movementY / scale };
@@ -57,8 +60,8 @@ const InteractiveMap = () => {
     }, [isDragging, dragId, nodes, dispatch, scale]);
 
     const handleDragStart = (id: number) => {
-        dispatch(setDragId(id));
         dispatch(setIsDragging(true));
+        dispatch(setDragId(id));
 
         const indexes = nodes.map((a: NodeData) => {
             return a.zIndex;
@@ -82,6 +85,9 @@ const InteractiveMap = () => {
     const handleDragEnd = () => {
         dispatch(setIsDragging(false));
         dispatch(setDragId(undefined));
+        setTimeout(() => {
+            dispatch(setBlockCardClick(false));
+        }, 100);
     };
 
     const handleWheel = (e: KonvaEventObject<WheelEvent>) => {

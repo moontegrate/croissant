@@ -13,6 +13,7 @@ export interface InitialState {
     isBinding: boolean,
     bindingFrom: number | null,
     isAddModal: boolean,
+    blockCardClick: boolean,
     dragId?: number,
     scale: number,
     nodes: NodeData[]

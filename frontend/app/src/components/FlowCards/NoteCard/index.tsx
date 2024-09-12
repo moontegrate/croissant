@@ -11,16 +11,17 @@ import { setIsModalOpen, setNode } from '../../NoteCardModal/NoteCardModalSlice'
 const NoteCard: React.FC<CardProps> = ({node}) => {
     const dispatch = useAppDispatch();
 
-    const isDragging = useAppSelector((state) => state.interactiveMapSlice.isDragging);
+    const dragId = useAppSelector((state) => state.interactiveMapSlice.dragId);
+    const blockClick = useAppSelector((state) => state.interactiveMapSlice.blockCardClick);
 
     return (
         <div
             className='flow-card note-card'
             onClick={() => {
-                if (!isDragging) {
+                if (!blockClick) {
                     dispatch(setNode(node!));
                     dispatch(setIsModalOpen(true));
-                };
+                }
             }}
         >
             <div className='flow-card__content'>
