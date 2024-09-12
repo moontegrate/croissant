@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from 'react';
 
 // Style imports
 import './index.scss';
-import { GoComment, GoDuplicate, GoFile, GoRepoForked, GoRocket } from "react-icons/go";
+import { GoComment, GoDuplicate, GoFile, GoRepoForked, GoRocket, GoScreenNormal } from "react-icons/go";
 
 // Components
 import FlowCardContainer from '../FlowCardContainer';
@@ -221,6 +221,14 @@ const InteractiveMap = () => {
                 </div>
                 <div className='flow-control__inc' onClick={() => handleScale('inc')}>+</div>
                 <div className='flow-control__dec' onClick={() => handleScale('dec')}>-</div>
+                <div className='flow-control__stack' onClick={() => {
+                    const stage = stageRef.current;
+                    dispatch(setScale(1));
+                    stage.scale({ x: 1, y: 1 });
+                    stage.position({ x: 0, y: 50 })
+                }}>
+                    <GoScreenNormal size={25}/>
+                </div>
             </div>
         </div>
     );

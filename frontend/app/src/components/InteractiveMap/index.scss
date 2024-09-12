@@ -13,7 +13,7 @@
         flex-direction: column;
         transform: translateY(-50%);
     
-        &__add, &__inc, &__dec {
+        &__add, &__inc, &__dec, &__stack {
             display: flex;
             justify-content: center;
             align-items: center;
@@ -29,9 +29,15 @@
             box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.05);
         }
 
-        &__add {
+        &__add, &__stack {
             border-radius: 20%;
+        }
+
+        &__add, &__dec {
             margin-bottom: 10px;
+        }
+
+        &__add {
             background-color: $main-color;
 
             &-modal {
