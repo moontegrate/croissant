@@ -185,19 +185,27 @@ const InteractiveMap = () => {
             </Stage>
             <div className='flow-control'>
                 <div className='flow-control__add-modal' style={{"display": isAddModal ? "flex" : "none"}}>
-                    <div className='flow-control__add-modal_btn'>
+                    <div className='flow-control__add-modal_btn' onClick={() => {
+                        dispatch(setIsAddModal(false));
+                    }}>
                         <GoComment color='#2F71F0' size={20} />
                         Message
                     </div>
-                    <div className='flow-control__add-modal_btn'>
+                    <div className='flow-control__add-modal_btn' onClick={() => {
+                        dispatch(setIsAddModal(false));
+                    }}>
                         <GoRepoForked color='#4CE99E' size={20} />
                         Condition
                     </div>
-                    <div className='flow-control__add-modal_btn'>
+                    <div className='flow-control__add-modal_btn' onClick={() => {
+                        dispatch(setIsAddModal(false));
+                    }}>
                         <GoRocket color='#FFC93F' size={20} />
                         Action
                     </div>
-                    <div className='flow-control__add-modal_btn'>
+                    <div className='flow-control__add-modal_btn' onClick={() => {
+                        dispatch(setIsAddModal(false));
+                    }}>
                         <GoFile color='#6C9FFF' size={20} />
                         Note
                     </div>
