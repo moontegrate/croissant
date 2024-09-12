@@ -16,7 +16,7 @@ import { useAppDispatch, useAppSelector } from '../../hooks/state';
 import { setBlockCardClick, setDragId, setIsDragging, setIsBinding, setIsAddModal, setNodes, setScale } from './interactiveMapSlice';
 
 // Map library
-import { Group, Layer, Stage  } from 'react-konva';
+import { Group, Layer, Stage } from 'react-konva';
 import { Html } from 'react-konva-utils';
 import { KonvaEventObject } from 'konva/lib/Node';
 
@@ -53,7 +53,7 @@ const InteractiveMap = () => {
 
     useEffect(() => {
         document.addEventListener('mousemove', handleDragMove);
-    
+
         return () => {
             document.removeEventListener('mousemove', handleDragMove);
         };
@@ -71,12 +71,12 @@ const InteractiveMap = () => {
             if (a.id === id) {
                 return { ...a, zIndex: nodes.length };
             };
-        
+
             if (a.zIndex === nodes.length) {
                 const newZIndex = indexes.find((i) => !indexes.includes(i)) || a.zIndex - 1;
                 return { ...a, zIndex: newZIndex };
             };
-        
+
             return a;
         });
         dispatch(setNodes(newNodes));
@@ -116,13 +116,13 @@ const InteractiveMap = () => {
     };
 
     // Handle scaling
-    const handleScale = ( type: string) => {
+    const handleScale = (type: string) => {
         const stage = stageRef.current;
         const scaleBy = 1.05;
 
         if (stage) {
             const oldScale = stage.scaleX();
-            
+
             const newScale = type === 'inc' ? oldScale * scaleBy : oldScale / scaleBy;
             const newPos = {
                 x: stage.x() - stage.x() * (newScale / oldScale - 1),
@@ -135,6 +135,47 @@ const InteractiveMap = () => {
                 stage.batchDraw();
             };
         };
+    };
+
+    const fitNodesToScreen = () => {
+        if (!stageRef.current) return;
+
+        const nodePositions = nodes.map(node => ({
+            x: node.x,
+            y: node.y,
+        }));
+
+        const minX = Math.min(...nodePositions.map(pos => pos.x));
+        const minY = Math.min(...nodePositions.map(pos => pos.y));
+        const maxX = Math.max(...nodePositions.map(pos => pos.x));
+        const maxY = Math.max(...nodePositions.map(pos => pos.y));
+
+        const stage = stageRef.current;
+        const containerWidth = stage.width();
+        const containerHeight = stage.height();
+
+        const nodesWidth = maxX - minX + 625;
+        const nodesHeight = maxY - minY + 400;
+
+        const scaleX = containerWidth / nodesWidth;
+        const scaleY = containerHeight / nodesHeight;
+        const scale = Math.min(scaleX, scaleY);
+
+        const offsetX = (containerWidth - nodesWidth * scale) / 2 - minX * scale;
+        const offsetY = (containerHeight - nodesHeight * scale) / 2 - minY * scale;
+
+        if (scale < 4 && scale > 0.5) {
+            stage.scale({ x: scale, y: scale });
+            dispatch(setScale(scale));
+        } else if (scale > 4) {
+            stage.scale({ x: 4, y: 4 });
+            dispatch(setScale(scale));
+        } else if (scale < 0.5) {
+            stage.scale({ x: 0.5, y: 0.5 });
+            dispatch(setScale(scale));
+        };
+        stage.position({ x: offsetX + 50, y: 50 });
+        stage.batchDraw();
     };
 
     return (
@@ -158,7 +199,7 @@ const InteractiveMap = () => {
                                         x={node.x}
                                         y={node.y}
                                         width={500}
-                                        height={300}                                        
+                                        height={300}
                                     >
                                         <Html
                                             divProps={{
@@ -167,7 +208,7 @@ const InteractiveMap = () => {
                                                     zIndex: node.zIndex
                                                 }
                                             }}
-                                            
+
                                         >
                                             <FlowCardContainer
                                                 stageRef={stageRef}
@@ -190,7 +231,7 @@ const InteractiveMap = () => {
                 </Layer>
             </Stage>
             <div className='flow-control'>
-                <div className='flow-control__add-modal' style={{"display": isAddModal ? "flex" : "none"}}>
+                <div className='flow-control__add-modal' style={{ "display": isAddModal ? "flex" : "none" }}>
                     <div className='flow-control__add-modal_btn' onClick={() => {
                         dispatch(setIsAddModal(false));
                     }}>
@@ -217,17 +258,12 @@ const InteractiveMap = () => {
                     </div>
                 </div>
                 <div className='flow-control__add' onClick={() => dispatch(setIsAddModal(isAddModal ? false : true))}>
-                    <GoDuplicate color='white' size={25}/>
+                    <GoDuplicate color='white' size={25} />
                 </div>
                 <div className='flow-control__inc' onClick={() => handleScale('inc')}>+</div>
                 <div className='flow-control__dec' onClick={() => handleScale('dec')}>-</div>
-                <div className='flow-control__stack' onClick={() => {
-                    const stage = stageRef.current;
-                    dispatch(setScale(1));
-                    stage.scale({ x: 1, y: 1 });
-                    stage.position({ x: 0, y: 50 })
-                }}>
-                    <GoScreenNormal size={25}/>
+                <div className='flow-control__stack' onClick={fitNodesToScreen}>
+                    <GoScreenNormal size={25} />
                 </div>
             </div>
         </div>
