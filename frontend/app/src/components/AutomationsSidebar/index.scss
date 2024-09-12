@@ -71,10 +71,18 @@
             color: $light-gray-text;
         }
 
-        &-icon {
+        &-avatar, &-icon {
             height: 20px;
             width: 20px;
             background-color: gray;
+        }
+
+        &-avatar {
+            overflow: hidden;
+            border-radius: 50%;
+        }
+
+        &-icon {
             border-radius: 10px;
         }
     }

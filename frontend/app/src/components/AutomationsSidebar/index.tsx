@@ -10,6 +10,22 @@ import { Button } from 'flowbite-react';
 import { useAppDispatch, useAppSelector } from '../../hooks/state';
 import { setGroupsFilter } from './automationsSidebarSlice';
 
+// TEST DATA
+const accounts: {name: string, img: string}[] = [
+    {
+        name: '@lovattro',
+        img: 'https://www.redditstatic.com/avatars/defaults/v2/avatar_default_0.png'
+    },
+    {
+        name: '@test1',
+        img: 'https://www.redditstatic.com/avatars/defaults/v2/avatar_default_0.png'
+    },
+    {
+        name: '@test2',
+        img: 'https://www.redditstatic.com/avatars/defaults/v2/avatar_default_0.png'
+    }
+];
+
 const AutomationsSidebar = () => {
     const dispatch = useAppDispatch();
     const activeFilter = useAppSelector((state) => state.automationsSidebarSlice.groupsFilter);
@@ -53,10 +69,16 @@ const AutomationsSidebar = () => {
                     <GoPlus className='automations-sidebar__add'/>
                 </div>
                 <div className='automations-sidebar__group-items'>
-                    <div className='automations-sidebar__btn'>
-                        <div className='automations-sidebar__btn-icon'></div>
-                        <div className='automations-sidebar__btn-title'>@lovattro</div>
-                    </div>
+                    {accounts.map((i) => {
+                        return (
+                            <div className='automations-sidebar__btn'>
+                                <div className='automations-sidebar__btn-avatar'>
+                                    <img src={i.img} alt='icon'/>
+                                </div>
+                                <div className='automations-sidebar__btn-title'>{i.name}</div>
+                            </div>
+                        );
+                    })}
                 </div>
             </div>
         </nav>

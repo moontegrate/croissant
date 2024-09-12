@@ -3,49 +3,52 @@ import React, { useEffect, useRef } from 'react';
 
 // Style imports
 import './index.scss';
+import { GoComment, GoDuplicate, GoFile, GoRepoForked, GoRocket } from "react-icons/go";
 
 // Components
 import FlowCardContainer from '../FlowCardContainer';
-import MessageCard from '../FlowCards/MessageCard';
-import ActionCard from '../FlowCards/ActionCard';
-import ConditionCard from '../FlowCards/ConditionCard';
-import NoteCard from '../FlowCards/NoteCard';
 
 // Interfaces
 import { NodeData } from './interfaces';
 
 // Redux
 import { useAppDispatch, useAppSelector } from '../../hooks/state';
-import { setDragId, setIsDragging, setNodes, setScale } from './interactiveMapSlice';
+import { setDragId, setIsDragging, setIsBinding, setIsAddModal, setNodes, setScale } from './interactiveMapSlice';
 
 // Map library
 import { Group, Layer, Stage  } from 'react-konva';
 import { Html } from 'react-konva-utils';
 import { KonvaEventObject } from 'konva/lib/Node';
 
+// Helpers
+import { renderCardBody } from './helpers';
+
 
 const InteractiveMap = () => {
     const dispatch = useAppDispatch();
     const nodes = useAppSelector((state) => state.interactiveMapSlice.nodes);
     const isDragging = useAppSelector((state) => state.interactiveMapSlice.isDragging);
+    const isBinding = useAppSelector((state) => state.interactiveMapSlice.isBinding);
+    const bindingFrom = useAppSelector((state) => state.interactiveMapSlice.bindingFrom);
+    const isAddModal = useAppSelector((state) => state.interactiveMapSlice.isAddModal);
     const dragId = useAppSelector((state) => state.interactiveMapSlice.dragId);
     const scale = useAppSelector((state) => state.interactiveMapSlice.scale);
 
     const stageRef = useRef<any>(null);
 
-    useEffect(() => {
-        const handleDragMove = (e: MouseEvent) => {
-            if (isDragging && dragId !== null) {
-                const newNodes = nodes.map((node: NodeData) => {
-                    if (node.id === dragId) {
-                        return { ...node, x: node.x + e.movementX / scale, y: node.y + e.movementY / scale };
-                    };
-                    return node;
-                });
-                dispatch(setNodes(newNodes));
-            };
+    const handleDragMove = (e: MouseEvent) => {
+        if (isDragging && dragId !== null) {
+            const newNodes = nodes.map((node: NodeData) => {
+                if (node.id === dragId) {
+                    return { ...node, x: node.x + e.movementX / scale, y: node.y + e.movementY / scale };
+                };
+                return node;
+            });
+            dispatch(setNodes(newNodes));
         };
-    
+    };
+
+    useEffect(() => {
         document.addEventListener('mousemove', handleDragMove);
     
         return () => {
@@ -54,8 +57,8 @@ const InteractiveMap = () => {
     }, [isDragging, dragId, nodes, dispatch, scale]);
 
     const handleDragStart = (id: number) => {
-        dispatch(setIsDragging(true));
         dispatch(setDragId(id));
+        dispatch(setIsDragging(true));
 
         const indexes = nodes.map((a: NodeData) => {
             return a.zIndex;
@@ -106,6 +109,7 @@ const InteractiveMap = () => {
         };
     };
 
+    // Handle scaling
     const handleScale = ( type: string) => {
         const stage = stageRef.current;
         const scaleBy = 1.05;
@@ -127,69 +131,6 @@ const InteractiveMap = () => {
         };
     };
 
-    function renderCards(nodes: NodeData[]) {
-        function renderCardBody(node: NodeData): JSX.Element {
-            switch (node.type) {
-                case "Message":
-                    return (
-                        <MessageCard/>
-                    );
-                case "Action":
-                    return (
-                        <ActionCard/>
-                    );
-                case "Condition":
-                    return (
-                        <ConditionCard/>
-                    );
-                case "Note":
-                    return (
-                        <NoteCard
-                            node={node}
-                        />
-                    );
-                default:
-                    return (
-                        <div>Error while card rendering</div>
-                    )
-            }
-        }
-
-        const result = nodes.map((node: NodeData) => {
-            return (
-                <React.Fragment key={node.id}>
-                    <Group
-                        x={node.x}
-                        y={node.y}
-                        width={500}
-                        height={300}                                        
-                    >
-                        <Html
-                            divProps={{
-                                style: {
-                                    pointerEvents: "auto",
-                                    zIndex: node.zIndex
-                                }
-                            }}
-                            
-                        >
-                            <FlowCardContainer
-                                stageRef={stageRef}
-                                isEntryPoint={node.isEntryPoint}
-                                onMouseDown={() => handleDragStart(node.id)}
-                                onMouseUp={handleDragEnd}
-                            >
-                                {renderCardBody(node)}
-                            </FlowCardContainer>
-                        </Html>
-                    </Group>
-                </React.Fragment>
-            );
-        })
-
-        return result;
-    };
-
     return (
         <div className='flow'>
             <Stage
@@ -201,13 +142,69 @@ const InteractiveMap = () => {
                 onWheel={handleWheel}
                 draggable
                 style={{ backgroundColor: '#fafafa' }}
-                onDragMove={() => {}}
             >
                 <Layer>
-                    {renderCards(nodes)}
+                    {
+                        nodes.map((node: NodeData, i) => {
+                            return (
+                                <React.Fragment key={i}>
+                                    <Group
+                                        x={node.x}
+                                        y={node.y}
+                                        width={500}
+                                        height={300}                                        
+                                    >
+                                        <Html
+                                            divProps={{
+                                                style: {
+                                                    pointerEvents: "auto",
+                                                    zIndex: node.zIndex
+                                                }
+                                            }}
+                                            
+                                        >
+                                            <FlowCardContainer
+                                                stageRef={stageRef}
+                                                isEntryPoint={node.isEntryPoint}
+                                                onMouseDown={(e) => {
+                                                    if (e.button === 0) {
+                                                        handleDragStart(node.id);
+                                                    };
+                                                }}
+                                                onMouseUp={handleDragEnd}
+                                            >
+                                                {renderCardBody(node)}
+                                            </FlowCardContainer>
+                                        </Html>
+                                    </Group>
+                                </React.Fragment>
+                            );
+                        })
+                    }
                 </Layer>
             </Stage>
             <div className='flow-control'>
+                <div className='flow-control__add-modal' style={{"display": isAddModal ? "flex" : "none"}}>
+                    <div className='flow-control__add-modal_btn'>
+                        <GoComment color='#2F71F0' size={20} />
+                        Message
+                    </div>
+                    <div className='flow-control__add-modal_btn'>
+                        <GoRepoForked color='#4CE99E' size={20} />
+                        Condition
+                    </div>
+                    <div className='flow-control__add-modal_btn'>
+                        <GoRocket color='#FFC93F' size={20} />
+                        Action
+                    </div>
+                    <div className='flow-control__add-modal_btn'>
+                        <GoFile color='#6C9FFF' size={20} />
+                        Note
+                    </div>
+                </div>
+                <div className='flow-control__add' onClick={() => dispatch(setIsAddModal(isAddModal ? false : true))}>
+                    <GoDuplicate color='white' size={25}/>
+                </div>
                 <div className='flow-control__inc' onClick={() => handleScale('inc')}>+</div>
                 <div className='flow-control__dec' onClick={() => handleScale('dec')}>-</div>
             </div>

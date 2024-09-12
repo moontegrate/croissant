@@ -10,6 +10,9 @@ export interface NodeData {
 
 export interface InitialState {
     isDragging: boolean,
+    isBinding: boolean,
+    bindingFrom: number | null,
+    isAddModal: boolean,
     dragId?: number,
     scale: number,
     nodes: NodeData[]
