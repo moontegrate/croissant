@@ -10,7 +10,12 @@ import { useAppDispatch, useAppSelector } from '../../hooks/state';
 import { setNodes } from '../InteractiveMap/interactiveMapSlice';
 import { setIsModalOpen, setNode } from './NoteCardModalSlice';
 
+// Server
+import { useUpdateNodeMutation } from '../../api/apiSlice';
+
 const NoteCardModal = () => {
+    const [updateNode, {isLoading: isNodeUpdating}] = useUpdateNodeMutation();
+
     const dispatch = useAppDispatch();
     const isModalOpen = useAppSelector((state) => state.NoteCardModalSlice.isModalOpen);
     const node = useAppSelector((state) => state.NoteCardModalSlice.node);
@@ -25,7 +30,7 @@ const NoteCardModal = () => {
             onClose={() => {
                 dispatch(setIsModalOpen(false));
                 dispatch(setNodes([...nodes, node!]))
-                dispatch(setNode(null));
+                updateNode(node!).then(() => dispatch(setNode(null)))
             }}
         >
             <Modal.Header className='pb-0'>

@@ -23,9 +23,9 @@
     {
       "id": "3",
       "type": "Condition",
-      "x": 400,
-      "y": 1500,
-      "zIndex": 3,
+      "x": 370.30102600840905,
+      "y": 500.1345422831041,
+      "zIndex": 4,
       "isEntryPoint": false,
       "isBinded": false,
       "bindedTo": null
@@ -39,7 +39,7 @@
       "isEntryPoint": false,
       "isBinded": false,
       "bindedTo": null,
-      "noteContent": "Test note text"
+      "noteContent": "Test note text44444"
     }
   ],
   "arrows": [
