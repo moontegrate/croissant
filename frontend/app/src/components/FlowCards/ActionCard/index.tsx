@@ -9,7 +9,15 @@ import { Button } from 'flowbite-react';
 // Interfaces
 import { CardProps } from '../../InteractiveMap/interfaces';
 
-const ActionCard: React.FC<CardProps> = () => {
+// Redux
+import { useAppDispatch, useAppSelector } from '../../../hooks/state';
+import { setBindingFrom, setIsBinding } from '../../InteractiveMap/interactiveMapSlice';
+
+const ActionCard: React.FC<CardProps> = ({node}) => {
+    const dispatch = useAppDispatch();
+
+    const isBinding = useAppSelector((state) => state.interactiveMapSlice.isBinding);
+
     return (
         <div className='flow-card action-card'>
             <div className='flow-card__head'>
@@ -18,7 +26,10 @@ const ActionCard: React.FC<CardProps> = () => {
             </div>
             <div className='flow-card__bottom'>
                 <Button theme={flowCardButtonTheme} className='mb-2 enabled:hover:border-action-card-accent'>Click to add an action</Button>
-                <div className='flow-card__connect action-card__connect'></div>
+                <div className={isBinding ? 'flow-card__connect action-card__connect binding' : 'flow-card__connect action-card__connect'} onClick={() => {
+                    dispatch(setIsBinding(true));
+                    dispatch(setBindingFrom(node!.id));
+                }}></div>
             </div>
         </div>
     );

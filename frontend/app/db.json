@@ -1,0 +1,52 @@
+{
+  "nodes": [
+    {
+      "id": "1",
+      "type": "Message",
+      "x": 16,
+      "y": 98,
+      "zIndex": 4,
+      "isEntryPoint": true,
+      "isBinded": false,
+      "bindedTo": null
+    },
+    {
+      "id": "2",
+      "type": "Action",
+      "x": 43,
+      "y": 382,
+      "zIndex": 4,
+      "isEntryPoint": false,
+      "isBinded": false,
+      "bindedTo": null
+    },
+    {
+      "id": "3",
+      "type": "Condition",
+      "x": 400,
+      "y": 1500,
+      "zIndex": 3,
+      "isEntryPoint": false,
+      "isBinded": false,
+      "bindedTo": null
+    },
+    {
+      "id": "4",
+      "type": "Note",
+      "x": 288,
+      "y": 327,
+      "zIndex": 4,
+      "isEntryPoint": false,
+      "isBinded": false,
+      "bindedTo": null,
+      "noteContent": "Test note text"
+    }
+  ],
+  "arrows": [
+    {
+      "id": "1",
+      "from": 2,
+      "to": 3
+    }
+  ]
+}

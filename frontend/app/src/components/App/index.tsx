@@ -23,7 +23,6 @@ function App() {
         <Router>
             <HelmetProvider>
                 <div className="App">
-                    
                     <Suspense
                         fallback={
                             <Spinner />
@@ -34,8 +33,6 @@ function App() {
                             <Route path="/*" element={<PrivatePage />} />
                         </Routes>
                     </Suspense>
-
-                    {/* Notifications component */}
                     <Toaster />
                 </div>
             </HelmetProvider>

@@ -7,26 +7,42 @@ import { GoComment, GoDuplicate, GoFile, GoRepoForked, GoRocket, GoScreenNormal 
 
 // Components
 import FlowCardContainer from '../FlowCardContainer';
+import { BarLoader } from 'react-spinners';
 
 // Interfaces
-import { NodeData } from './interfaces';
+import { ArrowData, NodeData } from './interfaces';
 
 // Redux
 import { useAppDispatch, useAppSelector } from '../../hooks/state';
-import { setBlockCardClick, setDragId, setIsDragging, setIsBinding, setIsAddModal, setNodes, setScale } from './interactiveMapSlice';
+import { setArrows, setBlockCardClick, setDragId, setIsDragging, setIsBinding, setBindingFrom, setIsAddModal, setNodes, setScale } from './interactiveMapSlice';
 
 // Map library
-import { Group, Layer, Stage } from 'react-konva';
+import { Group, Layer, Stage, Arrow } from 'react-konva';
 import { Html } from 'react-konva-utils';
 import { KonvaEventObject } from 'konva/lib/Node';
 
 // Helpers
 import { renderCardBody } from './helpers';
 
+// Server
+import { useGetNodesQuery, useUpdateNodeMutation } from '../../api/apiSlice';
+
 
 const InteractiveMap = () => {
+    const {
+        data = [],
+        isFetching,
+        isLoading: isNodesLoading,
+        isSuccess,
+        isError,
+        error
+    } = useGetNodesQuery();
+
+    const [updateNode, {isLoading: isNodeUpdating}] = useUpdateNodeMutation();
+
     const dispatch = useAppDispatch();
     const nodes = useAppSelector((state) => state.interactiveMapSlice.nodes);
+    const arrows = useAppSelector((state) => state.interactiveMapSlice.arrows);
     const isDragging = useAppSelector((state) => state.interactiveMapSlice.isDragging);
     const isBinding = useAppSelector((state) => state.interactiveMapSlice.isBinding);
     const bindingFrom = useAppSelector((state) => state.interactiveMapSlice.bindingFrom);
@@ -36,6 +52,10 @@ const InteractiveMap = () => {
     const scale = useAppSelector((state) => state.interactiveMapSlice.scale);
 
     const stageRef = useRef<any>(null);
+
+    useEffect(() => {
+        dispatch(setNodes(data))
+    }, [isNodesLoading]);
 
     const handleDragMove = (e: MouseEvent) => {
         if (isDragging && dragId !== null) {
@@ -47,6 +67,20 @@ const InteractiveMap = () => {
                 };
                 return node;
             });
+
+            const node = nodes.find(item => item.id === dragId);
+
+            if (node?.isBinded) {
+                const newArrows = arrows.map((arrow: ArrowData) => {
+                    if (arrow.from === node.id) {
+                        return {...arrow, x: arrow.x || 0 + e.movementX / scale, y: arrow.y || 0 + e.movementY / scale };
+                    };
+                    return arrow;
+                });
+
+                dispatch(setArrows(newArrows));
+            };
+
             dispatch(setNodes(newNodes));
         };
     };
@@ -83,8 +117,10 @@ const InteractiveMap = () => {
     };
 
     const handleDragEnd = () => {
-        dispatch(setIsDragging(false));
-        dispatch(setDragId(undefined));
+        updateNode(nodes.find(i => i.id === dragId)!).then(() => {
+            dispatch(setIsDragging(false));
+            dispatch(setDragId(undefined));
+        });
         setTimeout(() => {
             dispatch(setBlockCardClick(false));
         }, 100);
@@ -178,9 +214,30 @@ const InteractiveMap = () => {
         stage.batchDraw();
     };
 
+    const handleLinking = (id: number) => {
+        const stage = stageRef.current;
+        const node = nodes.find(item => item.id === id);
+        const pointer = stage.getPointerPosition();
+
+        return (
+            <div className='bind-arrow'>
+                <Arrow
+                    points={[node!.x + 335, node!.y + 110, pointer.x, pointer.y]}
+                    pointerLength={10}
+                    pointerWidth={10}
+                    fill="gray"
+                    stroke="gray"
+                    strokeWidth={1}
+                    tension={10}
+                />
+            </div>
+        )
+    };
+
     return (
         <div className='flow'>
-            <Stage
+            {isNodesLoading || isNodeUpdating ? <div className='flow-spinner'><BarLoader color='#FF7A7A' width="100%"/></div> : null}
+            {<Stage
                 width={window.innerWidth}
                 height={window.innerHeight}
                 x={70}
@@ -228,8 +285,9 @@ const InteractiveMap = () => {
                             );
                         })
                     }
+                    {isBinding ? handleLinking(bindingFrom!) : null}
                 </Layer>
-            </Stage>
+            </Stage>}
             <div className='flow-control'>
                 <div className='flow-control__add-modal' style={{ "display": isAddModal ? "flex" : "none" }}>
                     <div className='flow-control__add-modal_btn' onClick={() => {

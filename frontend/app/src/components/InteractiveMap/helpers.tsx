@@ -11,21 +11,19 @@ export function renderCardBody(node: NodeData): JSX.Element {
     switch (node.type) {
         case "Message":
             return (
-                <MessageCard/>
+                <MessageCard node={node}/>
             );
         case "Action":
             return (
-                <ActionCard/>
+                <ActionCard node={node}/>
             );
         case "Condition":
             return (
-                <ConditionCard/>
+                <ConditionCard node={node}/>
             );
         case "Note":
             return (
-                <NoteCard
-                    node={node}
-                />
+                <NoteCard node={node}/>
             );
         default:
             return (

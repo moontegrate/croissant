@@ -5,8 +5,18 @@ export interface NodeData {
     y: number;
     zIndex: number;
     isEntryPoint: boolean;
+    isBinded: boolean;
+    bindedTo: number | null;
     noteContent?: string;
-}
+};
+
+export interface ArrowData {
+    id: number;
+    from: number;
+    to: number;
+    x?: number;
+    y?: number;
+};
 
 export interface InitialState {
     isDragging: boolean,
@@ -16,9 +26,10 @@ export interface InitialState {
     blockCardClick: boolean,
     dragId?: number,
     scale: number,
-    nodes: NodeData[]
+    nodes: NodeData[],
+    arrows: ArrowData[]
 };
 
 export interface CardProps {
     node?: NodeData
-}
+};
