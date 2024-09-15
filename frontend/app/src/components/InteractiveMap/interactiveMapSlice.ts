@@ -20,10 +20,10 @@ const interactiveMapSlice = createSlice({
     reducers: {
         setIsDragging: (state, action: PayloadAction<boolean>) => { state.isDragging = action.payload },
         setIsBinding: (state, action: PayloadAction<boolean>) => { state.isBinding = action.payload },
-        setBindingFrom: (state, action: PayloadAction<number | null>) => { state.bindingFrom = action.payload },
+        setBindingFrom: (state, action: PayloadAction<string | null>) => { state.bindingFrom = action.payload },
         setIsAddModal: (state, action: PayloadAction<boolean>) => { state.isAddModal = action.payload },
         setBlockCardClick: (state, action: PayloadAction<boolean>) => { state.blockCardClick = action.payload },
-        setDragId: (state, action: PayloadAction<number | undefined>) => { state.dragId = action.payload },
+        setDragId: (state, action: PayloadAction<string | undefined>) => { state.dragId = action.payload },
         setArrows: (state, action: PayloadAction<ArrowData[]>) => { state.arrows = action.payload },
         setNodes: (state, action: PayloadAction<NodeData[]>) => { state.nodes = action.payload },
         setScale: (state, action: PayloadAction<number>) => { state.scale = action.payload }

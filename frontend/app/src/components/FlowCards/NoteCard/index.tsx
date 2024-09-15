@@ -25,7 +25,7 @@ const NoteCard: React.FC<CardProps> = ({node}) => {
             }}
         >
             <div className='flow-card__content'>
-                {node?.noteContent}
+                {node?.noteContent ? node?.noteContent : "Enter note text"}
             </div>
         </div>
     );

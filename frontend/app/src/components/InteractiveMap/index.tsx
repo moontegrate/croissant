@@ -25,8 +25,10 @@ import { KonvaEventObject } from 'konva/lib/Node';
 import { renderCardBody } from './helpers';
 
 // Server
-import { useGetNodesQuery, useUpdateNodeMutation } from '../../api/apiSlice';
+import { useGetNodesQuery, useUpdateNodeMutation, useCreateNodeMutation } from '../../api/apiSlice';
 
+// Other libraries
+import { v4 as uuidv4 } from 'uuid';
 
 const InteractiveMap = () => {
     const {
@@ -37,8 +39,8 @@ const InteractiveMap = () => {
         isError,
         error
     } = useGetNodesQuery();
-
     const [updateNode, {isLoading: isNodeUpdating}] = useUpdateNodeMutation();
+    const [createNode, {isLoading: isNodeCreating}] = useCreateNodeMutation();
 
     const dispatch = useAppDispatch();
     const nodes = useAppSelector((state) => state.interactiveMapSlice.nodes);
@@ -93,7 +95,7 @@ const InteractiveMap = () => {
         };
     }, [isDragging, dragId, nodes, dispatch, scale]);
 
-    const handleDragStart = (id: number) => {
+    const handleDragStart = (id: string) => {
         dispatch(setIsDragging(true));
         dispatch(setDragId(id));
 
@@ -214,7 +216,7 @@ const InteractiveMap = () => {
         stage.batchDraw();
     };
 
-    const handleLinking = (id: number) => {
+    const handleLinking = (id: string) => {
         const stage = stageRef.current;
         const node = nodes.find(item => item.id === id);
         const pointer = stage.getPointerPosition();
@@ -236,7 +238,7 @@ const InteractiveMap = () => {
 
     return (
         <div className='flow'>
-            {isNodesLoading || isNodeUpdating ? <div className='flow-spinner'><BarLoader color='#FF7A7A' width="100%"/></div> : null}
+            {isNodesLoading || isNodeUpdating || isNodeCreating ? <div className='flow-spinner'><BarLoader color='#FF7A7A' width="100%"/></div> : null}
             {<Stage
                 width={window.innerWidth}
                 height={window.innerHeight}
@@ -292,24 +294,65 @@ const InteractiveMap = () => {
                 <div className='flow-control__add-modal' style={{ "display": isAddModal ? "flex" : "none" }}>
                     <div className='flow-control__add-modal_btn' onClick={() => {
                         dispatch(setIsAddModal(false));
+                        createNode({
+                            id: uuidv4(),
+                            type: 'Message',
+                            x: 0,
+                            y: 0,
+                            zIndex: nodes.length + 1,
+                            isEntryPoint: false,
+                            isBinded: false,
+                            bindedTo: null
+                        });
                     }}>
                         <GoComment color='#2F71F0' size={20} />
                         Message
                     </div>
                     <div className='flow-control__add-modal_btn' onClick={() => {
                         dispatch(setIsAddModal(false));
+                        createNode({
+                            id: uuidv4(),
+                            type: 'Condition',
+                            x: 0,
+                            y: 0,
+                            zIndex: nodes.length + 1,
+                            isEntryPoint: false,
+                            isBinded: false,
+                            bindedTo: null
+                        });
                     }}>
                         <GoRepoForked color='#4CE99E' size={20} />
                         Condition
                     </div>
                     <div className='flow-control__add-modal_btn' onClick={() => {
                         dispatch(setIsAddModal(false));
+                        createNode({
+                            id: uuidv4(),
+                            type: 'Action',
+                            x: 0,
+                            y: 0,
+                            zIndex: nodes.length + 1,
+                            isEntryPoint: false,
+                            isBinded: false,
+                            bindedTo: null
+                        });
                     }}>
                         <GoRocket color='#FFC93F' size={20} />
                         Action
                     </div>
                     <div className='flow-control__add-modal_btn' onClick={() => {
                         dispatch(setIsAddModal(false));
+                        createNode({
+                            id: uuidv4(),
+                            type: 'Note',
+                            x: 0,
+                            y: 0,
+                            zIndex: nodes.length + 1,
+                            isEntryPoint: false,
+                            isBinded: false,
+                            bindedTo: null,
+                            noteContent: ''
+                        });
                     }}>
                         <GoFile color='#6C9FFF' size={20} />
                         Note

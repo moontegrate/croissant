@@ -1,5 +1,5 @@
 export interface NodeData {
-    id: number;
+    id: string;
     type: string;
     x: number;
     y: number;
@@ -11,9 +11,9 @@ export interface NodeData {
 };
 
 export interface ArrowData {
-    id: number;
-    from: number;
-    to: number;
+    id: string;
+    from: string;
+    to: string;
     x?: number;
     y?: number;
 };
@@ -21,10 +21,10 @@ export interface ArrowData {
 export interface InitialState {
     isDragging: boolean,
     isBinding: boolean,
-    bindingFrom: number | null,
+    bindingFrom: string | null,
     isAddModal: boolean,
     blockCardClick: boolean,
-    dragId?: number,
+    dragId?: string,
     scale: number,
     nodes: NodeData[],
     arrows: ArrowData[]

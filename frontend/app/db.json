@@ -3,9 +3,9 @@
     {
       "id": "1",
       "type": "Message",
-      "x": 16,
-      "y": 98,
-      "zIndex": 4,
+      "x": 347.7751329895858,
+      "y": 145.26829334767893,
+      "zIndex": 5,
       "isEntryPoint": true,
       "isBinded": false,
       "bindedTo": null
@@ -13,9 +13,9 @@
     {
       "id": "2",
       "type": "Action",
-      "x": 43,
-      "y": 382,
-      "zIndex": 4,
+      "x": 274.0731733907156,
+      "y": 357.67400390978685,
+      "zIndex": 6,
       "isEntryPoint": false,
       "isBinded": false,
       "bindedTo": null
@@ -23,8 +23,8 @@
     {
       "id": "3",
       "type": "Condition",
-      "x": 370.30102600840905,
-      "y": 500.1345422831041,
+      "x": 113.23379657741651,
+      "y": 590.9757104607708,
       "zIndex": 4,
       "isEntryPoint": false,
       "isBinded": false,
@@ -33,13 +33,34 @@
     {
       "id": "4",
       "type": "Note",
-      "x": 288,
-      "y": 327,
-      "zIndex": 4,
+      "x": 624.4767077380177,
+      "y": 469.8422142999988,
+      "zIndex": 6,
       "isEntryPoint": false,
       "isBinded": false,
       "bindedTo": null,
       "noteContent": "Test note text44444"
+    },
+    {
+      "id": "3b721f28-ee39-4388-bd9b-b625a1e3f227",
+      "type": "Note",
+      "x": 775.4285714285713,
+      "y": 243.61904761904736,
+      "zIndex": 6,
+      "isEntryPoint": false,
+      "isBinded": false,
+      "bindedTo": null,
+      "noteContent": ""
+    },
+    {
+      "id": "f2d70451-2679-4afc-acc6-7407c08e735b",
+      "type": "Condition",
+      "x": 15,
+      "y": 72,
+      "zIndex": 6,
+      "isEntryPoint": false,
+      "isBinded": false,
+      "bindedTo": null
     }
   ],
   "arrows": [

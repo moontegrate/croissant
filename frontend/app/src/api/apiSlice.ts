@@ -15,8 +15,15 @@ export const apiSlice = createApi({
                 method: "PUT",
                 body: node,
             })
-        })
+        }),
+        createNode: builder.mutation<void, NodeData>({
+            query: (node) => ({
+                url: '/nodes/',
+                method: "POST",
+                body: node,
+            })
+        }),
     })
 });
 
-export const { useGetNodesQuery, useUpdateNodeMutation } = apiSlice;
+export const { useGetNodesQuery, useUpdateNodeMutation, useCreateNodeMutation } = apiSlice;
