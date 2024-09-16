@@ -104,6 +104,8 @@
         &__top {
             position: absolute;
             top: -40px;
+            display: flex;
+            gap: 5px;
             width: fit-content;
         }
 
@@ -129,8 +131,33 @@
             gap: 2px;
             max-width: fit-content;
             border-radius: 20px;
+            border: 2px solid $border-color;
             background-color: white;
             margin-bottom: 10px;
+        }
+
+        &__floating-menu {
+            cursor: pointer;
+            height: 33px;
+            padding: 2px;
+            margin-bottom: 7px;
+            border-radius: 5px;
+            border: 2px solid $border-color;
+            display: flex;
+            gap: 2px;
+            background-color: white;
+
+            &-btn {
+                width: 25px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                border-radius: 3px;
+
+                &:hover {
+                    background-color: $border-color;
+                }
+            }
         }
     }
 }

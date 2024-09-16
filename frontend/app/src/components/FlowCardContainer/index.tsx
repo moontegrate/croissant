@@ -1,16 +1,42 @@
+// Style imports
+import { GoCopy, GoSingleSelect, GoTrash, GoTriangleRight } from "react-icons/go";
+
+// Interfaces
 import { CardContainerProps } from "./interfaces";
-import { GoTriangleRight } from "react-icons/go";
 
 // Redux
 import { useAppDispatch } from "../../hooks/state";
-import { setScale } from "../InteractiveMap/interactiveMapSlice";
+import { setScale, setNodes } from "../InteractiveMap/interactiveMapSlice";
 
-const FlowCardContainer: React.FC<CardContainerProps> = ({children, stageRef, isEntryPoint, onMouseDown, onMouseUp}) => {
+// Hooks
+import { useState } from "react";
+
+// Server
+import { useDeleteNodeMutation, useGetNodesQuery } from "../../api/apiSlice";
+
+const FlowCardContainer: React.FC<CardContainerProps> = ({children, id, stageRef, canBeEntryPoint, isEntryPoint, onMouseDown, onMouseUp}) => {
     const dispatch = useAppDispatch();
+    const [showFloatingMenu, setShowFloatingMenu] = useState<boolean>(false);
+
+    const {
+        data = [],
+        isFetching,
+        isLoading: isNodesLoading,
+        isSuccess,
+        isError,
+        error,
+        refetch
+    } = useGetNodesQuery();
+    const [deleteNode, {isLoading: isNodeDeleting}] = useDeleteNodeMutation();
 
     return (
-        <>
+        <div
+            onMouseEnter={() => setShowFloatingMenu(true)}
+            onMouseLeave={() => setShowFloatingMenu(false)}
+        >
+            {/* Card's top */}
             <div className="flow-card__top">
+                {/* "Entity point" shortcut */}
                 {isEntryPoint ? <div
                     className="flow-card__entry-point"
                     onMouseDown={onMouseDown}
@@ -18,6 +44,30 @@ const FlowCardContainer: React.FC<CardContainerProps> = ({children, stageRef, is
                 >
                     <GoTriangleRight/>
                     Entry point
+                </div> : null}
+
+                {/* Floating menu with 3 buttons */}
+                {showFloatingMenu ? <div
+                    className="flow-card__floating-menu"
+                    onMouseDown={onMouseDown}
+                    onMouseUp={onMouseUp}
+                >
+                    {/* Button make entity point is not available for note card */}
+                    {canBeEntryPoint ? <div className="flow-card__floating-menu-btn"><GoSingleSelect/></div> : null}
+                    <div
+                        className="flow-card__floating-menu-btn"
+                    >
+                        <GoCopy/>
+                    </div>
+                    <div
+                        className="flow-card__floating-menu-btn"
+                        onClick={() => {
+                            deleteNode(id);
+                            refetch().then((res) => res.data ? dispatch(setNodes(res.data)) : null);
+                        }}
+                    >
+                        <GoTrash/>
+                    </div>
                 </div> : null}
             </div>
             <div
@@ -49,7 +99,7 @@ const FlowCardContainer: React.FC<CardContainerProps> = ({children, stageRef, is
             >
                 {children}
             </div>
-        </>
+        </div>
     );
 };
 

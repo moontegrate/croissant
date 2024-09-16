@@ -6,7 +6,7 @@ export const apiSlice = createApi({
     reducerPath: "api",
     baseQuery: fetchBaseQuery({baseUrl: "http://localhost:3001"}),
     endpoints: builder => ({
-        getNodes: builder.query<NodeData[],void>({
+        getNodes: builder.query<NodeData[], void>({
             query: () => "/nodes"
         }),
         updateNode: builder.mutation<void, NodeData>({
@@ -23,7 +23,13 @@ export const apiSlice = createApi({
                 body: node,
             })
         }),
+        deleteNode: builder.mutation<void, string>({
+            query: (id) => ({
+                url: `/nodes/${id}`,
+                method: "DELETE"
+            })
+        })
     })
 });
 
-export const { useGetNodesQuery, useUpdateNodeMutation, useCreateNodeMutation } = apiSlice;
+export const { useDeleteNodeMutation, useGetNodesQuery, useUpdateNodeMutation, useCreateNodeMutation } = apiSlice;

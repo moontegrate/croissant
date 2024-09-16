@@ -25,7 +25,7 @@ import { KonvaEventObject } from 'konva/lib/Node';
 import { renderCardBody } from './helpers';
 
 // Server
-import { useGetNodesQuery, useUpdateNodeMutation, useCreateNodeMutation } from '../../api/apiSlice';
+import { useDeleteNodeMutation, useGetNodesQuery, useUpdateNodeMutation, useCreateNodeMutation } from '../../api/apiSlice';
 
 // Other libraries
 import { v4 as uuidv4 } from 'uuid';
@@ -37,10 +37,12 @@ const InteractiveMap = () => {
         isLoading: isNodesLoading,
         isSuccess,
         isError,
-        error
+        error,
+        refetch
     } = useGetNodesQuery();
     const [updateNode, {isLoading: isNodeUpdating}] = useUpdateNodeMutation();
     const [createNode, {isLoading: isNodeCreating}] = useCreateNodeMutation();
+    const [deleteNode, {isLoading: isNodeDeleting}] = useDeleteNodeMutation();
 
     const dispatch = useAppDispatch();
     const nodes = useAppSelector((state) => state.interactiveMapSlice.nodes);
@@ -125,7 +127,7 @@ const InteractiveMap = () => {
         });
         setTimeout(() => {
             dispatch(setBlockCardClick(false));
-        }, 100);
+        }, 50);
     };
 
     const handleWheel = (e: KonvaEventObject<WheelEvent>) => {
@@ -238,12 +240,12 @@ const InteractiveMap = () => {
 
     return (
         <div className='flow'>
-            {isNodesLoading || isNodeUpdating || isNodeCreating ? <div className='flow-spinner'><BarLoader color='#FF7A7A' width="100%"/></div> : null}
+            {isNodesLoading || isNodeUpdating || isNodeCreating || isNodeDeleting ? <div className='flow-spinner'><BarLoader color='#FF7A7A' width="100%"/></div> : null}
             {<Stage
                 width={window.innerWidth}
                 height={window.innerHeight}
                 x={70}
-                y={50}
+                y={90}
                 ref={stageRef}
                 onWheel={handleWheel}
                 draggable
@@ -270,7 +272,9 @@ const InteractiveMap = () => {
 
                                         >
                                             <FlowCardContainer
+                                                id={node.id}
                                                 stageRef={stageRef}
+                                                canBeEntryPoint={node.type === "Note" ? false : true}
                                                 isEntryPoint={node.isEntryPoint}
                                                 onMouseDown={(e) => {
                                                     if (e.button === 0) {
@@ -300,9 +304,11 @@ const InteractiveMap = () => {
                             x: 0,
                             y: 0,
                             zIndex: nodes.length + 1,
-                            isEntryPoint: false,
+                            isEntryPoint: nodes.length === 0 ? true : false,
                             isBinded: false,
                             bindedTo: null
+                        }).then(() => {
+                            refetch().then((res) => res.data ? dispatch(setNodes(res.data)) : null);
                         });
                     }}>
                         <GoComment color='#2F71F0' size={20} />
@@ -316,9 +322,11 @@ const InteractiveMap = () => {
                             x: 0,
                             y: 0,
                             zIndex: nodes.length + 1,
-                            isEntryPoint: false,
+                            isEntryPoint: nodes.length === 0 ? true : false,
                             isBinded: false,
                             bindedTo: null
+                        }).then(() => {
+                            refetch().then((res) => res.data ? dispatch(setNodes(res.data)) : null);
                         });
                     }}>
                         <GoRepoForked color='#4CE99E' size={20} />
@@ -332,9 +340,11 @@ const InteractiveMap = () => {
                             x: 0,
                             y: 0,
                             zIndex: nodes.length + 1,
-                            isEntryPoint: false,
+                            isEntryPoint: nodes.length === 0 ? true : false,
                             isBinded: false,
                             bindedTo: null
+                        }).then(() => {
+                            refetch().then((res) => res.data ? dispatch(setNodes(res.data)) : null);
                         });
                     }}>
                         <GoRocket color='#FFC93F' size={20} />
@@ -352,6 +362,8 @@ const InteractiveMap = () => {
                             isBinded: false,
                             bindedTo: null,
                             noteContent: ''
+                        }).then(() => {
+                            refetch().then((res) => res.data ? dispatch(setNodes(res.data)) : null);
                         });
                     }}>
                         <GoFile color='#6C9FFF' size={20} />
