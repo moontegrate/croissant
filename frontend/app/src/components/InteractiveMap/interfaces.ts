@@ -26,6 +26,7 @@ export interface InitialState {
     blockCardClick: boolean,
     dragId?: string,
     scale: number,
+    automation: string,
     nodes: NodeData[],
     arrows: ArrowData[]
 };

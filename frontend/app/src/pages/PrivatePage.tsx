@@ -28,7 +28,7 @@ const PrivatePage = () => {
                     
                     <Route path="/" element={<MainPageLayout />} />
                     <Route path="/automations" element={<AutomationsPageLayout />} />
-                    <Route path="/builder" element={<BuilderPageLayout />} />
+                    <Route path="/builder/:automationId" element={<BuilderPageLayout />} />
                 </Routes>
             </Suspense>
         </>

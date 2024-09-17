@@ -20,6 +20,7 @@ const NoteCardModal = () => {
     const isModalOpen = useAppSelector((state) => state.NoteCardModalSlice.isModalOpen);
     const node = useAppSelector((state) => state.NoteCardModalSlice.node);
     const nodes = useAppSelector((state) => state.interactiveMapSlice.nodes);
+    const automation = useAppSelector((state) => state.interactiveMapSlice.automation);
 
     return (
         <Modal
@@ -30,7 +31,10 @@ const NoteCardModal = () => {
             onClose={() => {
                 dispatch(setIsModalOpen(false));
                 dispatch(setNodes([...nodes, node!]))
-                updateNode(node!).then(() => dispatch(setNode(null)))
+                updateNode({
+                    automation: automation,
+                    node: node!
+                }).then(() => dispatch(setNode(null)))
             }}
         >
             <Modal.Header className='pb-0'>

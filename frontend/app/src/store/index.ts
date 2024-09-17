@@ -2,6 +2,7 @@ import { configureStore } from '@reduxjs/toolkit';
 
 import { apiSlice } from '../api/apiSlice';
 import appSlice from '../components/App/appSlice';
+import automationsSlice from '../pages/layouts/automations/automationsSlice';
 import automationsSidebarSlice from '../components/AutomationsSidebar/automationsSidebarSlice';
 import interactiveMapSlice from '../components/InteractiveMap/interactiveMapSlice';
 import NoteCardModalSlice from '../components/NoteCardModal/NoteCardModalSlice';
@@ -9,6 +10,7 @@ import NoteCardModalSlice from '../components/NoteCardModal/NoteCardModalSlice';
 const store = configureStore({
     reducer: {
         appSlice,
+        automationsSlice,
         automationsSidebarSlice,
         interactiveMapSlice,
         NoteCardModalSlice,

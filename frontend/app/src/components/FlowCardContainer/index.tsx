@@ -5,7 +5,7 @@ import { GoCopy, GoSingleSelect, GoTrash, GoTriangleRight } from "react-icons/go
 import { CardContainerProps } from "./interfaces";
 
 // Redux
-import { useAppDispatch } from "../../hooks/state";
+import { useAppDispatch, useAppSelector } from "../../hooks/state";
 import { setScale, setNodes } from "../InteractiveMap/interactiveMapSlice";
 
 // Hooks
@@ -18,6 +18,8 @@ const FlowCardContainer: React.FC<CardContainerProps> = ({children, id, stageRef
     const dispatch = useAppDispatch();
     const [showFloatingMenu, setShowFloatingMenu] = useState<boolean>(false);
 
+    const automation = useAppSelector((state) => state.interactiveMapSlice.automation);
+
     const {
         data = [],
         isFetching,
@@ -26,7 +28,7 @@ const FlowCardContainer: React.FC<CardContainerProps> = ({children, id, stageRef
         isError,
         error,
         refetch
-    } = useGetNodesQuery();
+    } = useGetNodesQuery(automation);
     const [deleteNode, {isLoading: isNodeDeleting}] = useDeleteNodeMutation();
 
     return (
@@ -62,7 +64,10 @@ const FlowCardContainer: React.FC<CardContainerProps> = ({children, id, stageRef
                     <div
                         className="flow-card__floating-menu-btn"
                         onClick={() => {
-                            deleteNode(id);
+                            deleteNode({
+                                automation: automation,
+                                nodeId: id
+                            });
                             refetch().then((res) => res.data ? dispatch(setNodes(res.data)) : null);
                         }}
                     >

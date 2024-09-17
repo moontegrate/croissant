@@ -27,10 +27,15 @@ import { renderCardBody } from './helpers';
 // Server
 import { useDeleteNodeMutation, useGetNodesQuery, useUpdateNodeMutation, useCreateNodeMutation } from '../../api/apiSlice';
 
+// Routing
+import { useNavigate } from 'react-router-dom';
+
 // Other libraries
 import { v4 as uuidv4 } from 'uuid';
 
-const InteractiveMap = () => {
+const InteractiveMap: React.FC<{automationId: string}> = (automationId) => {
+    const navigate = useNavigate();
+
     const {
         data = [],
         isFetching,
@@ -39,7 +44,10 @@ const InteractiveMap = () => {
         isError,
         error,
         refetch
-    } = useGetNodesQuery();
+    } = useGetNodesQuery(automationId.automationId);
+
+    if (isError) navigate('/error');
+
     const [updateNode, {isLoading: isNodeUpdating}] = useUpdateNodeMutation();
     const [createNode, {isLoading: isNodeCreating}] = useCreateNodeMutation();
     const [deleteNode, {isLoading: isNodeDeleting}] = useDeleteNodeMutation();
@@ -121,7 +129,7 @@ const InteractiveMap = () => {
     };
 
     const handleDragEnd = () => {
-        updateNode(nodes.find(i => i.id === dragId)!).then(() => {
+        updateNode({automation: automationId.automationId, node: nodes.find(i => i.id === dragId)!}).then(() => {
             dispatch(setIsDragging(false));
             dispatch(setDragId(undefined));
         });
@@ -299,14 +307,17 @@ const InteractiveMap = () => {
                     <div className='flow-control__add-modal_btn' onClick={() => {
                         dispatch(setIsAddModal(false));
                         createNode({
-                            id: uuidv4(),
-                            type: 'Message',
-                            x: 0,
-                            y: 0,
-                            zIndex: nodes.length + 1,
-                            isEntryPoint: nodes.length === 0 ? true : false,
-                            isBinded: false,
-                            bindedTo: null
+                            automation: automationId.automationId,
+                            node: {
+                                id: uuidv4(),
+                                type: 'Message',
+                                x: 0,
+                                y: 0,
+                                zIndex: nodes.length + 1,
+                                isEntryPoint: nodes.length === 0 ? true : false,
+                                isBinded: false,
+                                bindedTo: null
+                            }
                         }).then(() => {
                             refetch().then((res) => res.data ? dispatch(setNodes(res.data)) : null);
                         });
@@ -317,14 +328,17 @@ const InteractiveMap = () => {
                     <div className='flow-control__add-modal_btn' onClick={() => {
                         dispatch(setIsAddModal(false));
                         createNode({
-                            id: uuidv4(),
-                            type: 'Condition',
-                            x: 0,
-                            y: 0,
-                            zIndex: nodes.length + 1,
-                            isEntryPoint: nodes.length === 0 ? true : false,
-                            isBinded: false,
-                            bindedTo: null
+                            automation: automationId.automationId,
+                            node: {
+                                id: uuidv4(),
+                                type: 'Condition',
+                                x: 0,
+                                y: 0,
+                                zIndex: nodes.length + 1,
+                                isEntryPoint: nodes.length === 0 ? true : false,
+                                isBinded: false,
+                                bindedTo: null
+                            }
                         }).then(() => {
                             refetch().then((res) => res.data ? dispatch(setNodes(res.data)) : null);
                         });
@@ -335,14 +349,17 @@ const InteractiveMap = () => {
                     <div className='flow-control__add-modal_btn' onClick={() => {
                         dispatch(setIsAddModal(false));
                         createNode({
-                            id: uuidv4(),
-                            type: 'Action',
-                            x: 0,
-                            y: 0,
-                            zIndex: nodes.length + 1,
-                            isEntryPoint: nodes.length === 0 ? true : false,
-                            isBinded: false,
-                            bindedTo: null
+                            automation: automationId.automationId,
+                            node: {
+                                id: uuidv4(),
+                                type: 'Action',
+                                x: 0,
+                                y: 0,
+                                zIndex: nodes.length + 1,
+                                isEntryPoint: nodes.length === 0 ? true : false,
+                                isBinded: false,
+                                bindedTo: null
+                            }
                         }).then(() => {
                             refetch().then((res) => res.data ? dispatch(setNodes(res.data)) : null);
                         });
@@ -353,15 +370,18 @@ const InteractiveMap = () => {
                     <div className='flow-control__add-modal_btn' onClick={() => {
                         dispatch(setIsAddModal(false));
                         createNode({
-                            id: uuidv4(),
-                            type: 'Note',
-                            x: 0,
-                            y: 0,
-                            zIndex: nodes.length + 1,
-                            isEntryPoint: false,
-                            isBinded: false,
-                            bindedTo: null,
-                            noteContent: ''
+                            automation: automationId.automationId,
+                            node: {
+                                id: uuidv4(),
+                                type: 'Note',
+                                x: 0,
+                                y: 0,
+                                zIndex: nodes.length + 1,
+                                isEntryPoint: false,
+                                isBinded: false,
+                                bindedTo: null,
+                                noteContent: ''
+                            }
                         }).then(() => {
                             refetch().then((res) => res.data ? dispatch(setNodes(res.data)) : null);
                         });
