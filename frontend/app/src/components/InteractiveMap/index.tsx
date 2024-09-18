@@ -14,7 +14,7 @@ import { ArrowData, NodeData } from './interfaces';
 
 // Redux
 import { useAppDispatch, useAppSelector } from '../../hooks/state';
-import { setArrows, setBlockCardClick, setDragId, setIsDragging, setIsBinding, setBindingFrom, setIsAddModal, setNodes, setScale } from './interactiveMapSlice';
+import { setArrows, setBlockCardClick, setDragId, setIsDragging, setIsBinding, setBindingFrom, setIsAddModal, setNodes, setScale, setAutomationId } from './interactiveMapSlice';
 
 // Map library
 import { Group, Layer, Stage, Arrow } from 'react-konva';
@@ -28,25 +28,14 @@ import { renderCardBody } from './helpers';
 import { useDeleteNodeMutation, useGetAutomationNodesQuery, useUpdateNodeMutation, useCreateNodeMutation } from '../../api/apiSlice';
 
 // Routing
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 // Other libraries
 import { v4 as uuidv4 } from 'uuid';
 
-const InteractiveMap: React.FC<{automationId: string}> = (automationId) => {
+const InteractiveMap= () => {
     const navigate = useNavigate();
-
-    const {
-        data,
-        isFetching: isNodesFetching,
-        isLoading: isNodesLoading,
-        isSuccess,
-        isError,
-        error,
-        refetch
-    } = useGetAutomationNodesQuery(automationId.automationId);
-
-    if (isError) navigate('/error');
+    const { automationId } = useParams();
 
     const [updateNode, {isLoading: isNodeUpdating}] = useUpdateNodeMutation();
     const [createNode, {isLoading: isNodeCreating}] = useCreateNodeMutation();
@@ -65,9 +54,38 @@ const InteractiveMap: React.FC<{automationId: string}> = (automationId) => {
 
     const stageRef = useRef<any>(null);
 
+    const {
+        data,
+        isFetching: isNodesFetching,
+        isLoading: isNodesLoading,
+        isSuccess,
+        isError,
+        error,
+        refetch
+    } = useGetAutomationNodesQuery(automationId!);
+
+    if (isError) navigate('/error');
+
     useEffect(() => {
-        if (data) dispatch(setNodes(data));
-    }, [isNodesLoading, isNodesFetching]);
+        refetch().then((res) => {
+            dispatch(setNodes(res.data!))
+        });
+    }, []);
+
+    useEffect(() => {
+        return () => {
+            dispatch(setNodes([]));
+            dispatch(setAutomationId(""));
+        };
+    }, []);
+
+    useEffect(() => {
+        document.addEventListener('mousemove', handleDragMove);
+
+        return () => {
+            document.removeEventListener('mousemove', handleDragMove);
+        };
+    }, [isDragging, dragId, nodes, dispatch, scale]);
 
     const handleDragMove = (e: MouseEvent) => {
         if (isDragging && dragId !== null) {
@@ -96,20 +114,6 @@ const InteractiveMap: React.FC<{automationId: string}> = (automationId) => {
             dispatch(setNodes(newNodes));
         };
     };
-
-    useEffect(() => {
-        return () => {
-            dispatch(setNodes([]));
-        };
-    }, []);
-
-    useEffect(() => {
-        document.addEventListener('mousemove', handleDragMove);
-
-        return () => {
-            document.removeEventListener('mousemove', handleDragMove);
-        };
-    }, [isDragging, dragId, nodes, dispatch, scale]);
 
     const handleDragStart = (id: string) => {
         dispatch(setIsDragging(true));
@@ -228,7 +232,7 @@ const InteractiveMap: React.FC<{automationId: string}> = (automationId) => {
             stage.scale({ x: 0.5, y: 0.5 });
             dispatch(setScale(scale));
         };
-        stage.position({ x: offsetX + 50, y: 50 });
+        stage.position({ x: offsetX + 50, y: 100 });
         stage.batchDraw();
     };
 
@@ -286,10 +290,9 @@ const InteractiveMap: React.FC<{automationId: string}> = (automationId) => {
 
                                         >
                                             <FlowCardContainer
-                                                id={node.id}
+                                                node={node}
                                                 stageRef={stageRef}
                                                 canBeEntryPoint={node.type === "Note" ? false : true}
-                                                isEntryPoint={node.isEntryPoint}
                                                 onMouseDown={(e) => {
                                                     if (e.button === 0) {
                                                         handleDragStart(node.id);
@@ -317,7 +320,7 @@ const InteractiveMap: React.FC<{automationId: string}> = (automationId) => {
                             type: 'Message',
                             x: 0,
                             y: 0,
-                            automation: automationId.automationId,
+                            automation: automationId!,
                             zIndex: nodes.length + 1,
                             isEntryPoint: nodes.length === 0 ? true : false,
                             isBinded: false,
@@ -333,7 +336,7 @@ const InteractiveMap: React.FC<{automationId: string}> = (automationId) => {
                         dispatch(setIsAddModal(false));
                         createNode({
                             id: uuidv4(),
-                            automation: automationId.automationId,
+                            automation: automationId!,
                             type: 'Condition',
                             x: 0,
                             y: 0,
@@ -352,7 +355,7 @@ const InteractiveMap: React.FC<{automationId: string}> = (automationId) => {
                         dispatch(setIsAddModal(false));
                         createNode({
                             id: uuidv4(),
-                            automation: automationId.automationId,
+                            automation: automationId!,
                             type: 'Action',
                             x: 0,
                             y: 0,
@@ -371,7 +374,7 @@ const InteractiveMap: React.FC<{automationId: string}> = (automationId) => {
                         dispatch(setIsAddModal(false));
                         createNode({
                             id: uuidv4(),
-                            automation: automationId.automationId,
+                            automation: automationId!,
                             type: 'Note',
                             x: 0,
                             y: 0,

@@ -69,13 +69,13 @@ const AutomationsSidebar = () => {
                     <GoPlus className='automations-sidebar__add'/>
                 </div>
                 <div className='automations-sidebar__group-items'>
-                    {accounts.map((i) => {
+                    {accounts.map((account, i) => {
                         return (
-                            <div className='automations-sidebar__btn'>
+                            <div key={i} className='automations-sidebar__btn'>
                                 <div className='automations-sidebar__btn-avatar'>
-                                    <img src={i.img} alt='icon'/>
+                                    <img src={account.img} alt='icon'/>
                                 </div>
-                                <div className='automations-sidebar__btn-title'>{i.name}</div>
+                                <div className='automations-sidebar__btn-title'>{account.name}</div>
                             </div>
                         );
                     })}

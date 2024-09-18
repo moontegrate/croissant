@@ -5,7 +5,6 @@ import { GoChevronLeft } from "react-icons/go";
 // Hooks
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAppSelector } from "../../../hooks/state";
 
 // Metadata
 import { Helmet } from "react-helmet-async";
@@ -17,16 +16,23 @@ import NoteCardModal from '../../../components/NoteCardModal';
 // Routing
 import { useParams } from 'react-router-dom';
 
+// Redux
+import { useAppDispatch, useAppSelector } from '../../../hooks/state';
+import { setAutomationId } from '../../../components/InteractiveMap/interactiveMapSlice';
+
 const BuilderPageLayout = () => {
     const { automationId } = useParams();
     const navigate = useNavigate();
+    const dispatch = useAppDispatch();
 
     const isAuthenticated = useAppSelector((state) => state.appSlice.isAuthenticated);
 
     useEffect(() => {
         if (!isAuthenticated) {
             navigate('/signin');
-        }
+        };
+
+        dispatch(setAutomationId(automationId!));
     // eslint-disable-next-line
     }, []);
 
@@ -46,7 +52,7 @@ const BuilderPageLayout = () => {
                 </div>
             </div>
             <NoteCardModal/>
-            <InteractiveMap automationId={automationId!}/>
+            <InteractiveMap/>
         </div>
     );
 };

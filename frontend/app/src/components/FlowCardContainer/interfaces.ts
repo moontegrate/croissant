@@ -1,11 +1,11 @@
 import { MouseEventHandler } from "react";
+import { NodeData } from "../InteractiveMap/interfaces";
 
 export interface CardContainerProps {
     children: JSX.Element,
-    id: string,
-    stageRef: React.MutableRefObject<any>,
+    node: NodeData,
     canBeEntryPoint: boolean,
-    isEntryPoint: boolean,
+    stageRef: React.MutableRefObject<any>,
     onMouseDown: MouseEventHandler<HTMLDivElement>,
     onMouseUp: MouseEventHandler<HTMLDivElement>
 };

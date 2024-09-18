@@ -12,24 +12,22 @@ import { setScale, setNodes } from "../InteractiveMap/interactiveMapSlice";
 import { useState } from "react";
 
 // Server
-import { useDeleteNodeMutation, useGetAutomationNodesQuery } from "../../api/apiSlice";
+import { useDeleteNodeMutation, useGetAutomationNodesQuery, useCreateNodeMutation } from "../../api/apiSlice";
 
-const FlowCardContainer: React.FC<CardContainerProps> = ({children, id, stageRef, canBeEntryPoint, isEntryPoint, onMouseDown, onMouseUp}) => {
+// Libraries
+import { v4 as uuidv4 } from 'uuid';
+
+const FlowCardContainer: React.FC<CardContainerProps> = ({children, node, stageRef, canBeEntryPoint, onMouseDown, onMouseUp}) => {
     const dispatch = useAppDispatch();
     const [showFloatingMenu, setShowFloatingMenu] = useState<boolean>(false);
 
     const automationId = useAppSelector((state) => state.interactiveMapSlice.automationId);
 
     const {
-        data,
-        isFetching,
-        isLoading: isNodesLoading,
-        isSuccess,
-        isError,
-        error,
         refetch
     } = useGetAutomationNodesQuery(automationId);
-    const [deleteNode, {isLoading: isNodeDeleting}] = useDeleteNodeMutation();
+    const [deleteNode] = useDeleteNodeMutation();
+    const [createNode] = useCreateNodeMutation();
 
     return (
         <div
@@ -39,7 +37,7 @@ const FlowCardContainer: React.FC<CardContainerProps> = ({children, id, stageRef
             {/* Card's top */}
             <div className="flow-card__top">
                 {/* "Entity point" shortcut */}
-                {isEntryPoint ? <div
+                {node.isEntryPoint ? <div
                     className="flow-card__entry-point"
                     onMouseDown={onMouseDown}
                     onMouseUp={onMouseUp}
@@ -55,22 +53,36 @@ const FlowCardContainer: React.FC<CardContainerProps> = ({children, id, stageRef
                     onMouseUp={onMouseUp}
                 >
                     {/* Button make entity point is not available for note card */}
-                    {canBeEntryPoint ? <div className="flow-card__floating-menu-btn"><GoSingleSelect/></div> : null}
+                    {canBeEntryPoint ? <button
+                            className="flow-card__floating-menu-btn"
+                            style={{
+                                opacity: node.isEntryPoint ? "0.2" : "1"
+                            }}
+                            disabled={node.isEntryPoint}
+                        >
+                            <GoSingleSelect/>
+                        </button> : null}
                     <button
                         className="flow-card__floating-menu-btn"
-                        disabled={isEntryPoint}
+                        onClick={() => {
+                            createNode({...node, id: uuidv4(), isEntryPoint: false, x: node.x + 100, y: node.y + 100});
+                            refetch().then((res) => res.data ? dispatch(setNodes(res.data)) : null);
+                        }}
                     >
                         <GoCopy/>
                     </button>
                     <button
                         className="flow-card__floating-menu-btn"
                         onClick={() => {
-                            if (!isEntryPoint) {
-                                deleteNode(id);
+                            if (!node.isEntryPoint) {
+                                deleteNode(node.id);
                                 refetch().then((res) => res.data ? dispatch(setNodes(res.data)) : null);
                             };
                         }}
-                        disabled={isEntryPoint}
+                        style={{
+                            opacity: node.isEntryPoint ? "0.2" : "1"
+                        }}
+                        disabled={node.isEntryPoint}
                     >
                         <GoTrash/>
                     </button>

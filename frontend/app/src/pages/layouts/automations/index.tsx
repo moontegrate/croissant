@@ -60,9 +60,9 @@ const AutomationsPageLayout = () => {
                 {isLoading || isFetching ? <div className='loading-spinner'><BarLoader color='#FF7A7A' width="100%"/></div> : null}
                 <h2 className='automations-page__title'>All automations <span>{automations.length}</span></h2>
                 <div className='automations-page__grid'>
-                    {automations.map((automation) => {
+                    {automations.map((automation, i) => {
                         return (
-                            <div className='automation' onClick={() => navigate(`/builder/${automation.id}`)}>
+                            <div key={i} className='automation' onClick={() => navigate(`/builder/${automation.id}`)}>
                                 <div className='automation__top'>
                                     <div className='automation__info'>
                                         <span className={automation.enabled ? 'automation__status automation__status-enabled' : 'automation__status'}></span>
