@@ -11,30 +11,30 @@ export const apiSlice = createApi({
         getAutomations: builder.query<AutomationData[], void>({
             query: () => "/automations"
         }),
-        getNodes: builder.query<NodeData[], string>({
-            query: (automation) => `/automations/${automation}/nodes`
+        getAutomationNodes: builder.query<NodeData[], string>({
+            query: (automationId) => `/nodes?automation=${automationId}`
         }),
-        updateNode: builder.mutation<void, {automation: string, node: NodeData}>({
-            query: ({automation, node}) => ({
-                url: `/automations/${automation}/nodes/${node.id}`,
+        updateNode: builder.mutation<void, NodeData>({
+            query: (node) => ({
+                url: `/nodes/${node.id}`,
                 method: "PUT",
-                body: node,
+                body: node
             })
         }),
-        createNode: builder.mutation<void, {automation: string, node: NodeData}>({
-            query: ({automation, node}) => ({
-                url: `/automations/${automation}/nodes/`,
+        createNode: builder.mutation<void, NodeData>({
+            query: (node) => ({
+                url: `/nodes/`,
                 method: "POST",
-                body: node,
+                body: node
             })
         }),
-        deleteNode: builder.mutation<void, {automation: string, nodeId: string}>({
-            query: ({automation, nodeId}) => ({
-                url: `/automations/${automation}/nodes/${nodeId}`,
+        deleteNode: builder.mutation<void, string>({
+            query: (nodeId) => ({
+                url: `/nodes/${nodeId}`,
                 method: "DELETE"
             })
         })
     })
 });
 
-export const { useDeleteNodeMutation, useGetAutomationsQuery, useGetNodesQuery, useUpdateNodeMutation, useCreateNodeMutation } = apiSlice;
+export const { useDeleteNodeMutation, useGetAutomationsQuery, useGetAutomationNodesQuery, useUpdateNodeMutation, useCreateNodeMutation } = apiSlice;

@@ -1,19 +1,51 @@
 {
-    "automations": [
-        {
-            "id": "f5588183-0ef8-416d-9444-d85010de9e8a",
-            "name": "MyFirstAutomation",
-            "account": "@lovattro",
-            "users": "0",
-            "conversion": "56%",
-            "nodes": []
-        }
-    ],
-    "arrows": [
-        {
-            "id": "1",
-            "from": 2,
-            "to": 3
-        }
-    ]
+  "automations": [
+    {
+      "id": "f5588183-0ef8-416d-9444-d85010de9e8a",
+      "name": "MyFirstAutomation",
+      "account": "@lovattro",
+      "users": "0",
+      "conversion": "56%",
+      "enabled": true
+    },
+    {
+      "id": "ae3a998e-43c0-47a8-af6f-7d29c69ac005",
+      "name": "SecondAutomation",
+      "account": "@lovattro",
+      "users": "0",
+      "conversion": "60%",
+      "enabled": false
+    }
+  ],
+  "nodes": [
+    {
+      "id": "0011313d-c306-4a3b-94a0-8381595ac9ad",
+      "type": "Condition",
+      "automation": "f5588183-0ef8-416d-9444-d85010de9e8a",
+      "x": 128,
+      "y": 168,
+      "zIndex": 2,
+      "isEntryPoint": true,
+      "isBinded": false,
+      "bindedTo": null
+    },
+    {
+      "id": "ecca5c22-c81d-4209-a047-741299f65659",
+      "automation": "ae3a998e-43c0-47a8-af6f-7d29c69ac005",
+      "type": "Action",
+      "x": 332,
+      "y": -37,
+      "zIndex": 1,
+      "isEntryPoint": true,
+      "isBinded": false,
+      "bindedTo": null
+    }
+  ],
+  "arrows": [
+    {
+      "id": "1",
+      "from": 2,
+      "to": 3
+    }
+  ]
 }

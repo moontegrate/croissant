@@ -12,23 +12,23 @@ import { setScale, setNodes } from "../InteractiveMap/interactiveMapSlice";
 import { useState } from "react";
 
 // Server
-import { useDeleteNodeMutation, useGetNodesQuery } from "../../api/apiSlice";
+import { useDeleteNodeMutation, useGetAutomationNodesQuery } from "../../api/apiSlice";
 
 const FlowCardContainer: React.FC<CardContainerProps> = ({children, id, stageRef, canBeEntryPoint, isEntryPoint, onMouseDown, onMouseUp}) => {
     const dispatch = useAppDispatch();
     const [showFloatingMenu, setShowFloatingMenu] = useState<boolean>(false);
 
-    const automation = useAppSelector((state) => state.interactiveMapSlice.automation);
+    const automationId = useAppSelector((state) => state.interactiveMapSlice.automationId);
 
     const {
-        data = [],
+        data,
         isFetching,
         isLoading: isNodesLoading,
         isSuccess,
         isError,
         error,
         refetch
-    } = useGetNodesQuery(automation);
+    } = useGetAutomationNodesQuery(automationId);
     const [deleteNode, {isLoading: isNodeDeleting}] = useDeleteNodeMutation();
 
     return (
@@ -56,23 +56,24 @@ const FlowCardContainer: React.FC<CardContainerProps> = ({children, id, stageRef
                 >
                     {/* Button make entity point is not available for note card */}
                     {canBeEntryPoint ? <div className="flow-card__floating-menu-btn"><GoSingleSelect/></div> : null}
-                    <div
+                    <button
                         className="flow-card__floating-menu-btn"
+                        disabled={isEntryPoint}
                     >
                         <GoCopy/>
-                    </div>
-                    <div
+                    </button>
+                    <button
                         className="flow-card__floating-menu-btn"
                         onClick={() => {
-                            deleteNode({
-                                automation: automation,
-                                nodeId: id
-                            });
-                            refetch().then((res) => res.data ? dispatch(setNodes(res.data)) : null);
+                            if (!isEntryPoint) {
+                                deleteNode(id);
+                                refetch().then((res) => res.data ? dispatch(setNodes(res.data)) : null);
+                            };
                         }}
+                        disabled={isEntryPoint}
                     >
                         <GoTrash/>
-                    </div>
+                    </button>
                 </div> : null}
             </div>
             <div

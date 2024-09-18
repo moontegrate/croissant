@@ -37,9 +37,9 @@ const BuilderPageLayout = () => {
                 <title>Builder</title>
             </Helmet>
             <div className="builder-page__nav">
-                <div className="builder-page__nav-btn" onClick={() => navigate('/automations')}>
+                <button className="builder-page__nav-btn" onClick={() => navigate('/automations')}>
                     <GoChevronLeft size={25}/>
-                </div>
+                </button>
                 <div className="builder-page__nav-info">
                     <div className="builder-page__nav-title">Map name</div>
                     <div className="builder-page__nav-subtitle">flow name</div>

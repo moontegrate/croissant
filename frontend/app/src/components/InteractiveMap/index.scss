@@ -4,12 +4,6 @@
     overflow: hidden;
     user-select: none;
 
-    &-spinner {
-        position: absolute;
-        z-index: 11;
-        width: 100%;
-    }
-
     &-control {
         position: fixed;
         z-index: 10;
@@ -148,6 +142,7 @@
             background-color: white;
 
             &-btn {
+                cursor: pointer;
                 width: 25px;
                 display: flex;
                 justify-content: center;

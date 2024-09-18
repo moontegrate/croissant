@@ -1,0 +1,126 @@
+@import '../../../style/variables.scss';
+
+.automations-page {
+    display: flex;
+    width: 100%;
+
+    &__title {
+        margin-bottom: 20px;
+        font-weight: 700;
+        font-size: 24px;
+
+        span {
+            color: $light-gray-text;
+        }
+    }
+
+    &__content {
+        position: relative;
+        width: 100%;
+        padding: 30px;
+    }
+
+    &__grid {
+        display: grid;
+        gap: 15px;
+        grid-auto-rows: auto;
+    }
+}
+
+.automation {
+    cursor: pointer;
+    padding: 10px 15px;
+    border: 1px solid $border-color;
+    border-radius: 10px;
+    width: 300px;
+
+    &__top, &__info {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    &__top {
+        margin-bottom: 15px;
+        justify-content: space-between;
+    }
+
+    &__status {
+        display: block;
+        height: 7px;
+        width: 7px;
+        border-radius: 50%;
+        background-color: rgb(209, 209, 209);
+
+        &-enabled {
+            background-color: rgb(63, 223, 111);
+        }
+    }
+
+    &__title {
+        font-weight: 700;
+        font-size: 14px;
+    }
+
+    &__menu {
+        &-btn {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 3px;
+            height: 20px;
+
+            span {
+                display: block;
+                border-radius: 50%;
+                height: 3px;
+                width: 3px;
+                background-color: rgb(196, 196, 196);
+            }
+
+            &:hover {
+                span {
+                    background-color: $main-color;
+                }
+            }
+        }
+    }
+
+    &__content {
+        &-main {
+            margin-bottom: 15px;
+            display: flex;
+            gap: 15px;
+
+            &-title {
+                font-size: 12px;
+                color: $light-gray-text;
+                line-height: 1;
+            }
+
+            &-value {
+                font-size: 20px;
+                font-weight: 700;
+            }
+        }
+    }
+
+    &__account {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        &-icon {
+            img {
+                height: 20px;
+                width: 20px;
+                border-radius: 50%;
+            }
+        }
+
+        &-name {
+            color: $light-gray-text;
+            font-size: 14px;
+        }
+    }
+}

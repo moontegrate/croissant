@@ -1,12 +1,13 @@
 export interface NodeData {
     id: string;
+    automation: string,
     type: string;
     x: number;
     y: number;
     zIndex: number;
     isEntryPoint: boolean;
     isBinded: boolean;
-    bindedTo: number | null;
+    bindedTo: number | null,
     noteContent?: string;
 };
 
@@ -26,7 +27,7 @@ export interface InitialState {
     blockCardClick: boolean,
     dragId?: string,
     scale: number,
-    automation: string,
+    automationId: string,
     nodes: NodeData[],
     arrows: ArrowData[]
 };

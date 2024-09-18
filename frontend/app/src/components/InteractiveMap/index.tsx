@@ -25,7 +25,7 @@ import { KonvaEventObject } from 'konva/lib/Node';
 import { renderCardBody } from './helpers';
 
 // Server
-import { useDeleteNodeMutation, useGetNodesQuery, useUpdateNodeMutation, useCreateNodeMutation } from '../../api/apiSlice';
+import { useDeleteNodeMutation, useGetAutomationNodesQuery, useUpdateNodeMutation, useCreateNodeMutation } from '../../api/apiSlice';
 
 // Routing
 import { useNavigate } from 'react-router-dom';
@@ -37,14 +37,14 @@ const InteractiveMap: React.FC<{automationId: string}> = (automationId) => {
     const navigate = useNavigate();
 
     const {
-        data = [],
-        isFetching,
+        data,
+        isFetching: isNodesFetching,
         isLoading: isNodesLoading,
         isSuccess,
         isError,
         error,
         refetch
-    } = useGetNodesQuery(automationId.automationId);
+    } = useGetAutomationNodesQuery(automationId.automationId);
 
     if (isError) navigate('/error');
 
@@ -66,8 +66,8 @@ const InteractiveMap: React.FC<{automationId: string}> = (automationId) => {
     const stageRef = useRef<any>(null);
 
     useEffect(() => {
-        dispatch(setNodes(data))
-    }, [isNodesLoading]);
+        if (data) dispatch(setNodes(data));
+    }, [isNodesLoading, isNodesFetching]);
 
     const handleDragMove = (e: MouseEvent) => {
         if (isDragging && dragId !== null) {
@@ -96,6 +96,12 @@ const InteractiveMap: React.FC<{automationId: string}> = (automationId) => {
             dispatch(setNodes(newNodes));
         };
     };
+
+    useEffect(() => {
+        return () => {
+            dispatch(setNodes([]));
+        };
+    }, []);
 
     useEffect(() => {
         document.addEventListener('mousemove', handleDragMove);
@@ -129,7 +135,7 @@ const InteractiveMap: React.FC<{automationId: string}> = (automationId) => {
     };
 
     const handleDragEnd = () => {
-        updateNode({automation: automationId.automationId, node: nodes.find(i => i.id === dragId)!}).then(() => {
+        updateNode(nodes.find(i => i.id === dragId)!).then(() => {
             dispatch(setIsDragging(false));
             dispatch(setDragId(undefined));
         });
@@ -248,12 +254,12 @@ const InteractiveMap: React.FC<{automationId: string}> = (automationId) => {
 
     return (
         <div className='flow'>
-            {isNodesLoading || isNodeUpdating || isNodeCreating || isNodeDeleting ? <div className='flow-spinner'><BarLoader color='#FF7A7A' width="100%"/></div> : null}
+            {isNodesLoading || isNodeUpdating || isNodeCreating || isNodeDeleting ? <div className='loading-spinner'><BarLoader color='#FF7A7A' width="100%"/></div> : null}
             {<Stage
                 width={window.innerWidth}
                 height={window.innerHeight}
                 x={70}
-                y={90}
+                y={140}
                 ref={stageRef}
                 onWheel={handleWheel}
                 draggable
@@ -304,100 +310,92 @@ const InteractiveMap: React.FC<{automationId: string}> = (automationId) => {
             </Stage>}
             <div className='flow-control'>
                 <div className='flow-control__add-modal' style={{ "display": isAddModal ? "flex" : "none" }}>
-                    <div className='flow-control__add-modal_btn' onClick={() => {
+                    <button className='flow-control__add-modal_btn' onClick={() => {
                         dispatch(setIsAddModal(false));
                         createNode({
+                            id: uuidv4(),
+                            type: 'Message',
+                            x: 0,
+                            y: 0,
                             automation: automationId.automationId,
-                            node: {
-                                id: uuidv4(),
-                                type: 'Message',
-                                x: 0,
-                                y: 0,
-                                zIndex: nodes.length + 1,
-                                isEntryPoint: nodes.length === 0 ? true : false,
-                                isBinded: false,
-                                bindedTo: null
-                            }
+                            zIndex: nodes.length + 1,
+                            isEntryPoint: nodes.length === 0 ? true : false,
+                            isBinded: false,
+                            bindedTo: null
                         }).then(() => {
                             refetch().then((res) => res.data ? dispatch(setNodes(res.data)) : null);
                         });
                     }}>
                         <GoComment color='#2F71F0' size={20} />
                         Message
-                    </div>
-                    <div className='flow-control__add-modal_btn' onClick={() => {
+                    </button>
+                    <button className='flow-control__add-modal_btn' onClick={() => {
                         dispatch(setIsAddModal(false));
                         createNode({
+                            id: uuidv4(),
                             automation: automationId.automationId,
-                            node: {
-                                id: uuidv4(),
-                                type: 'Condition',
-                                x: 0,
-                                y: 0,
-                                zIndex: nodes.length + 1,
-                                isEntryPoint: nodes.length === 0 ? true : false,
-                                isBinded: false,
-                                bindedTo: null
-                            }
+                            type: 'Condition',
+                            x: 0,
+                            y: 0,
+                            zIndex: nodes.length + 1,
+                            isEntryPoint: nodes.length === 0 ? true : false,
+                            isBinded: false,
+                            bindedTo: null
                         }).then(() => {
                             refetch().then((res) => res.data ? dispatch(setNodes(res.data)) : null);
                         });
                     }}>
                         <GoRepoForked color='#4CE99E' size={20} />
                         Condition
-                    </div>
-                    <div className='flow-control__add-modal_btn' onClick={() => {
+                    </button>
+                    <button className='flow-control__add-modal_btn' onClick={() => {
                         dispatch(setIsAddModal(false));
                         createNode({
+                            id: uuidv4(),
                             automation: automationId.automationId,
-                            node: {
-                                id: uuidv4(),
-                                type: 'Action',
-                                x: 0,
-                                y: 0,
-                                zIndex: nodes.length + 1,
-                                isEntryPoint: nodes.length === 0 ? true : false,
-                                isBinded: false,
-                                bindedTo: null
-                            }
+                            type: 'Action',
+                            x: 0,
+                            y: 0,
+                            zIndex: nodes.length + 1,
+                            isEntryPoint: nodes.length === 0 ? true : false,
+                            isBinded: false,
+                            bindedTo: null
                         }).then(() => {
                             refetch().then((res) => res.data ? dispatch(setNodes(res.data)) : null);
                         });
                     }}>
                         <GoRocket color='#FFC93F' size={20} />
                         Action
-                    </div>
-                    <div className='flow-control__add-modal_btn' onClick={() => {
+                    </button>
+                    <button className='flow-control__add-modal_btn' onClick={() => {
                         dispatch(setIsAddModal(false));
                         createNode({
+                            id: uuidv4(),
                             automation: automationId.automationId,
-                            node: {
-                                id: uuidv4(),
-                                type: 'Note',
-                                x: 0,
-                                y: 0,
-                                zIndex: nodes.length + 1,
-                                isEntryPoint: false,
-                                isBinded: false,
-                                bindedTo: null,
-                                noteContent: ''
-                            }
+                            type: 'Note',
+                            x: 0,
+                            y: 0,
+                            zIndex: nodes.length + 1,
+                            isEntryPoint: false,
+                            isBinded: false,
+                            bindedTo: null,
+                            noteContent: ''
                         }).then(() => {
                             refetch().then((res) => res.data ? dispatch(setNodes(res.data)) : null);
                         });
                     }}>
                         <GoFile color='#6C9FFF' size={20} />
                         Note
-                    </div>
+                    </button>
                 </div>
-                <div className='flow-control__add' onClick={() => dispatch(setIsAddModal(isAddModal ? false : true))}>
+                <button className='flow-control__add' onClick={() => dispatch(setIsAddModal(isAddModal ? false : true))}>
                     <GoDuplicate color='white' size={25} />
-                </div>
-                <div className='flow-control__inc' onClick={() => handleScale('inc')}>+</div>
-                <div className='flow-control__dec' onClick={() => handleScale('dec')}>-</div>
-                <div className='flow-control__stack' onClick={fitNodesToScreen}>
+                </button>
+                <button className='flow-control__inc' onClick={() => handleScale('inc')}>+</button>
+                <button className='flow-control__dec' onClick={() => handleScale('dec')}>-</button>
+                <button className='flow-control__stack' onClick={fitNodesToScreen}>
                     <GoScreenNormal size={25} />
-                </div>
+                </button>
             </div>
         </div>
     );
