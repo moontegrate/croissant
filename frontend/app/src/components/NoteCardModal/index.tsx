@@ -14,7 +14,7 @@ import { setIsModalOpen, setNode } from './NoteCardModalSlice';
 import { useUpdateNodeMutation } from '../../api/apiSlice';
 
 const NoteCardModal = () => {
-    const [updateNode, {isLoading: isNodeUpdating}] = useUpdateNodeMutation();
+    const [updateNode] = useUpdateNodeMutation();
 
     const dispatch = useAppDispatch();
     const isModalOpen = useAppSelector((state) => state.NoteCardModalSlice.isModalOpen);

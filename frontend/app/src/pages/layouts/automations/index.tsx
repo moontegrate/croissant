@@ -24,9 +24,6 @@ const AutomationsPageLayout = () => {
     const {data = [],
         isFetching,
         isLoading,
-        isSuccess,
-        isError,
-        error,
         refetch
     } = useGetAutomationsQuery();
 

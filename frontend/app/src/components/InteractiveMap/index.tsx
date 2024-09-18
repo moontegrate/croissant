@@ -139,13 +139,12 @@ const InteractiveMap= () => {
     };
 
     const handleDragEnd = () => {
-        updateNode(nodes.find(i => i.id === dragId)!).then(() => {
-            dispatch(setIsDragging(false));
-            dispatch(setDragId(undefined));
-        });
+        updateNode(nodes.find(i => i.id === dragId)!);
+        dispatch(setIsDragging(false));
+        dispatch(setDragId(undefined));
         setTimeout(() => {
             dispatch(setBlockCardClick(false));
-        }, 50);
+        }, 10);
     };
 
     const handleWheel = (e: KonvaEventObject<WheelEvent>) => {

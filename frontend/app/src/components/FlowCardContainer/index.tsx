@@ -65,8 +65,9 @@ const FlowCardContainer: React.FC<CardContainerProps> = ({children, node, stageR
                     <button
                         className="flow-card__floating-menu-btn"
                         onClick={() => {
-                            createNode({...node, id: uuidv4(), isEntryPoint: false, x: node.x + 100, y: node.y + 100});
-                            refetch().then((res) => res.data ? dispatch(setNodes(res.data)) : null);
+                            createNode({...node, id: uuidv4(), isEntryPoint: false, x: node.x + 100, y: node.y + 100}).then(() => {
+                                refetch().then((res) => res.data ? dispatch(setNodes(res.data)) : null);
+                            });
                         }}
                     >
                         <GoCopy/>
