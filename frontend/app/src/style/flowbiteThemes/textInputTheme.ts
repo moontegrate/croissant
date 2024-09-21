@@ -14,7 +14,7 @@ export const textInputTheme = {
         "input": {
             "base": "block w-full border disabled:cursor-not-allowed disabled:opacity-50",
             "sizes": {
-                "sm": "py-1",
+                "sm": "py-1 text-[14px]",
                 "md": "p-2.5 text-sm",
                 "lg": "p-4 sm:text-base"
             },

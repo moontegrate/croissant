@@ -65,6 +65,16 @@ const AutomationsPageLayout = () => {
         // eslint-disable-next-line
     }, [isLoading, isFetching]);
 
+    const title = () => {
+        if (!groupsFilter) {
+            return "Without group";
+        } else if (groupsFilter === 'all') {
+            return "All automations";
+        } else {
+            return groupsFilter.toString();
+        };
+    };
+
     return (
         <div className="public-page automations-page">
             <Helmet>
@@ -74,7 +84,7 @@ const AutomationsPageLayout = () => {
             <AutomationsSidebar/>
             <div className='automations-page__content'>
                 {isLoading || isFetching ? <div className='loading-spinner'><BarLoader color='#FF7A7A' width="100%"/></div> : null}
-                <h2 className='automations-page__title'>All automations <span>{automations.length}</span></h2>
+                <h2 className='automations-page__title'>{title()} <span>{filteredAutomations.length}</span></h2>
                 <div className='automations-page__grid'>
                     {filteredAutomations.map((automation, i) => {
                         return (
@@ -91,12 +101,20 @@ const AutomationsPageLayout = () => {
                                         <span className={automation.enabled ? 'automation__status automation__status-enabled' : 'automation__status'}></span>
                                         <h4 className='automation__title'>{automation.name}</h4>
                                     </div>
-                                    <Dropdown className='automation__dropdown adbc' theme={verticalDropdownTheme} label="" dismissOnClick renderTrigger={() => <button className='automation__dropdown-trigger adbc'>
-                                            <span className='adbc'></span>
-                                            <span className='adbc'></span>
-                                            <span className='adbc'></span>
-                                        </button>}>
-                                        <Dropdown.Item className='automation__dropdown-item adbc'>
+                                    <Dropdown
+                                        className='vertical-dropdown automation__dropdown adbc'
+                                        theme={verticalDropdownTheme}
+                                        label=""
+                                        dismissOnClick
+                                        renderTrigger={() => 
+                                            <button className='three-dots-menu adbc'>
+                                                <span className='adbc'></span>
+                                                <span className='adbc'></span>
+                                                <span className='adbc'></span>
+                                            </button>
+                                        }
+                                    >
+                                        <Dropdown.Item className='vertical-dropdown__item automation__dropdown-item adbc'>
                                             <div className='adbc w-full flex gap-[7px]'>
                                                 <HiOutlinePower size={17}/>
                                                 Turn on
@@ -112,57 +130,61 @@ const AutomationsPageLayout = () => {
                                                     .then(() => {
                                                         refetch().then((res) => {
                                                             if (res.data) dispatch(setAutomations(res.data));
-                                                        })
+                                                        });
                                                     })
                                                 }}
                                                 checked={automation.enabled}
                                             />    
                                         </Dropdown.Item>
-                                        <Dropdown.Divider className='automation__dropdown-item adbc'/>
-                                        <Dropdown.Item className='automation__dropdown-item adbc'><GoDuplicate size={17}/>Duplicate</Dropdown.Item>
-                                        {groups.length > 0 ? <Dropdown.Item
-                                                className='automation__dropdown-item adbc'
+                                        <Dropdown.Divider className='adbc'/>
+                                        <Dropdown.Item className='vertical-dropdown__item automation__dropdown-item adbc'><GoDuplicate size={17}/>Duplicate</Dropdown.Item>
+                                        {groups.length > 0 ? 
+                                            <Dropdown.Item
+                                                className='vertical-dropdown__item adbc'
                                                 onMouseEnter={() => setIsMoveHover(true)}
                                                 onMouseLeave={() => setIsMoveHover(false)}
                                             >
-                                                <div
-                                                    className='adbc w-full flex gap-[7px]'
-                                                >
+                                                <div className='adbc w-full flex gap-[7px]'>
                                                     <GoMoveToEnd size={17}/>
                                                     Move to...
                                                 </div>
                                                 <GoChevronRight size={17}/>
-                                                {isMoveHover ? <div className='automation__dropdown-sublist'>
-                                                    {automation.group ? <div
-                                                        className='automation__dropdown-sublist-item adbc'
-                                                        onClick={() => updateAutomation({...automation, group: false})}
-                                                    >
-                                                        <GoFileDirectory size={17} className='automation__dropdown-sublist-item__icon adbc'/>
-                                                        All automations
-                                                    </div> : null}
-                                                    {groups.map((group, i) => {
-                                                        if (automation.group !== group.name) {
-                                                            return (
-                                                                <div
-                                                                    className='automation__dropdown-sublist-item adbc'
-                                                                    key={i}
-                                                                    onClick={() => updateAutomation({...automation, group: group.name})}
-                                                                >
-                                                                    <GoFileDirectory size={17} className='automation__dropdown-sublist-item__icon adbc'/>
-                                                                    {group.name}
-                                                                </div>
-                                                            );
-                                                        } else {
-                                                            return null;
-                                                        };
-                                                    })}
-                                                </div> : null}
-                                            </Dropdown.Item> : null}
-                                        <Dropdown.Item className='automation__dropdown-item adbc'><GoLink size={17}/>Bot link</Dropdown.Item>
-                                        <Dropdown.Item className='automation__dropdown-item adbc'><GoPeople size={17}/>Clients</Dropdown.Item>
-                                        <Dropdown.Item className='automation__dropdown-item adbc'><SlSettings size={17}/>Settings</Dropdown.Item>
-                                        <Dropdown.Divider className='automation__dropdown-item adbc'/>
-                                        <Dropdown.Item className='automation__dropdown-item text-red-500 adbc'><GoTrash color='red' size={17}/>Delete automation</Dropdown.Item>
+                                                {isMoveHover ?
+                                                    <div className='automation__dropdown-sublist'>
+                                                        {automation.group ?
+                                                            <div
+                                                                className='automation__dropdown-sublist-item adbc'
+                                                                onClick={() => updateAutomation({...automation, group: false})}
+                                                            >
+                                                                <GoFileDirectory size={17} className='automation__dropdown-sublist-item__icon adbc'/>
+                                                                All automations
+                                                            </div>
+                                                        : null}
+                                                        {groups.map((group, i) => {
+                                                            if (automation.group !== group.name) {
+                                                                return (
+                                                                    <div
+                                                                        className='automation__dropdown-sublist-item adbc'
+                                                                        key={i}
+                                                                        onClick={() => updateAutomation({...automation, group: group.name})}
+                                                                    >
+                                                                        <GoFileDirectory size={17} className='automation__dropdown-sublist-item__icon adbc'/>
+                                                                        {group.name}
+                                                                    </div>
+                                                                );
+                                                            } else {
+                                                                return null;
+                                                            };
+                                                        })}
+                                                    </div>
+                                                : null}
+                                            </Dropdown.Item>
+                                        : null}
+                                        <Dropdown.Item className='vertical-dropdown__item automation__dropdown-item adbc'><GoLink size={17}/>Bot link</Dropdown.Item>
+                                        <Dropdown.Item className='vertical-dropdown__item automation__dropdown-item adbc'><GoPeople size={17}/>Clients</Dropdown.Item>
+                                        <Dropdown.Item className='vertical-dropdown__item automation__dropdown-item adbc'><SlSettings size={17}/>Settings</Dropdown.Item>
+                                        <Dropdown.Divider className='adbc'/>
+                                        <Dropdown.Item className='vertical-dropdown__item automation__dropdown-item text-red-500 adbc'><GoTrash color='red' size={17}/>Delete</Dropdown.Item>
                                     </Dropdown>
                                 </div>
                                 <div className='automation__content'>

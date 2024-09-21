@@ -69,33 +69,8 @@
         border: 1px solid $border-color;
         border-radius: 10px;
 
-        &-trigger {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 3px;
-            height: 20px;
-
-            span {
-                display: block;
-                border-radius: 50%;
-                height: 3px;
-                width: 3px;
-                transition: .2s background-color;
-                background-color: rgb(196, 196, 196);
-            }
-
-            &:hover {
-                span {
-                    background-color: $main-color;
-                }
-            }
-        }
-
         &-item {
             position: relative;
-            display: flex;
-            gap: 7px;
         }
 
         &-sublist {

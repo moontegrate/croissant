@@ -15,7 +15,7 @@
       "account": "@lovattro",
       "users": "0",
       "conversion": "60%",
-      "group": "MySecondGroup",
+      "group": false,
       "enabled": false
     }
   ],
@@ -24,8 +24,8 @@
       "id": "0011313d-c306-4a3b-94a0-8381595ac9ad",
       "type": "Condition",
       "automation": "f5588183-0ef8-416d-9444-d85010de9e8a",
-      "x": 336.51279470911226,
-      "y": 338.0491207841762,
+      "x": 235.53628313770304,
+      "y": 272.7113780026761,
       "zIndex": 3,
       "isEntryPoint": true,
       "isBinded": false,
@@ -57,8 +57,8 @@
     {
       "id": "c1909701-4037-4165-bcef-ca03cd59403c",
       "type": "Message",
-      "x": 532.1786366395519,
-      "y": 180.9324575050624,
+      "x": 542.509260185764,
+      "y": 85.89574073197122,
       "automation": "f5588183-0ef8-416d-9444-d85010de9e8a",
       "zIndex": 3,
       "isEntryPoint": false,
@@ -69,8 +69,8 @@
       "id": "d28d2ae4-36d6-41a8-b843-92fa058cb824",
       "automation": "f5588183-0ef8-416d-9444-d85010de9e8a",
       "type": "Note",
-      "x": 628.254103401693,
-      "y": 453.5611357752977,
+      "x": 568.8561554185112,
+      "y": 394.1631877921159,
       "zIndex": 3,
       "isEntryPoint": false,
       "isBinded": false,
@@ -114,16 +114,12 @@
       "name": "MyFirstGroup"
     },
     {
-      "id": "wrge345",
-      "name": "MySecondGroup"
-    },
-    {
-      "id": "c2f28ece-59d1-46b8-a947-f04ff7c75d5a",
-      "name": "ergerg"
-    },
-    {
       "id": "29e7062f-8aec-4528-bd71-2351ab27e186",
       "name": "лото"
+    },
+    {
+      "id": "51905ddf-bd2b-454e-b7ed-d6f0b91c8bf0",
+      "name": "gfgbfgn"
     }
   ]
 }

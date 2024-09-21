@@ -32,6 +32,13 @@ export const apiSlice = createApi({
                 body: node
             })
         }),
+        updateAutomationGroup: builder.mutation<void, GroupData>({
+            query: (group) => ({
+                url: `/automation-groups/${group.id}`,
+                method: "PUT",
+                body: group
+            })
+        }),
         createNode: builder.mutation<void, NodeData>({
             query: (node) => ({
                 url: `/nodes/`,
@@ -55,7 +62,25 @@ export const apiSlice = createApi({
                 body: automation
             })
         }),
+        deleteAutomationGroup: builder.mutation<void, string>({
+            query: (groupId) => ({
+                url: `/automation-groups/${groupId}`,
+                method: "DELETE"
+            })
+        }),
     })
 });
 
-export const { useDeleteNodeMutation, useCreateAutomationGroupMutation, useGetAutomationsQuery, useGetAutomationQuery, useGetAutomationGroupsQuery, useGetAutomationNodesQuery, useUpdateNodeMutation, useUpdateAutomationMutation, useCreateNodeMutation } = apiSlice;
+export const {
+    useDeleteNodeMutation,
+    useDeleteAutomationGroupMutation,
+    useCreateAutomationGroupMutation,
+    useCreateNodeMutation,
+    useGetAutomationsQuery,
+    useGetAutomationQuery,
+    useGetAutomationGroupsQuery,
+    useGetAutomationNodesQuery,
+    useUpdateNodeMutation,
+    useUpdateAutomationMutation,
+    useUpdateAutomationGroupMutation
+} = apiSlice;
