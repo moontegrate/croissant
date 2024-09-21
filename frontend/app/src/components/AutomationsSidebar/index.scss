@@ -30,7 +30,11 @@
         &-items {
             display: flex;
             flex-direction: column;
-            gap: 5px;
+            gap: 3px;
+        }
+
+        &-icon {
+            min-width: 17px;
         }
     }
 

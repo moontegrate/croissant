@@ -14,7 +14,7 @@ import { ArrowData, NodeData } from './interfaces';
 
 // Redux
 import { useAppDispatch, useAppSelector } from '../../hooks/state';
-import { setArrows, setBlockCardClick, setDragId, setIsDragging, setIsBinding, setBindingFrom, setIsAddModal, setNodes, setScale, setAutomationId } from './interactiveMapSlice';
+import { setArrows, setBlockCardClick, setDragId, setIsDragging, setIsAddModal, setNodes, setScale, setAutomationId, setAutomationName } from './interactiveMapSlice';
 
 // Map library
 import { Group, Layer, Stage, Arrow } from 'react-konva';
@@ -25,7 +25,7 @@ import { KonvaEventObject } from 'konva/lib/Node';
 import { renderCardBody } from './helpers';
 
 // Server
-import { useDeleteNodeMutation, useGetAutomationNodesQuery, useUpdateNodeMutation, useCreateNodeMutation } from '../../api/apiSlice';
+import { useDeleteNodeMutation, useGetAutomationNodesQuery, useGetAutomationQuery, useUpdateNodeMutation, useCreateNodeMutation } from '../../api/apiSlice';
 
 // Routing
 import { useNavigate, useParams } from 'react-router-dom';
@@ -39,7 +39,7 @@ const InteractiveMap= () => {
 
     const [updateNode, {isLoading: isNodeUpdating}] = useUpdateNodeMutation();
     const [createNode, {isLoading: isNodeCreating}] = useCreateNodeMutation();
-    const [deleteNode, {isLoading: isNodeDeleting}] = useDeleteNodeMutation();
+    const [, {isLoading: isNodeDeleting}] = useDeleteNodeMutation();
 
     const dispatch = useAppDispatch();
     const nodes = useAppSelector((state) => state.interactiveMapSlice.nodes);
@@ -55,14 +55,15 @@ const InteractiveMap= () => {
     const stageRef = useRef<any>(null);
 
     const {
-        data,
-        isFetching: isNodesFetching,
         isLoading: isNodesLoading,
-        isSuccess,
         isError,
-        error,
         refetch
     } = useGetAutomationNodesQuery(automationId!);
+
+    const {
+        data: automation,
+        isSuccess
+    } = useGetAutomationQuery(automationId!);
 
     if (isError) navigate('/error');
 
@@ -70,13 +71,23 @@ const InteractiveMap= () => {
         refetch().then((res) => {
             dispatch(setNodes(res.data!))
         });
+        // eslint-disable-next-line
     }, []);
 
     useEffect(() => {
+        if (automation) dispatch(setAutomationName(automation.name));
+        // eslint-disable-next-line
+    }, [isSuccess]);
+
+    useEffect(() => {
+        dispatch(setAutomationId(automationId!));
+
         return () => {
             dispatch(setNodes([]));
             dispatch(setAutomationId(""));
+            dispatch(setAutomationName(""));
         };
+        // eslint-disable-next-line
     }, []);
 
     useEffect(() => {
@@ -85,7 +96,8 @@ const InteractiveMap= () => {
         return () => {
             document.removeEventListener('mousemove', handleDragMove);
         };
-    }, [isDragging, dragId, nodes, dispatch, scale]);
+        // eslint-disable-next-line
+    }, [isDragging, dragId, nodes]);
 
     const handleDragMove = (e: MouseEvent) => {
         if (isDragging && dragId !== null) {
@@ -219,7 +231,6 @@ const InteractiveMap= () => {
         const scale = Math.min(scaleX, scaleY);
 
         const offsetX = (containerWidth - nodesWidth * scale) / 2 - minX * scale;
-        const offsetY = (containerHeight - nodesHeight * scale) / 2 - minY * scale;
 
         if (scale < 4 && scale > 0.5) {
             stage.scale({ x: scale, y: scale });

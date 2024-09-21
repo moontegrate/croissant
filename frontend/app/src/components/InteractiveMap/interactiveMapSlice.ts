@@ -11,6 +11,7 @@ const initialState: InitialState = {
     dragId: undefined,
     scale: 1,
     automationId: "",
+    automationName: "",
     nodes: [],
     arrows: arrows.arrows
 };
@@ -26,6 +27,7 @@ const interactiveMapSlice = createSlice({
         setBlockCardClick: (state, action: PayloadAction<boolean>) => { state.blockCardClick = action.payload },
         setDragId: (state, action: PayloadAction<string | undefined>) => { state.dragId = action.payload },
         setAutomationId: (state, action: PayloadAction<string>) => { state.automationId = action.payload },
+        setAutomationName: (state, action: PayloadAction<string>) => { state.automationName = action.payload },
         setArrows: (state, action: PayloadAction<ArrowData[]>) => { state.arrows = action.payload },
         setNodes: (state, action: PayloadAction<NodeData[]>) => { state.nodes = action.payload },
         setScale: (state, action: PayloadAction<number>) => { state.scale = action.payload }
@@ -33,4 +35,4 @@ const interactiveMapSlice = createSlice({
 });
 
 export default interactiveMapSlice.reducer;
-export const { setArrows, setAutomationId, setBlockCardClick, setDragId, setIsDragging, setIsBinding, setBindingFrom, setIsAddModal, setNodes, setScale } = interactiveMapSlice.actions;
+export const { setArrows, setAutomationId, setAutomationName, setBlockCardClick, setDragId, setIsDragging, setIsBinding, setBindingFrom, setIsAddModal, setNodes, setScale } = interactiveMapSlice.actions;

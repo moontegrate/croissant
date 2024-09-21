@@ -6,6 +6,7 @@
       "account": "@lovattro",
       "users": "0",
       "conversion": "56%",
+      "group": false,
       "enabled": true
     },
     {
@@ -14,6 +15,7 @@
       "account": "@lovattro",
       "users": "0",
       "conversion": "60%",
+      "group": "MySecondGroup",
       "enabled": false
     }
   ],
@@ -22,9 +24,9 @@
       "id": "0011313d-c306-4a3b-94a0-8381595ac9ad",
       "type": "Condition",
       "automation": "f5588183-0ef8-416d-9444-d85010de9e8a",
-      "x": 436.5127947091124,
-      "y": 363.76340649846196,
-      "zIndex": 2,
+      "x": 336.51279470911226,
+      "y": 338.0491207841762,
+      "zIndex": 3,
       "isEntryPoint": true,
       "isBinded": false,
       "bindedTo": null
@@ -55,10 +57,10 @@
     {
       "id": "c1909701-4037-4165-bcef-ca03cd59403c",
       "type": "Message",
-      "x": 635.035779496695,
+      "x": 532.1786366395519,
       "y": 180.9324575050624,
       "automation": "f5588183-0ef8-416d-9444-d85010de9e8a",
-      "zIndex": 2,
+      "zIndex": 3,
       "isEntryPoint": false,
       "isBinded": false,
       "bindedTo": null
@@ -67,9 +69,9 @@
       "id": "d28d2ae4-36d6-41a8-b843-92fa058cb824",
       "automation": "f5588183-0ef8-416d-9444-d85010de9e8a",
       "type": "Note",
-      "x": 662.956484354074,
-      "y": 385.26113577529816,
-      "zIndex": 4,
+      "x": 628.254103401693,
+      "y": 453.5611357752977,
+      "zIndex": 3,
       "isEntryPoint": false,
       "isBinded": false,
       "bindedTo": null,
@@ -104,6 +106,24 @@
       "id": "1",
       "from": 2,
       "to": 3
+    }
+  ],
+  "automation-groups": [
+    {
+      "id": "werfvd23",
+      "name": "MyFirstGroup"
+    },
+    {
+      "id": "wrge345",
+      "name": "MySecondGroup"
+    },
+    {
+      "id": "c2f28ece-59d1-46b8-a947-f04ff7c75d5a",
+      "name": "ergerg"
+    },
+    {
+      "id": "29e7062f-8aec-4528-bd71-2351ab27e186",
+      "name": "лото"
     }
   ]
 }

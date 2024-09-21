@@ -28,6 +28,7 @@ export interface InitialState {
     dragId?: string,
     scale: number,
     automationId: string,
+    automationName: string,
     nodes: NodeData[],
     arrows: ArrowData[]
 };

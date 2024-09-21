@@ -13,26 +13,19 @@ import { Helmet } from "react-helmet-async";
 import InteractiveMap from "../../../components/InteractiveMap";
 import NoteCardModal from '../../../components/NoteCardModal';
 
-// Routing
-import { useParams } from 'react-router-dom';
-
 // Redux
-import { useAppDispatch, useAppSelector } from '../../../hooks/state';
-import { setAutomationId } from '../../../components/InteractiveMap/interactiveMapSlice';
+import { useAppSelector } from '../../../hooks/state';
 
 const BuilderPageLayout = () => {
-    const { automationId } = useParams();
     const navigate = useNavigate();
-    const dispatch = useAppDispatch();
 
     const isAuthenticated = useAppSelector((state) => state.appSlice.isAuthenticated);
+    const automation = useAppSelector((state) => state.interactiveMapSlice.automationName);
 
     useEffect(() => {
         if (!isAuthenticated) {
             navigate('/signin');
         };
-
-        dispatch(setAutomationId(automationId!));
     // eslint-disable-next-line
     }, []);
 
@@ -47,7 +40,7 @@ const BuilderPageLayout = () => {
                     <GoChevronLeft size={25}/>
                 </button>
                 <div className="builder-page__nav-info">
-                    <div className="builder-page__nav-title">Map name</div>
+                    <div className="builder-page__nav-title">{automation}</div>
                     <div className="builder-page__nav-subtitle">flow name</div>
                 </div>
             </div>

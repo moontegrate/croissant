@@ -7,6 +7,7 @@ export interface AutomationData {
     users: string,
     conversion: string,
     enabled: boolean,
+    group: string | boolean,
     nodes: NodeData[]
 };
 
