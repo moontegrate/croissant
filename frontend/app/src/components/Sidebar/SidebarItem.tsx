@@ -20,16 +20,18 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
     dropdown
 }) => {
     const [isItemHover, setIsItemHover] = useState<boolean | number>(false);
+
+    function handleClick(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+        const target = e.target as HTMLDivElement;
+        if (onClick && !target.classList.contains('sdbbc')) {
+            onClick();
+        };
+    };
     
     return (
         <div
             className={ focused? 'sidebar__item sidebar__item-focused' : focused === false ? 'sidebar__item sidebar__item-blur' : 'sidebar__item' }
-            onClick={(e) => {
-                const target = e.target as HTMLDivElement;
-                if (onClick && !target.classList.contains('sdbbc')) {
-                    onClick();
-                }
-            }}
+            onClick={handleClick}
             onMouseEnter={() => setIsItemHover(true)}
             onMouseLeave={() => setIsItemHover(false)}
         >

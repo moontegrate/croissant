@@ -1,9 +1,6 @@
 @import '../../../style/variables.scss';
 
 .automations-page {
-    display: flex;
-    width: 100%;
-
     &__title {
         margin-bottom: 20px;
         font-weight: 700;
@@ -69,13 +66,8 @@
         border: 1px solid $border-color;
         border-radius: 10px;
 
-        &-item {
-            position: relative;
-        }
-
         &-sublist {
             position: absolute;
-            top: -3px;
             left: 100%;
             background-color: white;
             border: 1px solid $border-color;

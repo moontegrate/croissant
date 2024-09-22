@@ -7,16 +7,17 @@ import Spinner from '../components/Spinner';
 import { lazy, Suspense } from "react";
 import { Route, Routes } from "react-router-dom";
 
-import MainNavigation from '../components/MainNavigation';
+import Navigation from '../components/Navigation';
 
 const MainPageLayout = lazy(() => import("./layouts/main"));
 const AutomationsPageLayout = lazy(() => import("./layouts/automations"));
 const BuilderPageLayout = lazy(() => import("./layouts/builder"));
+const TemplatesPageLayout = lazy(() => import("./layouts/templates"));
 
 const PrivatePage = () => {
     return (
         <>
-            <MainNavigation />
+            <Navigation />
             <Suspense
                 fallback={
                     <div className="page-loading-spinner">
@@ -25,10 +26,10 @@ const PrivatePage = () => {
                 }
             >
                 <Routes>
-                    
                     <Route path="/" element={<MainPageLayout />} />
                     <Route path="/automations" element={<AutomationsPageLayout />} />
                     <Route path="/builder/:automationId" element={<BuilderPageLayout />} />
+                    <Route path="/templates" element={<TemplatesPageLayout />} />
                 </Routes>
             </Suspense>
         </>

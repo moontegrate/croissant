@@ -8,7 +8,7 @@ import logo from './logo.svg';
 import { sidebarTheme } from '../../style/flowbiteThemes';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-const MainNavigation = () => {
+const Navigation = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -41,4 +41,4 @@ const MainNavigation = () => {
     );
 };
 
-export default MainNavigation;
+export default Navigation;

@@ -4,14 +4,16 @@ import { apiSlice } from '../api/apiSlice';
 import appSlice from '../components/App/appSlice';
 import automationsSlice from '../pages/layouts/automations/automationsSlice';
 import interactiveMapSlice from '../components/InteractiveMap/interactiveMapSlice';
-import NoteCardModalSlice from '../components/NoteCardModal/NoteCardModalSlice';
+import noteCardModalSlice from '../components/NoteCardModal/NoteCardModalSlice';
+import templatesSlice from '../pages/layouts/templates/templatesSlice';
 
 const store = configureStore({
     reducer: {
         appSlice,
         automationsSlice,
         interactiveMapSlice,
-        NoteCardModalSlice,
+        noteCardModalSlice,
+        templatesSlice,
         [apiSlice.reducerPath]: apiSlice.reducer
     },
     middleware: getDefaultMiddleware => getDefaultMiddleware().concat(apiSlice.middleware ),

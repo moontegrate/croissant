@@ -130,7 +130,7 @@ const AutomationsPageLayout = () => {
     };
 
     return (
-        <div className="public-page automations-page">
+        <div className="private-page automations-page">
             <Helmet>
                 <meta name="description" content="auto chat bot" />
                 <title>Automations</title>
@@ -143,7 +143,7 @@ const AutomationsPageLayout = () => {
                 </Sidebar.Group>
                 
                 <Sidebar.Group title='Ready-made templates'>
-                    <Sidebar.Item icon={<GoTable size={17} color='#FF7A7A'/>}>Choose template</Sidebar.Item>
+                    <Sidebar.Item icon={<GoTable size={17} color='#FF7A7A'/>} onClick={() => navigate('/templates')}>Choose template</Sidebar.Item>
                 </Sidebar.Group>
 
                 <Sidebar.Group

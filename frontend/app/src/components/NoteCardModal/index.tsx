@@ -17,8 +17,8 @@ const NoteCardModal = () => {
     const [updateNode] = useUpdateNodeMutation();
 
     const dispatch = useAppDispatch();
-    const isModalOpen = useAppSelector((state) => state.NoteCardModalSlice.isModalOpen);
-    const node = useAppSelector((state) => state.NoteCardModalSlice.node);
+    const isModalOpen = useAppSelector((state) => state.noteCardModalSlice.isModalOpen);
+    const node = useAppSelector((state) => state.noteCardModalSlice.node);
     const nodes = useAppSelector((state) => state.interactiveMapSlice.nodes);
 
     return (
