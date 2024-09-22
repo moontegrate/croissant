@@ -11,6 +11,20 @@ export interface AutomationData {
     nodes: NodeData[]
 };
 
+export interface GroupData {
+    id: string,
+    name: string
+};
+
+export interface AccountData {
+    id: string,
+    name: string,
+    img: string
+}
+
 export interface InitialState {
-    automations: AutomationData[]
+    accounts: AccountData[],
+    automations: AutomationData[],
+    groups: GroupData[],
+    groupsFilter: string | boolean
 };

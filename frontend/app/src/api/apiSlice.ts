@@ -2,13 +2,13 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 // Interfaces
 import { NodeData } from "../components/InteractiveMap/interfaces";
-import { AutomationData } from "../pages/layouts/automations/interfaces";
-import { GroupData } from "../components/AutomationsSidebar/interfaces";
+import { AccountData, AutomationData, GroupData } from "../pages/layouts/automations/interfaces";
 
 export const apiSlice = createApi({
     reducerPath: "api",
     baseQuery: fetchBaseQuery({baseUrl: "http://localhost:3001"}),
     endpoints: builder => ({
+        // Automations
         getAutomations: builder.query<AutomationData[], void>({
             query: () => "/automations"
         }),
@@ -25,20 +25,8 @@ export const apiSlice = createApi({
                 body: automation
             })
         }),
-        updateNode: builder.mutation<void, NodeData>({
-            query: (node) => ({
-                url: `/nodes/${node.id}`,
-                method: "PUT",
-                body: node
-            })
-        }),
-        updateAutomationGroup: builder.mutation<void, GroupData>({
-            query: (group) => ({
-                url: `/automation-groups/${group.id}`,
-                method: "PUT",
-                body: group
-            })
-        }),
+
+        // Nodes
         createNode: builder.mutation<void, NodeData>({
             query: (node) => ({
                 url: `/nodes/`,
@@ -52,9 +40,15 @@ export const apiSlice = createApi({
                 method: "DELETE"
             })
         }),
-        getAutomationGroups: builder.query<GroupData[], void>({
-            query: () => `/automation-groups`
+        updateNode: builder.mutation<void, NodeData>({
+            query: (node) => ({
+                url: `/nodes/${node.id}`,
+                method: "PUT",
+                body: node
+            })
         }),
+
+        // Groups
         createAutomationGroup: builder.mutation<void, GroupData>({
             query: (automation) => ({
                 url: `/automation-groups/`,
@@ -68,14 +62,30 @@ export const apiSlice = createApi({
                 method: "DELETE"
             })
         }),
+        getAutomationGroups: builder.query<GroupData[], void>({
+            query: () => `/automation-groups`
+        }),
+        updateAutomationGroup: builder.mutation<void, GroupData>({
+            query: (group) => ({
+                url: `/automation-groups/${group.id}`,
+                method: "PUT",
+                body: group
+            })
+        }),
+        
+        // Accounts
+        getAccounts: builder.query<AccountData[], void>({
+            query: () => `/accounts`
+        }),
     })
 });
 
 export const {
-    useDeleteNodeMutation,
-    useDeleteAutomationGroupMutation,
     useCreateAutomationGroupMutation,
     useCreateNodeMutation,
+    useDeleteNodeMutation,
+    useDeleteAutomationGroupMutation,
+    useGetAccountsQuery,
     useGetAutomationsQuery,
     useGetAutomationQuery,
     useGetAutomationGroupsQuery,

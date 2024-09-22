@@ -15,7 +15,7 @@
       "account": "@lovattro",
       "users": "0",
       "conversion": "60%",
-      "group": false,
+      "group": "MyFirstGroup",
       "enabled": false
     }
   ],
@@ -112,14 +112,23 @@
     {
       "id": "werfvd23",
       "name": "MyFirstGroup"
+    }
+  ],
+  "accounts": [
+    {
+      "id": "erfdfbfgbbx",
+      "name": "@lovattro",
+      "img": "https://www.redditstatic.com/avatars/defaults/v2/avatar_default_0.png"
     },
     {
-      "id": "29e7062f-8aec-4528-bd71-2351ab27e186",
-      "name": "лото"
+      "id": "43ergdfverg",
+      "name": "@test1",
+      "img": "https://www.redditstatic.com/avatars/defaults/v2/avatar_default_0.png"
     },
     {
-      "id": "51905ddf-bd2b-454e-b7ed-d6f0b91c8bf0",
-      "name": "gfgbfgn"
+      "id": "34tergfg34",
+      "name": "@test2",
+      "img": "https://www.redditstatic.com/avatars/defaults/v2/avatar_default_0.png"
     }
   ]
 }

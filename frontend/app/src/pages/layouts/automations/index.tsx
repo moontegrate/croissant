@@ -1,7 +1,22 @@
-// Style imports
+// Style
 import './index.scss';
-import { toggleSwitchTheme, verticalDropdownTheme } from '../../../style/flowbiteThemes';
-import { GoChevronRight, GoDuplicate, GoFileDirectory, GoLink, GoMoveToEnd, GoPeople, GoTrash } from "react-icons/go";
+import {
+    buttonTheme,
+    toggleSwitchTheme,
+    verticalDropdownTheme,
+    textInputTheme
+} from '../../../style/flowbiteThemes';
+import {
+    GoChevronRight,
+    GoDuplicate, GoFileDirectory,
+    GoLink,
+    GoMoveToEnd,
+    GoPeople,
+    GoPencil,
+    GoPlus,
+    GoTable,
+    GoTrash
+} from "react-icons/go";
 import { HiOutlinePower } from "react-icons/hi2";
 import { SlSettings } from "react-icons/sl";
 
@@ -9,61 +24,90 @@ import { SlSettings } from "react-icons/sl";
 import { Helmet } from "react-helmet-async";
 
 // Hooks
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../../hooks/state";
 
+// Interfaces
+import { GroupData } from './interfaces';
+
 // Redux
 import { useAppDispatch } from '../../../hooks/state';
+import { setAccounts, setAutomations, setGroupsFilter } from './automationsSlice';
 
 // Components
-import AutomationsSidebar from '../../../components/AutomationsSidebar';
+import Sidebar from '../../../components/Sidebar';
 import { BarLoader } from 'react-spinners';
-import { Dropdown, ToggleSwitch } from 'flowbite-react';
+import { Button, Dropdown, TextInput, ToggleSwitch } from 'flowbite-react';
 
 // Server
-import { useGetAutomationsQuery, useUpdateAutomationMutation } from '../../../api/apiSlice';
-import { setAutomations } from './automationsSlice';
+import {
+    useCreateAutomationGroupMutation,
+    useDeleteAutomationGroupMutation,
+    useGetAccountsQuery,
+    useGetAutomationsQuery,
+    useGetAutomationGroupsQuery,
+    useUpdateAutomationMutation,
+    useUpdateAutomationGroupMutation
+} from '../../../api/apiSlice';
+
+// Libraires
+import { v4 as uuidv4 } from 'uuid';
 
 const AutomationsPageLayout = () => {
-    const {data = [],
-        isFetching,
-        isLoading,
-        refetch
+    const {data: automationsData = [],
+        isFetching: isAutomationsFetching,
+        isLoading: isAutomationsLoading,
+        refetch: refetchAutomations
     } = useGetAutomationsQuery();
+    const {data: accountsData = [],
+        isFetching: isAccountsFetching,
+        isLoading: isAccountsLoading
+    } = useGetAccountsQuery();
+    const {data: groups = [], refetch: refetchGroups} = useGetAutomationGroupsQuery();
     const [updateAutomation, { isLoading: isAutomationUpdating, isSuccess: isAutomationUpdatingSuccess }] = useUpdateAutomationMutation();
+    const [createGroup] = useCreateAutomationGroupMutation();
+    const [updateGroup] = useUpdateAutomationGroupMutation();
+    const [deleteGroup] = useDeleteAutomationGroupMutation();
 
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
 
     const isAuthenticated = useAppSelector((state) => state.appSlice.isAuthenticated);
+    const accounts = useAppSelector((state) => state.automationsSlice.accounts);
     const automations = useAppSelector((state) => state.automationsSlice.automations);
-    const groupsFilter = useAppSelector((state) => state.automationsSidebarSlice.groupsFilter);
-    const groups = useAppSelector((state) => state.automationsSidebarSlice.groups);
+    const groupsFilter = useAppSelector((state) => state.automationsSlice.groupsFilter);
+
     const [isMoveHover, setIsMoveHover] = useState(false);
+    const [isGroupAdding, setIsGroupAdding] = useState(false);
+    const [isGroupRenaming, setIsGroupRenaming] = useState<boolean | number>(false);
 
     const filteredAutomations = automations.filter(a => a.group === groupsFilter || groupsFilter === "all");
+
+    const renamingForm = useRef<HTMLFormElement>(null);
 
     useEffect(() => {
         if (!isAuthenticated) {
             navigate('/signin');
         };
 
-        refetch();
+        refetchAutomations();
+        refetchGroups();
     // eslint-disable-next-line
     }, []);
 
     useEffect(() => {
-        refetch().then((res) => {
+        refetchAutomations().then((res) => {
             if (res.data) dispatch(setAutomations(res.data));
         });
         // eslint-disable-next-line
     }, [isAutomationUpdatingSuccess]);
 
     useEffect(() => {
-        dispatch(setAutomations(data));
+        dispatch(setAutomations(automationsData));
+        dispatch(setAccounts(accountsData));
         // eslint-disable-next-line
-    }, [isLoading, isFetching]);
+    }, [isAutomationsLoading, isAutomationsFetching, isAccountsLoading, isAccountsFetching]);
 
     const title = () => {
         if (!groupsFilter) {
@@ -75,15 +119,136 @@ const AutomationsPageLayout = () => {
         };
     };
 
+    const handleSubmit = (group: GroupData) => {
+        const form = renamingForm.current;
+        if (form) {
+            const input = form.elements[0] as HTMLInputElement;
+            // Обновляем группу и перезагружаем данные
+            updateGroup({ ...group, name: input.value }).then(() => refetchGroups());
+            setIsGroupRenaming(false);
+        };
+    };
+
     return (
         <div className="public-page automations-page">
             <Helmet>
                 <meta name="description" content="auto chat bot" />
                 <title>Automations</title>
             </Helmet>
-            <AutomationsSidebar/>
+
+            <Sidebar title='Automations'>
+
+                <Sidebar.Group>
+                    <Button theme={buttonTheme} className='w-11/12 px-1 py-1' size="lg">+ New</Button>
+                </Sidebar.Group>
+                
+                <Sidebar.Group title='Ready-made templates'>
+                    <Sidebar.Item icon={<GoTable size={17} color='#FF7A7A'/>}>Choose template</Sidebar.Item>
+                </Sidebar.Group>
+
+                <Sidebar.Group
+                    title='Groups'
+                    addButton={<GoPlus className='automations-sidebar__add'
+                    onClick={() => setIsGroupAdding(!isGroupAdding)}/>}
+                >
+                    <Sidebar.Item focused={groupsFilter === "all"} onClick={() => dispatch(setGroupsFilter("all"))}>All automations</Sidebar.Item>
+                    <Sidebar.Item focused={!groupsFilter} onClick={() => dispatch(setGroupsFilter(false))}>Without group</Sidebar.Item>
+                    
+                    {groups?.map((group, i) => {
+                        return (
+                            <Sidebar.Item
+                                focused={groupsFilter === group.name}
+                                onClick={() => dispatch(setGroupsFilter(group.name))}
+                                key={i}
+                                icon={<GoFileDirectory
+                                size={17}
+                                className='automations-sidebar__group-icon'/>}
+                                dropdown={
+                                    <>
+                                        <Dropdown.Item className='vertical-dropdown__item' onClick={() => setIsGroupRenaming(i)}><GoPencil size={17}/>Rename</Dropdown.Item>
+                                        <Dropdown.Divider/>
+                                        <Dropdown.Item
+                                            className='vertical-dropdown__item text-red-500'
+                                            onClick={() => {
+                                                const target = automations.filter(a => a.group === group.name);
+
+                                                if (target.length > 0) {
+                                                    target.forEach((element, i) => {
+                                                        updateAutomation({...element, group: false})
+                                                    })
+                                                    refetchAutomations();
+                                                };
+
+                                                deleteGroup(group.id).then(() => {
+                                                    if (groupsFilter === group.name) dispatch(setGroupsFilter("all"));
+                                                    refetchGroups();
+                                                });
+                                            }}
+                                        >
+                                            <GoTrash size={17}/>
+                                            Delete
+                                        </Dropdown.Item>
+                                    </>
+                                }
+                            >
+                                { isGroupRenaming === i ? 
+                                    <form
+                                        ref={renamingForm}
+                                        onSubmit={(e) => {
+                                            e.preventDefault();
+                                            handleSubmit(group);
+                                        }}
+                                    >
+                                        <TextInput
+                                            theme={textInputTheme}
+                                            sizing="sm"
+                                            defaultValue={group.name}
+                                            onBlur={() => {
+                                                handleSubmit(group);
+                                            }}
+                                            required
+                                        />
+                                    </form>
+                                : group.name }
+                            </Sidebar.Item>
+                        )
+                    })}
+
+                    {isGroupAdding ?
+                        <Sidebar.Item icon={<GoFileDirectory size={17} className='automations-sidebar__group-icon'/>}>
+                            <form
+                                onSubmit={(e) => {
+                                    e.preventDefault();
+                                    const form = e.target as HTMLFormElement;
+                                    const input = form.elements[0] as HTMLInputElement;
+
+                                    createGroup({
+                                        id: uuidv4(),
+                                        name: input.value
+                                    }).then(() => {
+                                        setIsGroupAdding(false);
+                                        refetchGroups();
+                                    });
+                                }}
+                            >
+                                <TextInput theme={textInputTheme} sizing="sm" autoFocus onBlur={() => setIsGroupAdding(false)} required/>
+                            </form>
+                        </Sidebar.Item>
+                    : null}
+                </Sidebar.Group>
+                <Sidebar.Group title='Accounts'>
+                    {accounts.map((account, i) => {
+                        return (
+                            <Sidebar.Item icon={<img className='rounded-full' src={account.img} alt='account'/>} key={i}>{account.name}</Sidebar.Item>
+                        );
+                    })}
+                </Sidebar.Group>
+            </Sidebar>
+
+
+
             <div className='automations-page__content'>
-                {isLoading || isFetching ? <div className='loading-spinner'><BarLoader color='#FF7A7A' width="100%"/></div> : null}
+                {isAutomationsLoading || isAutomationsFetching ? <div className='loading-spinner'><BarLoader color='#FF7A7A' width="100%"/></div> : null}
                 <h2 className='automations-page__title'>{title()} <span>{filteredAutomations.length}</span></h2>
                 <div className='automations-page__grid'>
                     {filteredAutomations.map((automation, i) => {
@@ -122,13 +287,13 @@ const AutomationsPageLayout = () => {
                                             <ToggleSwitch
                                                 theme={toggleSwitchTheme}
                                                 color='green'
-                                                disabled={isAutomationUpdating || isLoading}
+                                                disabled={isAutomationUpdating || isAutomationsLoading}
                                                 className='adbc'
                                                 sizing="sm"
                                                 onChange={() => {
                                                     updateAutomation({ ...automation, enabled: !automation.enabled })
                                                     .then(() => {
-                                                        refetch().then((res) => {
+                                                        refetchAutomations().then((res) => {
                                                             if (res.data) dispatch(setAutomations(res.data));
                                                         });
                                                     })
