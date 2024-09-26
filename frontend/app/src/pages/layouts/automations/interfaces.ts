@@ -4,8 +4,9 @@ export interface AutomationData {
     id: string,
     name: string,
     account: string,
-    users: string,
-    conversion: string,
+    users: number,
+    conversion: number,
+    channel: string,
     enabled: boolean,
     group: string | boolean,
     nodes: NodeData[]
@@ -26,5 +27,8 @@ export interface InitialState {
     accounts: AccountData[],
     automations: AutomationData[],
     groups: GroupData[],
-    groupsFilter: string | boolean
+    groupsFilter: string | boolean,
+    channelsFilter: string,
+    statusFilter: string,
+    sort: string
 };

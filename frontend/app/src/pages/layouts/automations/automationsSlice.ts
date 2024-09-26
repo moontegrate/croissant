@@ -7,7 +7,10 @@ const initialState: InitialState = {
     accounts: [],
     automations: [],
     groups: [],
-    groupsFilter: "all"
+    groupsFilter: "All automations",
+    channelsFilter: "All channels",
+    statusFilter: "All statuses",
+    sort: "Created date"
 };
 
 const automationsSlice = createSlice({
@@ -17,7 +20,10 @@ const automationsSlice = createSlice({
         setAccounts: (state, action: PayloadAction<AccountData[]>) => { state.accounts = action.payload },
         setAutomations: (state, action: PayloadAction<AutomationData[]>) => { state.automations = action.payload },
         setGroups: (state, action: PayloadAction<GroupData[]>) => { state.groups = action.payload },
-        setGroupsFilter: (state, action: PayloadAction<string | boolean>) => { state.groupsFilter = action.payload }
+        setGroupsFilter: (state, action: PayloadAction<string | boolean>) => { state.groupsFilter = action.payload },
+        setChannelsFilter: (state, action: PayloadAction<string>) => { state.channelsFilter = action.payload },
+        setStatusFilter: (state, action: PayloadAction<string>) => { state.statusFilter = action.payload },
+        setSortBy: (state, action: PayloadAction<string>) => { state.sort = action.payload }
     }
 });
 
@@ -26,5 +32,8 @@ export const {
     setAccounts,
     setAutomations,
     setGroups,
-    setGroupsFilter
+    setGroupsFilter,
+    setChannelsFilter,
+    setStatusFilter,
+    setSortBy
 } = automationsSlice.actions;

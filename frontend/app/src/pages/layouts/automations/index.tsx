@@ -2,23 +2,19 @@
 import './index.scss';
 import {
     buttonTheme,
-    toggleSwitchTheme,
     verticalDropdownTheme,
     textInputTheme
 } from '../../../style/flowbiteThemes';
 import {
-    GoChevronRight,
-    GoDuplicate, GoFileDirectory,
-    GoLink,
-    GoMoveToEnd,
-    GoPeople,
+    GoFileDirectory,
+    GoMultiSelect,
     GoPencil,
     GoPlus,
+    GoSortDesc,
     GoTable,
     GoTrash
 } from "react-icons/go";
 import { HiOutlinePower } from "react-icons/hi2";
-import { SlSettings } from "react-icons/sl";
 
 // Metadata
 import { Helmet } from "react-helmet-async";
@@ -33,12 +29,13 @@ import { GroupData } from './interfaces';
 
 // Redux
 import { useAppDispatch } from '../../../hooks/state';
-import { setAccounts, setAutomations, setGroupsFilter } from './automationsSlice';
+import { setAccounts, setAutomations, setChannelsFilter, setGroups, setGroupsFilter, setSortBy, setStatusFilter } from './automationsSlice';
 
 // Components
 import Sidebar from '../../../components/Sidebar';
 import { BarLoader } from 'react-spinners';
 import { Button, Dropdown, TextInput, ToggleSwitch } from 'flowbite-react';
+import AutomationCard from '../../../components/AutomationCard';
 
 // Server
 import {
@@ -64,7 +61,11 @@ const AutomationsPageLayout = () => {
         isFetching: isAccountsFetching,
         isLoading: isAccountsLoading
     } = useGetAccountsQuery();
-    const {data: groups = [], refetch: refetchGroups} = useGetAutomationGroupsQuery();
+    const {data: groupsData = [],
+        isFetching: isGroupsFetching,
+        isLoading: isGroupsLoading,
+        refetch: refetchGroups
+    } = useGetAutomationGroupsQuery();
     const [updateAutomation, { isLoading: isAutomationUpdating, isSuccess: isAutomationUpdatingSuccess }] = useUpdateAutomationMutation();
     const [createGroup] = useCreateAutomationGroupMutation();
     const [updateGroup] = useUpdateAutomationGroupMutation();
@@ -76,13 +77,18 @@ const AutomationsPageLayout = () => {
     const isAuthenticated = useAppSelector((state) => state.appSlice.isAuthenticated);
     const accounts = useAppSelector((state) => state.automationsSlice.accounts);
     const automations = useAppSelector((state) => state.automationsSlice.automations);
+    const groups = useAppSelector((state) => state.automationsSlice.groups);
     const groupsFilter = useAppSelector((state) => state.automationsSlice.groupsFilter);
+    const channelsFilter = useAppSelector((state) => state.automationsSlice.channelsFilter);
+    const statusFilter = useAppSelector((state) => state.automationsSlice.statusFilter);
+    const sortBy = useAppSelector((state) => state.automationsSlice.sort);
 
-    const [isMoveHover, setIsMoveHover] = useState(false);
     const [isGroupAdding, setIsGroupAdding] = useState(false);
     const [isGroupRenaming, setIsGroupRenaming] = useState<boolean | number>(false);
 
-    const filteredAutomations = automations.filter(a => a.group === groupsFilter || groupsFilter === "all");
+    const filteredAutomationsByGroup = automations.filter(a => a.group === groupsFilter || groupsFilter === "All automations");
+    const filteredAutomationsByChannel = filteredAutomationsByGroup.filter(a => a.channel === channelsFilter || channelsFilter === "All channels");
+    const filteredAutomationsByStatus = filteredAutomationsByChannel.filter(a => a.enabled === (statusFilter === "On") || statusFilter === "All statuses");
 
     const renamingForm = useRef<HTMLFormElement>(null);
 
@@ -106,8 +112,9 @@ const AutomationsPageLayout = () => {
     useEffect(() => {
         dispatch(setAutomations(automationsData));
         dispatch(setAccounts(accountsData));
+        dispatch(setGroups(groupsData));
         // eslint-disable-next-line
-    }, [isAutomationsLoading, isAutomationsFetching, isAccountsLoading, isAccountsFetching]);
+    }, [isAutomationsLoading, isAutomationsFetching, isAccountsLoading, isAccountsFetching, isGroupsLoading, isGroupsFetching]);
 
     const title = () => {
         if (!groupsFilter) {
@@ -139,7 +146,7 @@ const AutomationsPageLayout = () => {
             <Sidebar title='Automations'>
 
                 <Sidebar.Group>
-                    <Button theme={buttonTheme} className='w-11/12 px-1 py-1' size="lg">+ New</Button>
+                    <Button theme={buttonTheme} fullSized className='px-1 py-1' size="lg">+ New</Button>
                 </Sidebar.Group>
                 
                 <Sidebar.Group title='Ready-made templates'>
@@ -148,10 +155,9 @@ const AutomationsPageLayout = () => {
 
                 <Sidebar.Group
                     title='Groups'
-                    addButton={<GoPlus className='automations-sidebar__add'
-                    onClick={() => setIsGroupAdding(!isGroupAdding)}/>}
+                    addButton={<GoPlus className='automations-sidebar__add' onClick={() => setIsGroupAdding(!isGroupAdding)}/>}
                 >
-                    <Sidebar.Item focused={groupsFilter === "all"} onClick={() => dispatch(setGroupsFilter("all"))}>All automations</Sidebar.Item>
+                    <Sidebar.Item focused={groupsFilter === "All automations"} onClick={() => dispatch(setGroupsFilter("All automations"))}>All automations</Sidebar.Item>
                     <Sidebar.Item focused={!groupsFilter} onClick={() => dispatch(setGroupsFilter(false))}>Without group</Sidebar.Item>
                     
                     {groups?.map((group, i) => {
@@ -180,7 +186,7 @@ const AutomationsPageLayout = () => {
                                                 };
 
                                                 deleteGroup(group.id).then(() => {
-                                                    if (groupsFilter === group.name) dispatch(setGroupsFilter("all"));
+                                                    if (groupsFilter === group.name) dispatch(setGroupsFilter("All automations"));
                                                     refetchGroups();
                                                 });
                                             }}
@@ -236,7 +242,7 @@ const AutomationsPageLayout = () => {
                         </Sidebar.Item>
                     : null}
                 </Sidebar.Group>
-                <Sidebar.Group title='Accounts'>
+                <Sidebar.Group title='Accounts' addButton={<GoPlus className='automations-sidebar__add' onClick={() => {}}/>}>
                     {accounts.map((account, i) => {
                         return (
                             <Sidebar.Item icon={<img className='rounded-full' src={account.img} alt='account'/>} key={i}>{account.name}</Sidebar.Item>
@@ -244,135 +250,61 @@ const AutomationsPageLayout = () => {
                     })}
                 </Sidebar.Group>
             </Sidebar>
-
-
-
             <div className='automations-page__content'>
                 {isAutomationsLoading || isAutomationsFetching ? <div className='loading-spinner'><BarLoader color='#FF7A7A' width="100%"/></div> : null}
-                <h2 className='automations-page__title'>{title()} <span>{filteredAutomations.length}</span></h2>
+                <div className='automations-page__head'>
+                    <h2 className='automations-page__title'>{title()} <span>{filteredAutomationsByStatus.length}</span></h2>
+                    <div className='automations-page__filters'>
+                        <Dropdown
+                            theme={verticalDropdownTheme}
+                            dismissOnClick
+                            label=""
+                            renderTrigger={() => <div className='automations-page__filter'>
+                                {channelsFilter}
+                                <GoMultiSelect className='automations-page__filter-icon' size={20}/>
+                            </div>}
+                        >
+                            <Dropdown.Item onClick={() => dispatch(setChannelsFilter('All channels'))}>All channels</Dropdown.Item>
+                            <Dropdown.Item onClick={() => dispatch(setChannelsFilter('Instagram'))}>Instagram</Dropdown.Item>
+                            <Dropdown.Item onClick={() => dispatch(setChannelsFilter('Telegram'))}>Telegram</Dropdown.Item>
+                        </Dropdown>
+                        <Dropdown
+                            theme={verticalDropdownTheme}
+                            dismissOnClick
+                            label=""
+                            renderTrigger={() => <div className='automations-page__filter'>
+                                {statusFilter}
+                                <HiOutlinePower className='automations-page__filter-icon' size={20}/>
+                            </div>}
+                        >
+                            <Dropdown.Item onClick={() => dispatch(setStatusFilter("All statuses"))}>All statuses</Dropdown.Item>
+                            <Dropdown.Item onClick={() => dispatch(setStatusFilter("On"))}>On</Dropdown.Item>
+                            <Dropdown.Item onClick={() => dispatch(setStatusFilter("Off"))}>Off</Dropdown.Item>
+                        </Dropdown>
+                        <Dropdown
+                            theme={verticalDropdownTheme}
+                            dismissOnClick
+                            label=""
+                            renderTrigger={() => <div className='automations-page__filter'>
+                                {sortBy}
+                                <GoSortDesc className='automations-page__filter-icon' size={20}/>
+                            </div>}
+                        >
+                            <Dropdown.Item onClick={() => dispatch(setSortBy('Created date'))}>Created date</Dropdown.Item>
+                            <Dropdown.Item onClick={() => dispatch(setSortBy('Updated date'))}>Updated date</Dropdown.Item>
+                            <Dropdown.Item onClick={() => dispatch(setSortBy('Name A-Z'))}>Name A-Z</Dropdown.Item>
+                            <Dropdown.Item onClick={() => dispatch(setSortBy('Name Z-A'))}>Name Z-A</Dropdown.Item>
+                            <Dropdown.Item onClick={() => dispatch(setSortBy('Less clients'))}>Less clients</Dropdown.Item>
+                            <Dropdown.Item onClick={() => dispatch(setSortBy('More clients'))}>More clients</Dropdown.Item>
+                            <Dropdown.Item onClick={() => dispatch(setSortBy('Worst conversion'))}>Worst conversion</Dropdown.Item>
+                            <Dropdown.Item onClick={() => dispatch(setSortBy('Best conversion'))}>Best conversion</Dropdown.Item>
+                        </Dropdown>
+                    </div>
+                </div>
                 <div className='automations-page__grid'>
-                    {filteredAutomations.map((automation, i) => {
-                        return (
-                            <div
-                                key={i} 
-                                className='automation' 
-                                onClick={(e) => {
-                                    const { target } = e;
-                                    if (target instanceof HTMLElement && !target.classList.contains('adbc')) navigate(`/builder/${automation.id}`);
-                                }}
-                            >
-                                <div className='automation__top'>
-                                    <div className='automation__info'>
-                                        <span className={automation.enabled ? 'automation__status automation__status-enabled' : 'automation__status'}></span>
-                                        <h4 className='automation__title'>{automation.name}</h4>
-                                    </div>
-                                    <Dropdown
-                                        className='vertical-dropdown automation__dropdown adbc'
-                                        theme={verticalDropdownTheme}
-                                        label=""
-                                        dismissOnClick
-                                        renderTrigger={() => 
-                                            <button className='three-dots-menu adbc'>
-                                                <span className='adbc'></span>
-                                                <span className='adbc'></span>
-                                                <span className='adbc'></span>
-                                            </button>
-                                        }
-                                    >
-                                        <Dropdown.Item className='vertical-dropdown__item automation__dropdown-item adbc'>
-                                            <div className='adbc w-full flex gap-[7px]'>
-                                                <HiOutlinePower size={17}/>
-                                                Turn on
-                                            </div>
-                                            <ToggleSwitch
-                                                theme={toggleSwitchTheme}
-                                                color='green'
-                                                disabled={isAutomationUpdating || isAutomationsLoading}
-                                                className='adbc'
-                                                sizing="sm"
-                                                onChange={() => {
-                                                    updateAutomation({ ...automation, enabled: !automation.enabled })
-                                                    .then(() => {
-                                                        refetchAutomations().then((res) => {
-                                                            if (res.data) dispatch(setAutomations(res.data));
-                                                        });
-                                                    })
-                                                }}
-                                                checked={automation.enabled}
-                                            />    
-                                        </Dropdown.Item>
-                                        <Dropdown.Divider className='adbc'/>
-                                        <Dropdown.Item className='vertical-dropdown__item automation__dropdown-item adbc'><GoDuplicate size={17}/>Duplicate</Dropdown.Item>
-                                        {groups.length > 0 ? 
-                                            <Dropdown.Item
-                                                className='vertical-dropdown__item adbc'
-                                                onMouseEnter={() => setIsMoveHover(true)}
-                                                onMouseLeave={() => setIsMoveHover(false)}
-                                            >
-                                                <div className='adbc w-full flex gap-[7px]'>
-                                                    <GoMoveToEnd size={17}/>
-                                                    Move to...
-                                                </div>
-                                                <GoChevronRight size={17}/>
-                                                {isMoveHover ?
-                                                    <div className='automation__dropdown-sublist'>
-                                                        {automation.group ?
-                                                            <div
-                                                                className='automation__dropdown-sublist-item adbc'
-                                                                onClick={() => updateAutomation({...automation, group: false})}
-                                                            >
-                                                                <GoFileDirectory size={17} className='automation__dropdown-sublist-item__icon adbc'/>
-                                                                All automations
-                                                            </div>
-                                                        : null}
-                                                        {groups.map((group, i) => {
-                                                            if (automation.group !== group.name) {
-                                                                return (
-                                                                    <div
-                                                                        className='automation__dropdown-sublist-item adbc'
-                                                                        key={i}
-                                                                        onClick={() => updateAutomation({...automation, group: group.name})}
-                                                                    >
-                                                                        <GoFileDirectory size={17} className='automation__dropdown-sublist-item__icon adbc'/>
-                                                                        {group.name}
-                                                                    </div>
-                                                                );
-                                                            } else {
-                                                                return null;
-                                                            };
-                                                        })}
-                                                    </div>
-                                                : null}
-                                            </Dropdown.Item>
-                                        : null}
-                                        <Dropdown.Item className='vertical-dropdown__item automation__dropdown-item adbc'><GoLink size={17}/>Bot link</Dropdown.Item>
-                                        <Dropdown.Item className='vertical-dropdown__item automation__dropdown-item adbc'><GoPeople size={17}/>Clients</Dropdown.Item>
-                                        <Dropdown.Item className='vertical-dropdown__item automation__dropdown-item adbc'><SlSettings size={17}/>Settings</Dropdown.Item>
-                                        <Dropdown.Divider className='adbc'/>
-                                        <Dropdown.Item className='vertical-dropdown__item automation__dropdown-item text-red-500 adbc'><GoTrash color='red' size={17}/>Delete</Dropdown.Item>
-                                    </Dropdown>
-                                </div>
-                                <div className='automation__content'>
-                                    <div className='automation__content-main'>
-                                        <div>
-                                            <div className='automation__content-main-title'>Users</div>
-                                            <div className='automation__content-main-value'>{automation.users}</div>
-                                        </div>
-                                        <div>
-                                            <div className='automation__content-main-title'>Conversion</div>
-                                            <div className='automation__content-main-value'>{automation.conversion}</div>
-                                        </div>
-                                    </div>
-                                    <div className='automation__account'>
-                                        <div className='automation__account-icon'>
-                                            <img src="https://www.redditstatic.com/avatars/defaults/v2/avatar_default_0.png" alt="account" />
-                                        </div>
-                                        <div className='automation__account-name'>{automation.account}</div>
-                                    </div>
-                                </div>
-                            </div>
-                        );
-                    })}
+                    {automations.length > 0 ? filteredAutomationsByStatus.map((automation, i) => {
+                        return <AutomationCard automation={automation} key={i}/>;
+                    }) : null}
                 </div>
             </div>
         </div>
