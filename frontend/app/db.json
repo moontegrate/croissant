@@ -110,7 +110,12 @@
       "to": 3
     }
   ],
-  "automation-groups": [],
+  "automation-groups": [
+    {
+      "id": "bcccefdb-9d1d-4c80-9aac-5bdd41c4cf00",
+      "name": "werwer"
+    }
+  ],
   "accounts": [
     {
       "id": "erfdfbfgbbx",

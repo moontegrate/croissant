@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  backend-app:
+    build:
+      context: ./backend
+      dockerfile: backend/Dockerfile
+    volumes:
+      - ./backend:/app
+    ports:
+      - "8000:8000"
+    command: bash -c "python3 фзз/manage.py makemigrations && python3 manage.py migrate && python3 manage.py runserver 0.0.0.0:8000"
+
+  frontend-app:
+    build:
+      context: ./frontend/app
+      dockerfile: frontend/app/Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend/app:/app
+    environment:
+      - NODE_ENV=development

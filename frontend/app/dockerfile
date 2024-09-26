@@ -1,0 +1,7 @@
+FROM node:alpine as build
+WORKDIR /app
+COPY frontend/app/package.json package.json
+RUN yarn install
+COPY ./frontend/app/. /app
+EXPOSE 3000
+CMD ["yarn", "start"]
