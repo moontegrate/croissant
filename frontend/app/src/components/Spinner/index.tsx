@@ -1,9 +1,9 @@
-import './spinner.scss';
-import { InfinitySpin } from "react-loader-spinner";
+import './index.scss';
+import { MoonLoader } from 'react-spinners';
 
 const Spinner = () => {
     return <div className="spinner">
-        <InfinitySpin color="#DDB46F" />
+        <MoonLoader color="#FF7A7A" size={40}/>
     </div>
 };
 

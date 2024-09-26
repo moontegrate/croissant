@@ -1,0 +1,13 @@
+@import '../../../style/variables.scss';
+
+.condition-card {
+    &:hover {
+        border-color: $condition-card-accent;
+    }
+
+    &__connect {
+        &:hover {
+            border-color: $condition-card-accent;
+        }
+    }
+}

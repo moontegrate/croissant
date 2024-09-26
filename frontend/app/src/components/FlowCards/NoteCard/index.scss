@@ -1,0 +1,11 @@
+@import '../../../style/variables.scss';
+
+.note-card {
+    border: 1px solid white;
+    background-color: #a5c5ff;
+    padding: 10px 14px;
+
+    &:hover {
+        border-color: #6c9fff;
+    }
+}

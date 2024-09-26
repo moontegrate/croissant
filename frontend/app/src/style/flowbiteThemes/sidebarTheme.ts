@@ -1,11 +1,11 @@
 export const sidebarTheme = {
     "root": {
-        "base": "h-full",
+        "base": "h-full border-0 border-r border-border-color border-solid p-1",
         "collapsed": {
             "on": "w-16",
-            "off": "w-16"
+            "off": "w-18"
         },
-        "inner": "h-full overflow-y-auto overflow-x-hidden rounded bg-gray-50 px-3 py-4 dark:bg-gray-800"
+        "inner": "h-full overflow-y-auto overflow-x-hidden rounded bg-white px-3 py-4 dark:bg-gray-800"
     },
     "collapse": {
         "button": "group flex w-full items-center rounded-lg p-2 text-base font-normal text-gray-900 transition duration-75 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700",

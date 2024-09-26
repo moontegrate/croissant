@@ -1,0 +1,149 @@
+@import '../../../style/variables.scss';
+
+.automations-page {
+    &__head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    &__title {
+        font-weight: 700;
+        font-size: 24px;
+
+        span {
+            color: $light-gray-text;
+        }
+    }
+
+    &__filters {
+        display: flex;
+        gap: 30px;
+    }
+
+    &__filter {
+        cursor: pointer;
+        display: flex;
+        gap: 10px;
+    }
+
+    &__content {
+        position: relative;
+        width: 100%;
+        padding: 30px;
+    }
+
+    &__grid {
+        display: grid;
+        gap: 15px;
+        grid-auto-rows: auto;
+    }
+}
+
+.automation {
+    cursor: pointer;
+    position: relative;
+    padding: 10px 15px;
+    border: 1px solid $border-color;
+    border-radius: 10px;
+    width: 300px;
+
+    &__top, &__info {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    &__top {
+        margin-bottom: 15px;
+        justify-content: space-between;
+    }
+
+    &__status {
+        display: block;
+        height: 7px;
+        width: 7px;
+        border-radius: 50%;
+        background-color: rgb(209, 209, 209);
+
+        &-enabled {
+            background-color: rgb(63, 223, 111);
+        }
+    }
+
+    &__title {
+        font-weight: 700;
+        font-size: 14px;
+    }
+
+    &__dropdown {
+        position: absolute;
+        right: 10px;
+        border: 1px solid $border-color;
+        border-radius: 10px;
+
+        &-sublist {
+            position: absolute;
+            left: 100%;
+            background-color: white;
+            border: 1px solid $border-color;
+            border-radius: 10px;
+            padding: 3px;
+
+            &-item {
+                padding: 5px 7px;
+                display: flex;
+                gap: 5px;
+                text-wrap: nowrap;
+
+                &__icon {
+                    min-width: 17px;
+                }
+
+                &:hover {
+                    background-color: $border-color;
+                    border-radius: 7px;
+                }
+            }
+        }
+    }
+
+    &__content {
+        &-main {
+            margin-bottom: 15px;
+            display: flex;
+            gap: 15px;
+
+            &-title {
+                font-size: 12px;
+                color: $light-gray-text;
+                line-height: 1;
+            }
+
+            &-value {
+                font-size: 20px;
+                font-weight: 700;
+            }
+        }
+    }
+
+    &__account {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        &-icon {
+            img {
+                height: 20px;
+                width: 20px;
+                border-radius: 50%;
+            }
+        }
+
+        &-name {
+            color: $light-gray-text;
+            font-size: 14px;
+        }
+    }
+}

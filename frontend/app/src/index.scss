@@ -45,3 +45,45 @@ code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
         monospace;
 }
+
+.loading-spinner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 11;
+    width: 100%;
+}
+
+.three-dots-menu {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 3px;
+    height: 20px;
+
+    span {
+        display: block;
+        border-radius: 50%;
+        height: 3px;
+        width: 3px;
+        transition: .2s background-color;
+        background-color: rgb(196, 196, 196);
+    }
+
+    &:hover {
+        span {
+            background-color: $main-color;
+        }
+    }
+}
+
+.vertical-dropdown {
+    position: absolute;
+    top: 0;
+    left: 0;
+    
+    &__item {
+        display: flex;
+        gap: 7px;
+    }
+}

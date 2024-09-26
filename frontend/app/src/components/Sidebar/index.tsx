@@ -1,40 +1,26 @@
+// Style
 import './index.scss';
 
-import { Sidebar } from "flowbite-react";
-import { GoCommentDiscussion, GoGear, GoGraph, GoPackage, GoPaperAirplane, GoPeople, GoPlay, GoWorkflow } from "react-icons/go";
+// Interfaces
+import { SidebarProps, SidebarGroupProps, SidebarItemProps } from './interfaces';
 
-import logo from './logo.svg';
+// Types
+import { FC } from 'react';
 
-import { sidebarTheme } from '../../style/flowbiteThemes';
+// Components
+import SidebarGroup from './SidebarGroup';
+import SidebarItem from './SidebarItem';
 
-const SidebarComponent = () => {
-
-    const iconSize = 25;
-    const iconColor = "#545454";
+const Sidebar: FC<SidebarProps> & { Group: FC<SidebarGroupProps>, Item: FC<SidebarItemProps> } = ({ children, title }) => {
     return (
-        <Sidebar theme={sidebarTheme}>
-            <Sidebar.Items>
-                <Sidebar.ItemGroup>
-                    <div className='sidebar__logo'>
-                        <img src={logo} alt="logo"/>
-                    </div>
-                    <Sidebar.Item href='#'><GoWorkflow size={iconSize} color={iconColor}/></Sidebar.Item>
-                    <Sidebar.Item href='#'><GoPackage size={iconSize} color={iconColor}/></Sidebar.Item>
-                    <Sidebar.Item href='#'><GoCommentDiscussion size={iconSize} color={iconColor}/></Sidebar.Item>
-                    <Sidebar.Item href='#'><GoGraph size={iconSize} color={iconColor}/></Sidebar.Item>
-                    <Sidebar.Item href='#'><GoPeople size={iconSize} color={iconColor}/></Sidebar.Item>
-                    <Sidebar.Item href='#'><GoPaperAirplane size={iconSize} color={iconColor}/></Sidebar.Item>
-                    <Sidebar.Item href='#'><GoPlay size={iconSize} color={iconColor}/></Sidebar.Item>
-                    <Sidebar.Item href='#'><GoGear size={iconSize} color={iconColor}/></Sidebar.Item>
-                </Sidebar.ItemGroup>
-                <Sidebar.ItemGroup>
-                    <div className='sidebar__profile'>
-
-                    </div>
-                </Sidebar.ItemGroup>
-            </Sidebar.Items>
-        </Sidebar>
+        <div className='sidebar'>
+            <h2 className='sidebar__title'>{title}</h2>
+            <div className='sidebar__body'>{children}</div>
+        </div>
     );
 };
 
-export default SidebarComponent;
+Sidebar.Group = SidebarGroup;
+Sidebar.Item = SidebarItem;
+
+export default Sidebar;

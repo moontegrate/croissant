@@ -1,16 +1,15 @@
 import { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
-
-import SidebarComponent from "../../../components/Sidebar";
-
-const isAuthorized = true;
+import { useAppSelector } from "../../../hooks/state";
 
 const MainPageLayout = () => {
     const navigate = useNavigate();
 
+    const isAuthenticated = useAppSelector((state) => state.appSlice.isAuthenticated);
+
     useEffect(() => {
-        if (!isAuthorized) {
+        if (!isAuthenticated) {
             navigate('/signin');
         }
     // eslint-disable-next-line
@@ -22,7 +21,6 @@ const MainPageLayout = () => {
                 <meta name="description" content="auto chat bot" />
                 <title>Main page</title>
             </Helmet>
-            <SidebarComponent/>
         </div>
     );
 };
