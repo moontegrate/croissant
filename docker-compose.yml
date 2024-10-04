@@ -6,10 +6,23 @@ services:
       context: ./backend
       dockerfile: backend/Dockerfile
     volumes:
-      - ./backend:/app
+      - ./backend:/backend
     ports:
       - "8000:8000"
-    command: bash -c "python3 app/manage.py makemigrations && python3 app/manage.py migrate && python3 app/manage.py runserver 0.0.0.0:8000"
+    environment:
+      - SECRET_KEY=${SECRET_KEY}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    command: bash -c "python3 croissant/manage.py makemigrations && python3 croissant/manage.py migrate && python3 croissant/manage.py runserver 0.0.0.0:8000"
+
+  db:
+    image: postgres:17
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=croissant
 
   frontend-app:
     build:
@@ -18,6 +31,6 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./frontend/app:/app
+      - ./frontend/app:/frontend
     environment:
       - NODE_ENV=development
