@@ -1,3 +1,5 @@
 from django.contrib import admin
+from automations.models import Automation, Node
 
-# Register your models here.
+admin.site.register(Automation)
+admin.site.register(Node)

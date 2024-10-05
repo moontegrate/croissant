@@ -3,7 +3,7 @@ version: '3'
 services:
   backend-app:
     build:
-      context: ./backend
+      context: .
       dockerfile: backend/Dockerfile
     volumes:
       - ./backend:/backend
@@ -23,10 +23,21 @@ services:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=croissant
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+  pgadmin:
+    image: dpage/pgadmin4
+    ports:
+      - "8080:80"
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
+    depends_on:
+      - db
 
   frontend-app:
     build:
-      context: ./frontend/app
+      context: .
       dockerfile: frontend/app/Dockerfile
     ports:
       - "3000:3000"
@@ -34,3 +45,5 @@ services:
       - ./frontend/app:/frontend
     environment:
       - NODE_ENV=development
+volumes:
+  postgres_data:
