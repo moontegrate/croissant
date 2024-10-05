@@ -1,9 +1,11 @@
 from django.db import models
+import uuid
 
 class Account(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
     created_date = models.DateTimeField(auto_now_add=True)
-
+    img = models.CharField(null=True)
 
     def __str__(self):
-        return f"Account - @{self.title}"
+        return f"@{self.name}"

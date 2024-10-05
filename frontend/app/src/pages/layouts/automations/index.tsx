@@ -245,7 +245,7 @@ const AutomationsPageLayout = () => {
                 <Sidebar.Group title='Accounts' addButton={<GoPlus className='automations-sidebar__add' onClick={() => {}}/>}>
                     {accounts.map((account, i) => {
                         return (
-                            <Sidebar.Item icon={<img className='rounded-full' src={account.img} alt='account'/>} key={i}>{account.name}</Sidebar.Item>
+                            <Sidebar.Item icon={<img className='rounded-full' src={account.img} alt='account'/>} key={i}>@{account.name}</Sidebar.Item>
                         );
                     })}
                 </Sidebar.Group>

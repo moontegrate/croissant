@@ -20,7 +20,7 @@ import { useAppDispatch, useAppSelector } from '../../hooks/state';
 import { setAutomations } from '../../pages/layouts/automations/automationsSlice';
 
 // Server
-import { useGetAutomationsQuery, useUpdateAutomationMutation } from '../../api/apiSlice';
+import { useDeleteAutomationMutation, useGetAutomationsQuery, useUpdateAutomationMutation } from '../../api/apiSlice';
 
 const AutomationCard: React.FC<{automation: AutomationData}> = ({automation}) => {
     const navigate = useNavigate();
@@ -32,6 +32,7 @@ const AutomationCard: React.FC<{automation: AutomationData}> = ({automation}) =>
         refetch: refetchAutomations
     } = useGetAutomationsQuery();
     const [updateAutomation, { isLoading: isAutomationUpdating, isSuccess: isAutomationUpdatingSuccess }] = useUpdateAutomationMutation();
+    const [deleteAutomation] = useDeleteAutomationMutation();
 
     const [isMoveHover, setIsMoveHover] = useState(false);
 
@@ -134,7 +135,10 @@ const AutomationCard: React.FC<{automation: AutomationData}> = ({automation}) =>
                     <Dropdown.Item className='vertical-dropdown__item automation__dropdown-item adbc'><GoPeople size={17} />Clients</Dropdown.Item>
                     <Dropdown.Item className='vertical-dropdown__item automation__dropdown-item adbc'><SlSettings size={17} />Settings</Dropdown.Item>
                     <Dropdown.Divider className='adbc' />
-                    <Dropdown.Item className='vertical-dropdown__item automation__dropdown-item text-red-500 adbc'><GoTrash color='red' size={17} />Delete</Dropdown.Item>
+                    <Dropdown.Item
+                        className='vertical-dropdown__item automation__dropdown-item text-red-500 adbc'
+                        onClick={() => deleteAutomation(automation.id)}
+                    ><GoTrash color='red' size={17} />Delete</Dropdown.Item>
                 </Dropdown>
             </div>
             <div className='automation__content'>
@@ -152,7 +156,7 @@ const AutomationCard: React.FC<{automation: AutomationData}> = ({automation}) =>
                     <div className='automation__account-icon'>
                         <img src="https://www.redditstatic.com/avatars/defaults/v2/avatar_default_0.png" alt="account" />
                     </div>
-                    <div className='automation__account-name'>{automation.account}</div>
+                    <div className='automation__account-name'>@{automation.accountName}</div>
                 </div>
             </div>
         </div>

@@ -1,6 +1,8 @@
 from django.db import models
+import uuid
 
 class Automation(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
     created_date = models.DateTimeField(auto_now_add=True)
     account = models.ForeignKey('accounts.Account', on_delete=models.CASCADE)
@@ -8,12 +10,13 @@ class Automation(models.Model):
     conversion = models.FloatField(default=0)
     channel = models.CharField(max_length=10, default='')
     enabled = models.BooleanField(default=True)
-    group = models.CharField(max_length=255, default='')
+    group = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
         return f"Automation - {self.name}"
 
 class Node(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     type = models.CharField(max_length=10)
     x = models.IntegerField()
     y = models.IntegerField()

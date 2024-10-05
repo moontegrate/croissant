@@ -1,3 +1,8 @@
 from django.shortcuts import render
+from rest_framework import viewsets
+from .serializers import AutomationSerializer
+from .models import Automation
 
-# Create your views here.
+class AutomationViewSet(viewsets.ModelViewSet):
+    queryset = Automation.objects.all()
+    serializer_class = AutomationSerializer

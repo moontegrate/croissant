@@ -6,11 +6,20 @@ import { AccountData, AutomationData, GroupData } from "../pages/layouts/automat
 
 export const apiSlice = createApi({
     reducerPath: "api",
-    baseQuery: fetchBaseQuery({baseUrl: "http://localhost:3001"}),
+    baseQuery: fetchBaseQuery({baseUrl: "http://localhost:8000/api"}),
     endpoints: builder => ({
         // Automations
+        deleteAutomation: builder.mutation<void, string>({
+            query: (automationId) => ({
+                url: `/automations/${automationId}/`,
+                method: "DELETE"
+            })
+        }),
         getAutomations: builder.query<AutomationData[], void>({
-            query: () => "/automations"
+            query: () => ({
+                url: '/automations',
+                credentials: 'include'
+            })
         }),
         getAutomation: builder.query<AutomationData, string>({
             query: (automationId) => `/automations/${automationId}`
@@ -20,7 +29,7 @@ export const apiSlice = createApi({
         }),
         updateAutomation: builder.mutation<void, AutomationData>({
             query: (automation) => ({
-                url: `/automations/${automation.id}`,
+                url: '/automations/',
                 method: "PUT",
                 body: automation
             })
@@ -83,6 +92,7 @@ export const apiSlice = createApi({
 export const {
     useCreateAutomationGroupMutation,
     useCreateNodeMutation,
+    useDeleteAutomationMutation,
     useDeleteNodeMutation,
     useDeleteAutomationGroupMutation,
     useGetAccountsQuery,
