@@ -34,7 +34,7 @@ import { setAccounts, setAutomations, setChannelsFilter, setGroups, setGroupsFil
 // Components
 import Sidebar from '../../../components/Sidebar';
 import { BarLoader } from 'react-spinners';
-import { Button, Dropdown, TextInput, ToggleSwitch } from 'flowbite-react';
+import { Button, Dropdown, Modal, TextInput, ToggleSwitch } from 'flowbite-react';
 import AutomationCard from '../../../components/AutomationCard';
 
 // Server
@@ -83,6 +83,7 @@ const AutomationsPageLayout = () => {
     const statusFilter = useAppSelector((state) => state.automationsSlice.statusFilter);
     const sortBy = useAppSelector((state) => state.automationsSlice.sort);
 
+    const [isAutomationAdding, setIsAutomationAdding] = useState(false);
     const [isGroupAdding, setIsGroupAdding] = useState(false);
     const [isGroupRenaming, setIsGroupRenaming] = useState<boolean | number>(false);
 
@@ -143,16 +144,28 @@ const AutomationsPageLayout = () => {
                 <title>Automations</title>
             </Helmet>
 
+            {/* Sidebar */}
             <Sidebar title='Automations'>
 
+                {/* Automation adding button */}
                 <Sidebar.Group>
-                    <Button theme={buttonTheme} fullSized className='px-1 py-1' size="lg">+ New</Button>
+                    <Button
+                        theme={buttonTheme}
+                        fullSized
+                        className='px-1 py-1'
+                        size="lg"
+                        onClick={() => setIsAutomationAdding(true)}
+                    >
+                        + New
+                    </Button>
                 </Sidebar.Group>
                 
+                {/* Templates button */}
                 <Sidebar.Group title='Ready-made templates'>
                     <Sidebar.Item icon={<GoTable size={17} color='#FF7A7A'/>} onClick={() => navigate('/templates')}>Choose template</Sidebar.Item>
                 </Sidebar.Group>
 
+                {/* Automations groups */}
                 <Sidebar.Group
                     title='Groups'
                     addButton={<GoPlus className='automations-sidebar__add' onClick={() => setIsGroupAdding(!isGroupAdding)}/>}
@@ -220,6 +233,7 @@ const AutomationsPageLayout = () => {
                         )
                     })}
 
+                    {/* If user clicks to add group button a group name input will appear*/}
                     {isGroupAdding ?
                         <Sidebar.Item icon={<GoFileDirectory size={17} className='automations-sidebar__group-icon'/>}>
                             <form
@@ -242,6 +256,8 @@ const AutomationsPageLayout = () => {
                         </Sidebar.Item>
                     : null}
                 </Sidebar.Group>
+
+                 {/* Accounts part of sidebar */}
                 <Sidebar.Group title='Accounts' addButton={<GoPlus className='automations-sidebar__add' onClick={() => {}}/>}>
                     {accounts.map((account, i) => {
                         return (
@@ -250,6 +266,8 @@ const AutomationsPageLayout = () => {
                     })}
                 </Sidebar.Group>
             </Sidebar>
+
+            {/* Content part of page */}
             <div className='automations-page__content'>
                 {isAutomationsLoading || isAutomationsFetching ? <div className='loading-spinner'><BarLoader color='#FF7A7A' width="100%"/></div> : null}
                 <div className='automations-page__head'>
@@ -307,6 +325,11 @@ const AutomationsPageLayout = () => {
                     }) : null}
                 </div>
             </div>
+
+            {/* Modals */}
+            <Modal>
+                
+            </Modal>
         </div>
     );
 };

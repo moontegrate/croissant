@@ -10,7 +10,7 @@ class Automation(models.Model):
     conversion = models.FloatField(default=0)
     channel = models.CharField(max_length=10, default='')
     enabled = models.BooleanField(default=True)
-    group = models.CharField(max_length=255, blank=True, null=True)
+    group = models.ForeignKey('Group', on_delete=models.SET_NULL, null=True, blank=True, related_name='automations')
 
     def __str__(self):
         return f"Automation - {self.name}"
@@ -27,3 +27,11 @@ class Node(models.Model):
 
     def __str__(self):
         return f"{self.type} - {self.id}"
+    
+
+class Group(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return f"Group - {self.name}"
