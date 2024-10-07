@@ -1,0 +1,21 @@
+@import '../../style/variables.scss';
+
+.select-account {
+    cursor: pointer;
+    background-color: rgb(249 250 251);
+    border-radius: 10px;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+
+    &__info, &__item {
+        display: flex;
+        gap: 10px;
+        
+        img {
+            height: 25px;
+            width: 25px;
+            border-radius: 50%;
+        }
+    }
+}

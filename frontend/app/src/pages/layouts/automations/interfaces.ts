@@ -31,5 +31,11 @@ export interface InitialState {
     groupsFilter: string | boolean,
     channelsFilter: string,
     statusFilter: string,
-    sort: string
+    sort: string,
+    isAutomationAdding: boolean,
+    currentModalView: number,
+    createAutomationForm: {
+        automationName: string | null,
+        selectedAccount: string | null
+    }
 };

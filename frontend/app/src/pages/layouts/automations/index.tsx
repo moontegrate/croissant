@@ -29,13 +29,23 @@ import { GroupData } from './interfaces';
 
 // Redux
 import { useAppDispatch } from '../../../hooks/state';
-import { setAccounts, setAutomations, setChannelsFilter, setGroups, setGroupsFilter, setSortBy, setStatusFilter } from './automationsSlice';
+import {
+    setAccounts,
+    setAutomations,
+    setChannelsFilter,
+    setGroups,
+    setGroupsFilter,
+    setSortBy,
+    setStatusFilter,
+    setIsAutomationAdding
+} from './automationsSlice';
 
 // Components
 import Sidebar from '../../../components/Sidebar';
 import { BarLoader } from 'react-spinners';
-import { Button, Dropdown, Modal, TextInput, ToggleSwitch } from 'flowbite-react';
+import { Button, Dropdown, TextInput } from 'flowbite-react';
 import AutomationCard from '../../../components/AutomationCard';
+import CreateAutomationModal from '../../../components/CreateAutomationModal';
 
 // Server
 import {
@@ -52,16 +62,16 @@ import {
 import { v4 as uuidv4 } from 'uuid';
 
 const AutomationsPageLayout = () => {
-    const {data: automationsData = [],
+    const { data: automationsData = [],
         isFetching: isAutomationsFetching,
         isLoading: isAutomationsLoading,
         refetch: refetchAutomations
     } = useGetAutomationsQuery();
-    const {data: accountsData = [],
+    const { data: accountsData = [],
         isFetching: isAccountsFetching,
         isLoading: isAccountsLoading
     } = useGetAccountsQuery();
-    const {data: groupsData = [],
+    const { data: groupsData = [],
         isFetching: isGroupsFetching,
         isLoading: isGroupsLoading,
         refetch: refetchGroups
@@ -83,7 +93,6 @@ const AutomationsPageLayout = () => {
     const statusFilter = useAppSelector((state) => state.automationsSlice.statusFilter);
     const sortBy = useAppSelector((state) => state.automationsSlice.sort);
 
-    const [isAutomationAdding, setIsAutomationAdding] = useState(false);
     const [isGroupAdding, setIsGroupAdding] = useState(false);
     const [isGroupRenaming, setIsGroupRenaming] = useState<boolean | number>(false);
 
@@ -100,7 +109,7 @@ const AutomationsPageLayout = () => {
 
         refetchAutomations();
         refetchGroups();
-    // eslint-disable-next-line
+        // eslint-disable-next-line
     }, []);
 
     useEffect(() => {
@@ -154,25 +163,25 @@ const AutomationsPageLayout = () => {
                         fullSized
                         className='px-1 py-1'
                         size="lg"
-                        onClick={() => setIsAutomationAdding(true)}
+                        onClick={() => dispatch(setIsAutomationAdding(true))}
                     >
                         + New
                     </Button>
                 </Sidebar.Group>
-                
+
                 {/* Templates button */}
                 <Sidebar.Group title='Ready-made templates'>
-                    <Sidebar.Item icon={<GoTable size={17} color='#FF7A7A'/>} onClick={() => navigate('/templates')}>Choose template</Sidebar.Item>
+                    <Sidebar.Item icon={<GoTable size={17} color='#FF7A7A' />} onClick={() => navigate('/templates')}>Choose template</Sidebar.Item>
                 </Sidebar.Group>
 
                 {/* Automations groups */}
                 <Sidebar.Group
                     title='Groups'
-                    addButton={<GoPlus className='automations-sidebar__add' onClick={() => setIsGroupAdding(!isGroupAdding)}/>}
+                    addButton={<GoPlus className='automations-sidebar__add' onClick={() => setIsGroupAdding(!isGroupAdding)} />}
                 >
                     <Sidebar.Item focused={groupsFilter === "All automations"} onClick={() => dispatch(setGroupsFilter("All automations"))}>All automations</Sidebar.Item>
                     <Sidebar.Item focused={!groupsFilter} onClick={() => dispatch(setGroupsFilter(false))}>Without group</Sidebar.Item>
-                    
+
                     {groups?.map((group, i) => {
                         return (
                             <Sidebar.Item
@@ -180,12 +189,12 @@ const AutomationsPageLayout = () => {
                                 onClick={() => dispatch(setGroupsFilter(group.name))}
                                 key={i}
                                 icon={<GoFileDirectory
-                                size={17}
-                                className='automations-sidebar__group-icon'/>}
+                                    size={17}
+                                    className='automations-sidebar__group-icon' />}
                                 dropdown={
                                     <>
-                                        <Dropdown.Item className='vertical-dropdown__item' onClick={() => setIsGroupRenaming(i)}><GoPencil size={17}/>Rename</Dropdown.Item>
-                                        <Dropdown.Divider/>
+                                        <Dropdown.Item className='vertical-dropdown__item' onClick={() => setIsGroupRenaming(i)}><GoPencil size={17} />Rename</Dropdown.Item>
+                                        <Dropdown.Divider />
                                         <Dropdown.Item
                                             className='vertical-dropdown__item text-red-500'
                                             onClick={() => {
@@ -193,7 +202,7 @@ const AutomationsPageLayout = () => {
 
                                                 if (target.length > 0) {
                                                     target.forEach((element, i) => {
-                                                        updateAutomation({...element, group: false})
+                                                        updateAutomation({ ...element, group: false })
                                                     })
                                                     refetchAutomations();
                                                 };
@@ -204,13 +213,13 @@ const AutomationsPageLayout = () => {
                                                 });
                                             }}
                                         >
-                                            <GoTrash size={17}/>
+                                            <GoTrash size={17} />
                                             Delete
                                         </Dropdown.Item>
                                     </>
                                 }
                             >
-                                { isGroupRenaming === i ? 
+                                {isGroupRenaming === i ?
                                     <form
                                         ref={renamingForm}
                                         onSubmit={(e) => {
@@ -228,14 +237,14 @@ const AutomationsPageLayout = () => {
                                             required
                                         />
                                     </form>
-                                : group.name }
+                                    : group.name}
                             </Sidebar.Item>
                         )
                     })}
 
                     {/* If user clicks to add group button a group name input will appear*/}
                     {isGroupAdding ?
-                        <Sidebar.Item icon={<GoFileDirectory size={17} className='automations-sidebar__group-icon'/>}>
+                        <Sidebar.Item icon={<GoFileDirectory size={17} className='automations-sidebar__group-icon' />}>
                             <form
                                 onSubmit={(e) => {
                                     e.preventDefault();
@@ -251,17 +260,17 @@ const AutomationsPageLayout = () => {
                                     });
                                 }}
                             >
-                                <TextInput theme={textInputTheme} sizing="sm" autoFocus onBlur={() => setIsGroupAdding(false)} required/>
+                                <TextInput theme={textInputTheme} sizing="sm" autoFocus onBlur={() => setIsGroupAdding(false)} required />
                             </form>
                         </Sidebar.Item>
-                    : null}
+                        : null}
                 </Sidebar.Group>
 
-                 {/* Accounts part of sidebar */}
-                <Sidebar.Group title='Accounts' addButton={<GoPlus className='automations-sidebar__add' onClick={() => {}}/>}>
+                {/* Accounts part of sidebar */}
+                <Sidebar.Group title='Accounts' addButton={<GoPlus className='automations-sidebar__add' onClick={() => { }} />}>
                     {accounts.map((account, i) => {
                         return (
-                            <Sidebar.Item icon={<img className='rounded-full' src={account.img} alt='account'/>} key={i}>@{account.name}</Sidebar.Item>
+                            <Sidebar.Item icon={<img className='rounded-full' src={account.img ? account.img : '/account.svg'} alt='account' />} key={i}>@{account.name}</Sidebar.Item>
                         );
                     })}
                 </Sidebar.Group>
@@ -269,7 +278,7 @@ const AutomationsPageLayout = () => {
 
             {/* Content part of page */}
             <div className='automations-page__content'>
-                {isAutomationsLoading || isAutomationsFetching ? <div className='loading-spinner'><BarLoader color='#FF7A7A' width="100%"/></div> : null}
+                {isAutomationsLoading || isAutomationsFetching ? <div className='loading-spinner'><BarLoader color='#FF7A7A' width="100%" /></div> : null}
                 <div className='automations-page__head'>
                     <h2 className='automations-page__title'>{title()} <span>{filteredAutomationsByStatus.length}</span></h2>
                     <div className='automations-page__filters'>
@@ -279,7 +288,7 @@ const AutomationsPageLayout = () => {
                             label=""
                             renderTrigger={() => <div className='automations-page__filter'>
                                 {channelsFilter}
-                                <GoMultiSelect className='automations-page__filter-icon' size={20}/>
+                                <GoMultiSelect className='automations-page__filter-icon' size={20} />
                             </div>}
                         >
                             <Dropdown.Item onClick={() => dispatch(setChannelsFilter('All channels'))}>All channels</Dropdown.Item>
@@ -292,7 +301,7 @@ const AutomationsPageLayout = () => {
                             label=""
                             renderTrigger={() => <div className='automations-page__filter'>
                                 {statusFilter}
-                                <HiOutlinePower className='automations-page__filter-icon' size={20}/>
+                                <HiOutlinePower className='automations-page__filter-icon' size={20} />
                             </div>}
                         >
                             <Dropdown.Item onClick={() => dispatch(setStatusFilter("All statuses"))}>All statuses</Dropdown.Item>
@@ -305,7 +314,7 @@ const AutomationsPageLayout = () => {
                             label=""
                             renderTrigger={() => <div className='automations-page__filter'>
                                 {sortBy}
-                                <GoSortDesc className='automations-page__filter-icon' size={20}/>
+                                <GoSortDesc className='automations-page__filter-icon' size={20} />
                             </div>}
                         >
                             <Dropdown.Item onClick={() => dispatch(setSortBy('Created date'))}>Created date</Dropdown.Item>
@@ -321,15 +330,13 @@ const AutomationsPageLayout = () => {
                 </div>
                 <div className='automations-page__grid'>
                     {automations.length > 0 ? filteredAutomationsByStatus.map((automation, i) => {
-                        return <AutomationCard automation={automation} key={i}/>;
+                        return <AutomationCard automation={automation} key={i} />;
                     }) : null}
                 </div>
             </div>
 
             {/* Modals */}
-            <Modal>
-                
-            </Modal>
+            <CreateAutomationModal/>
         </div>
     );
 };

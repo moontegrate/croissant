@@ -38,7 +38,7 @@ export const modalTheme = {
         "popup": "pt-0"
     },
     "header": {
-        "base": "flex items-start justify-between rounded-t-[10px] border-b p-5 dark:border-gray-600",
+        "base": "flex items-start justify-between rounded-t-[20px] border-b p-5 dark:border-gray-600",
         "popup": "border-b-0 p-2",
         "title": "text-xl font-medium text-gray-900 dark:text-white",
         "close": {
@@ -47,7 +47,7 @@ export const modalTheme = {
         }
     },
     "footer": {
-        "base": "flex items-center space-x-2 rounded-b-[10px] border-gray-200 p-6 dark:border-gray-600",
+        "base": "flex items-center space-x-2 rounded-b-[20px] border-gray-200 p-6 dark:border-gray-600",
         "popup": "border-t"
     }
 }

@@ -9,6 +9,13 @@ export const apiSlice = createApi({
     baseQuery: fetchBaseQuery({baseUrl: "http://localhost:8000/api"}),
     endpoints: builder => ({
         // Automations
+        createAutomation: builder.mutation<void, {automationName: string, selectedAccount: string}>({
+            query: (data) => ({
+                url: `/automations/`,
+                method: "POST",
+                body: data
+            })
+        }),
         deleteAutomation: builder.mutation<void, string>({
             query: (automationId) => ({
                 url: `/automations/${automationId}/`,
@@ -22,10 +29,10 @@ export const apiSlice = createApi({
             })
         }),
         getAutomation: builder.query<AutomationData, string>({
-            query: (automationId) => `/automations/${automationId}`
+            query: (automationId) => `/automations/${automationId}/`
         }),
         getAutomationNodes: builder.query<NodeData[], string>({
-            query: (automationId) => `/nodes?automation=${automationId}`
+            query: (automationId) => `/nodes?automation=${automationId}/`
         }),
         updateAutomation: builder.mutation<void, AutomationData>({
             query: (automation) => ({
@@ -45,13 +52,13 @@ export const apiSlice = createApi({
         }),
         deleteNode: builder.mutation<void, string>({
             query: (nodeId) => ({
-                url: `/nodes/${nodeId}`,
+                url: `/nodes/${nodeId}/`,
                 method: "DELETE"
             })
         }),
         updateNode: builder.mutation<void, NodeData>({
             query: (node) => ({
-                url: `/nodes/${node.id}`,
+                url: `/nodes/${node.id}/`,
                 method: "PUT",
                 body: node
             })
@@ -67,7 +74,7 @@ export const apiSlice = createApi({
         }),
         deleteAutomationGroup: builder.mutation<void, string>({
             query: (groupId) => ({
-                url: `/automations-groups/${groupId}`,
+                url: `/automations-groups/${groupId}/`,
                 method: "DELETE"
             })
         }),
@@ -76,7 +83,7 @@ export const apiSlice = createApi({
         }),
         updateAutomationGroup: builder.mutation<void, GroupData>({
             query: (group) => ({
-                url: `/automations-groups/${group.id}`,
+                url: `/automations-groups/${group.id}/`,
                 method: "PUT",
                 body: group
             })

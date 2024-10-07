@@ -10,7 +10,13 @@ const initialState: InitialState = {
     groupsFilter: "All automations",
     channelsFilter: "All channels",
     statusFilter: "All statuses",
-    sort: "Created date"
+    sort: "Created date",
+    isAutomationAdding: false,
+    currentModalView: 1,
+    createAutomationForm: {
+        automationName: null,
+        selectedAccount: null
+    }
 };
 
 const automationsSlice = createSlice({
@@ -23,7 +29,10 @@ const automationsSlice = createSlice({
         setGroupsFilter: (state, action: PayloadAction<string | boolean>) => { state.groupsFilter = action.payload },
         setChannelsFilter: (state, action: PayloadAction<string>) => { state.channelsFilter = action.payload },
         setStatusFilter: (state, action: PayloadAction<string>) => { state.statusFilter = action.payload },
-        setSortBy: (state, action: PayloadAction<string>) => { state.sort = action.payload }
+        setSortBy: (state, action: PayloadAction<string>) => { state.sort = action.payload },
+        setIsAutomationAdding: (state, action: PayloadAction<boolean>) => { state.isAutomationAdding = action.payload },
+        setCurrentModalView: (state, action: PayloadAction<number>) => { state.currentModalView = action.payload },
+        setCreateAutomationForm: (state, action: PayloadAction<{automationName: string | null, selectedAccount: string | null}>) => { state.createAutomationForm = action.payload }
     }
 });
 
@@ -31,9 +40,12 @@ export default automationsSlice.reducer;
 export const {
     setAccounts,
     setAutomations,
+    setChannelsFilter,
+    setCreateAutomationForm,
+    setCurrentModalView,
     setGroups,
     setGroupsFilter,
-    setChannelsFilter,
+    setIsAutomationAdding,
     setStatusFilter,
-    setSortBy
+    setSortBy,
 } = automationsSlice.actions;
