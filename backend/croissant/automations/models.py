@@ -17,13 +17,14 @@ class Automation(models.Model):
 
 class Node(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    created_date = models.DateTimeField(auto_now_add=True)
     type = models.CharField(max_length=10)
     x = models.IntegerField()
     y = models.IntegerField()
     z_index = models.IntegerField()
     is_entry_point = models.BooleanField()
     is_binded = models.BooleanField()
-    binded_to = models.ForeignKey(Automation, on_delete=models.CASCADE)
+    binded_to = models.UUIDField(null=True)
 
     def __str__(self):
         return f"{self.type} - {self.id}"

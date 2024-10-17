@@ -36,6 +36,6 @@ export interface InitialState {
     currentModalView: number,
     createAutomationForm: {
         automationName: string | null,
-        selectedAccount: string | null
+        selectedAccount: AccountData | null
     }
 };

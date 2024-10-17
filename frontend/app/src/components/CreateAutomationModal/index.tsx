@@ -3,10 +3,10 @@ import './index.scss';
 import { buttonTheme, modalTheme, radioButtonTheme, textInputTheme } from '../../style/flowbiteThemes';
 
 // Components
-import { Button, Dropdown, Label, Modal, Radio, TextInput } from 'flowbite-react';
+import { Button, Label, Modal, Radio, TextInput } from 'flowbite-react';
 
 // Hooks
-import { ReactNode, useState } from 'react';
+import { useState } from 'react';
 
 // Redux
 import { useAppDispatch, useAppSelector } from '../../hooks/state';
@@ -36,6 +36,7 @@ const CreateAutomationModal = () => {
             show={isAutomationAdding}
             onClose={() => {
                 dispatch(setIsAutomationAdding(false));
+                dispatch(setCreateAutomationForm({automationName: null, selectedAccount: null}));
                 dispatch(setCurrentModalView(1));
             }}
             dismissible
@@ -82,7 +83,7 @@ const View1 = () => {
                             <div className='create-automation__radio-label-text'>
                                 <p className='text-lg'>From a ready-made template</p>
                                 <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-                                    Suitable for beginners qho want to start their first automation in 5 minutes
+                                    Suitable for beginners who want to start their first automation in 5 minutes
                                 </p>
                             </div>
                         </Label>
@@ -111,6 +112,21 @@ const View1 = () => {
 const View2 = () => {
     const dispatch = useAppDispatch();
     const formData = useAppSelector((state) => state.automationsSlice.createAutomationForm);
+    const [automationNameError, setAutomationNameError] = useState<boolean>(false);
+    const [selectedAccountError, setSelectedAccountError] = useState<boolean>(false);
+
+    function checkFields() {
+        if (formData.automationName === null || formData.automationName === '') {
+            setAutomationNameError(true);
+        } else {
+            setAutomationNameError(false);
+        };
+        if (formData.selectedAccount === null) {
+            setSelectedAccountError(true);
+        } else {
+            setSelectedAccountError(false);
+        };
+    };
 
     return (
         <>
@@ -131,7 +147,10 @@ const View2 = () => {
                         placeholder='Automation name'
                         required
                     />
+                    {automationNameError ? <p className='text-[14px] text-red-500 leading-none'>This field is required.</p> : null}
+                    
                     <SelectAccountInput/>
+                    {selectedAccountError ? <p className='text-[14px] text-red-500 leading-none'>This field is required.</p> : null}
                 </div>
             </Modal.Body>
             <Modal.Footer>
@@ -141,7 +160,7 @@ const View2 = () => {
                     size="lg"
                     className='px-2 py-2'
                     onClick={() => {
-                        
+                        checkFields()
                     }}
                 >Create</Button>
             </Modal.Footer>

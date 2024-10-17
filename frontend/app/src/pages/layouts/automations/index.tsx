@@ -60,6 +60,7 @@ import {
 
 // Libraires
 import { v4 as uuidv4 } from 'uuid';
+import NoElements from '../../../components/NoElements';
 
 const AutomationsPageLayout = () => {
     const { data: automationsData = [],
@@ -331,7 +332,7 @@ const AutomationsPageLayout = () => {
                 <div className='automations-page__grid'>
                     {automations.length > 0 ? filteredAutomationsByStatus.map((automation, i) => {
                         return <AutomationCard automation={automation} key={i} />;
-                    }) : null}
+                    }) : <NoElements text="Oops! There are no automations." description="Let's create one."/>}
                 </div>
             </div>
 

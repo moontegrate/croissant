@@ -32,7 +32,7 @@ const automationsSlice = createSlice({
         setSortBy: (state, action: PayloadAction<string>) => { state.sort = action.payload },
         setIsAutomationAdding: (state, action: PayloadAction<boolean>) => { state.isAutomationAdding = action.payload },
         setCurrentModalView: (state, action: PayloadAction<number>) => { state.currentModalView = action.payload },
-        setCreateAutomationForm: (state, action: PayloadAction<{automationName: string | null, selectedAccount: string | null}>) => { state.createAutomationForm = action.payload }
+        setCreateAutomationForm: (state, action: PayloadAction<{automationName: string | null, selectedAccount: AccountData | null}>) => { state.createAutomationForm = action.payload }
     }
 });
 

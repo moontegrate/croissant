@@ -7,14 +7,11 @@ import { GoChevronDown } from "react-icons/go";
 import { Dropdown } from 'flowbite-react';
 
 // Hooks
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 // Redux
 import { useAppDispatch, useAppSelector } from '../../hooks/state';
 import { setCreateAutomationForm } from '../../pages/layouts/automations/automationsSlice';
-
-// Interfaces
-import { AccountData } from '../../pages/layouts/automations/interfaces';
 
 
 const SelectAccountInput = () => {
@@ -22,37 +19,35 @@ const SelectAccountInput = () => {
 
     const accounts = useAppSelector((state) => state.automationsSlice.accounts);
     const formData = useAppSelector((state) => state.automationsSlice.createAutomationForm);
-    const [selectedAccount, setSelectedAccount] = useState<AccountData>(accounts[0]);
+    const selectedAccount = useAppSelector((state) => state.automationsSlice.createAutomationForm.selectedAccount);
 
     useEffect(() => {
-        dispatch(setCreateAutomationForm({...formData, selectedAccount: selectedAccount.id}));
+        if (accounts.length !== 0) dispatch(setCreateAutomationForm({...formData, selectedAccount: accounts[0]}));
     }, []);
+
+    function renderItems() {
+        if (accounts.length === 0) {
+            return (
+                <Dropdown.Item className='select-account__item'>Nothing found</Dropdown.Item>
+            );
+        } 
+    };
 
     return (
         <Dropdown theme={verticalDropdownTheme} label="" renderTrigger={() => {
             return (
                 <div className='select-account'>
                     <div className='select-account__info'>
-                        <img src={selectedAccount.img ? selectedAccount.img : '/account.svg'} alt='account' />
-                        <div>@{selectedAccount.name}</div>
+                        {selectedAccount ? <>
+                            <img src={selectedAccount.img ? selectedAccount.img : '/account.svg'} alt='account' />
+                            <div>@{selectedAccount.name}</div>
+                        </> : <p>Select account</p>}
                     </div>
                     <GoChevronDown/>
                 </div>
             );
         }}>
-            {accounts.map((account, i) => (
-                <Dropdown.Item
-                    key={i}
-                    onClick={() => {
-                        setSelectedAccount(account);
-                        dispatch(setCreateAutomationForm({...formData, selectedAccount: account.id}));
-                    }}
-                    className='select-account__item'
-                >
-                    <img src={account.img ? account.img : '/account.svg'} alt='account' />
-                    <div>@{account.name}</div>
-                </Dropdown.Item>
-            ))}
+            {renderItems()}
         </Dropdown>
     );
 };
