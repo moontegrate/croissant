@@ -1,0 +1,22 @@
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 20px;
+
+    &-core {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    &-extensions {
+        display: flex;
+        gap: 30px;
+    }
+
+    &-core, &-extensions {
+        min-width: fit-content;
+    }
+}

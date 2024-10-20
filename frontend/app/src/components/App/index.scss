@@ -1,4 +1,6 @@
 .App {
     height: 100vh;
     display: flex;
+    max-width: 100vh;
+    overflow: hidden;
 }

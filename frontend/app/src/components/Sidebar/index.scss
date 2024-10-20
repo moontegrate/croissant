@@ -85,3 +85,10 @@
         }
     }
 }
+
+@media (max-width: 1000px) {
+    .sidebar {
+        position: fixed;
+        right: calc(100%);
+    }
+}

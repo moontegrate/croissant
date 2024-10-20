@@ -16,10 +16,10 @@ const Navigation = () => {
     const iconColor = "#545454";
     const mainColor = "#FF7A7A"
     return (
-        <Sidebar theme={sidebarTheme}>
+        <Sidebar className='navigation' theme={sidebarTheme}>
             <Sidebar.Items>
                 <Sidebar.ItemGroup>
-                    <div className='sidebar__logo' onClick={() => navigate('/')}>
+                    <div className='navigation__logo' onClick={() => navigate('/')}>
                         <img src={logo} alt="logo"/>
                     </div>
                     <Sidebar.Item className={location.pathname === "/automations" ? "bg-gray-100" : ""} onClick={() => navigate('/automations')}><GoWorkflow size={iconSize} color={location.pathname === "/automations" ? mainColor : iconColor}/></Sidebar.Item>
@@ -32,7 +32,7 @@ const Navigation = () => {
                     <Sidebar.Item href='#'><GoGear size={iconSize} color={iconColor}/></Sidebar.Item>
                 </Sidebar.ItemGroup>
                 <Sidebar.ItemGroup>
-                    <div className='sidebar__profile'>
+                    <div className='navigation__profile'>
 
                     </div>
                 </Sidebar.ItemGroup>

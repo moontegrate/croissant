@@ -41,6 +41,8 @@ import {
 } from './automationsSlice';
 
 // Components
+import PageHeader from '../../../components/PageHeader';
+import NoElements from '../../../components/NoElements';
 import Sidebar from '../../../components/Sidebar';
 import { BarLoader } from 'react-spinners';
 import { Button, Dropdown, TextInput } from 'flowbite-react';
@@ -60,7 +62,6 @@ import {
 
 // Libraires
 import { v4 as uuidv4 } from 'uuid';
-import NoElements from '../../../components/NoElements';
 
 const AutomationsPageLayout = () => {
     const { data: automationsData = [],
@@ -148,7 +149,7 @@ const AutomationsPageLayout = () => {
     };
 
     return (
-        <div className="private-page automations-page">
+        <div className="automations-page">
             <Helmet>
                 <meta name="description" content="auto chat bot" />
                 <title>Automations</title>
@@ -279,16 +280,21 @@ const AutomationsPageLayout = () => {
 
             {/* Content part of page */}
             <div className='automations-page__content'>
+                {/* Spinner */}
                 {isAutomationsLoading || isAutomationsFetching ? <div className='loading-spinner'><BarLoader color='#FF7A7A' width="100%" /></div> : null}
-                <div className='automations-page__head'>
-                    <h2 className='automations-page__title'>{title()} <span>{filteredAutomationsByStatus.length}</span></h2>
-                    <div className='automations-page__filters'>
+
+                {/* Page head */}
+                <PageHeader>
+                    <PageHeader.Core>
+                        <h2 className='automations-page__title'>{title()} <span>{filteredAutomationsByStatus.length}</span></h2>
+                    </PageHeader.Core>
+                    <PageHeader.Extensions>
                         <Dropdown
                             theme={verticalDropdownTheme}
                             dismissOnClick
                             label=""
                             renderTrigger={() => <div className='automations-page__filter'>
-                                {channelsFilter}
+                                <span className='automations-page__filter-name'>{channelsFilter}</span>
                                 <GoMultiSelect className='automations-page__filter-icon' size={20} />
                             </div>}
                         >
@@ -301,7 +307,7 @@ const AutomationsPageLayout = () => {
                             dismissOnClick
                             label=""
                             renderTrigger={() => <div className='automations-page__filter'>
-                                {statusFilter}
+                                <span className='automations-page__filter-name'>{statusFilter}</span>
                                 <HiOutlinePower className='automations-page__filter-icon' size={20} />
                             </div>}
                         >
@@ -314,7 +320,7 @@ const AutomationsPageLayout = () => {
                             dismissOnClick
                             label=""
                             renderTrigger={() => <div className='automations-page__filter'>
-                                {sortBy}
+                                <span className='automations-page__filter-name'>{sortBy}</span>
                                 <GoSortDesc className='automations-page__filter-icon' size={20} />
                             </div>}
                         >
@@ -327,8 +333,8 @@ const AutomationsPageLayout = () => {
                             <Dropdown.Item onClick={() => dispatch(setSortBy('Worst conversion'))}>Worst conversion</Dropdown.Item>
                             <Dropdown.Item onClick={() => dispatch(setSortBy('Best conversion'))}>Best conversion</Dropdown.Item>
                         </Dropdown>
-                    </div>
-                </div>
+                    </PageHeader.Extensions>
+                </PageHeader>
                 <div className='automations-page__grid'>
                     {automations.length > 0 ? filteredAutomationsByStatus.map((automation, i) => {
                         return <AutomationCard automation={automation} key={i} />;

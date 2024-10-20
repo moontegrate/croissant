@@ -1,0 +1,11 @@
+.menu-button {
+    cursor: pointer;
+    display: block;
+    transition: .2s all;
+}
+
+@media (min-width: 1001px) {
+    .menu-button {
+        display: none;
+    }
+}
