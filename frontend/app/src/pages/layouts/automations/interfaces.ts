@@ -28,7 +28,7 @@ export interface InitialState {
     accounts: AccountData[],
     automations: AutomationData[],
     groups: GroupData[],
-    groupsFilter: string | boolean,
+    groupsFilter: string | boolean | null,
     channelsFilter: string,
     statusFilter: string,
     sort: string,

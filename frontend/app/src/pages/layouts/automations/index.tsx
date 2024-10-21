@@ -98,7 +98,7 @@ const AutomationsPageLayout = () => {
     const [isGroupAdding, setIsGroupAdding] = useState(false);
     const [isGroupRenaming, setIsGroupRenaming] = useState<boolean | number>(false);
 
-    const filteredAutomationsByGroup = automations.filter(a => a.group === groupsFilter || groupsFilter === "All automations");
+    const filteredAutomationsByGroup = automations.filter(a => a.group === groupsFilter || !groupsFilter);
     const filteredAutomationsByChannel = filteredAutomationsByGroup.filter(a => a.channel === channelsFilter || channelsFilter === "All channels");
     const filteredAutomationsByStatus = filteredAutomationsByChannel.filter(a => a.enabled === (statusFilter === "On") || statusFilter === "All statuses");
 
@@ -181,8 +181,8 @@ const AutomationsPageLayout = () => {
                     title='Groups'
                     addButton={<GoPlus className='automations-sidebar__add' onClick={() => setIsGroupAdding(!isGroupAdding)} />}
                 >
-                    <Sidebar.Item focused={groupsFilter === "All automations"} onClick={() => dispatch(setGroupsFilter("All automations"))}>All automations</Sidebar.Item>
-                    <Sidebar.Item focused={!groupsFilter} onClick={() => dispatch(setGroupsFilter(false))}>Without group</Sidebar.Item>
+                    <Sidebar.Item focused={groupsFilter === false} onClick={() => dispatch(setGroupsFilter(false))}>All automations</Sidebar.Item>
+                    <Sidebar.Item focused={groupsFilter === null} onClick={() => dispatch(setGroupsFilter(null))}>Without group</Sidebar.Item>
 
                     {groups?.map((group, i) => {
                         return (
@@ -285,10 +285,15 @@ const AutomationsPageLayout = () => {
 
                 {/* Page head */}
                 <PageHeader>
+                    {/* Title */}
                     <PageHeader.Core>
                         <h2 className='automations-page__title'>{title()} <span>{filteredAutomationsByStatus.length}</span></h2>
                     </PageHeader.Core>
+
+                    {/* Filters */}
                     <PageHeader.Extensions>
+
+                        {/* Channel filter */}
                         <Dropdown
                             theme={verticalDropdownTheme}
                             dismissOnClick
@@ -302,6 +307,8 @@ const AutomationsPageLayout = () => {
                             <Dropdown.Item onClick={() => dispatch(setChannelsFilter('Instagram'))}>Instagram</Dropdown.Item>
                             <Dropdown.Item onClick={() => dispatch(setChannelsFilter('Telegram'))}>Telegram</Dropdown.Item>
                         </Dropdown>
+
+                        {/* Status filter */}
                         <Dropdown
                             theme={verticalDropdownTheme}
                             dismissOnClick
@@ -315,6 +322,8 @@ const AutomationsPageLayout = () => {
                             <Dropdown.Item onClick={() => dispatch(setStatusFilter("On"))}>On</Dropdown.Item>
                             <Dropdown.Item onClick={() => dispatch(setStatusFilter("Off"))}>Off</Dropdown.Item>
                         </Dropdown>
+
+                        {/* Sort */}
                         <Dropdown
                             theme={verticalDropdownTheme}
                             dismissOnClick
@@ -335,6 +344,8 @@ const AutomationsPageLayout = () => {
                         </Dropdown>
                     </PageHeader.Extensions>
                 </PageHeader>
+
+                {/* Content */}
                 <div className='automations-page__grid'>
                     {automations.length > 0 ? filteredAutomationsByStatus.map((automation, i) => {
                         return <AutomationCard automation={automation} key={i} />;

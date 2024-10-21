@@ -1,8 +1,9 @@
 from rest_framework import serializers
-from .models import Automation, Node, Group
+from .models import Automation, Group
+from accounts.serializers import AccountSerializer
 
 class AutomationSerializer(serializers.ModelSerializer):
-    createdDate = serializers.CharField(source='created_date')
+    createdDate = serializers.CharField(source='created_date', read_only=True)
     accountName = serializers.SerializerMethodField()
 
     class Meta:
@@ -11,6 +12,11 @@ class AutomationSerializer(serializers.ModelSerializer):
 
     def get_accountName(self, obj):
         return obj.account.name
+    
+    def create(self, validated_data):
+        account = validated_data.get('account')  # Используем account
+        automation = Automation.objects.create(**validated_data)
+        return automation
     
 
 class GroupSerializer(serializers.ModelSerializer):

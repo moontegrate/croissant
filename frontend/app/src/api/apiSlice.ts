@@ -9,7 +9,7 @@ export const apiSlice = createApi({
     baseQuery: fetchBaseQuery({baseUrl: "http://localhost:8000/api"}),
     endpoints: builder => ({
         // Automations
-        createAutomation: builder.mutation<void, {automationName: string, selectedAccount: string}>({
+        createAutomation: builder.mutation<void, {automationName: string, selectedAccount: AccountData}>({
             query: (data) => ({
                 url: `/automations/`,
                 method: "POST",
@@ -97,6 +97,7 @@ export const apiSlice = createApi({
 });
 
 export const {
+    useCreateAutomationMutation,
     useCreateAutomationGroupMutation,
     useCreateNodeMutation,
     useDeleteAutomationMutation,
