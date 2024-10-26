@@ -1,12 +1,13 @@
 // Style
 import './index.scss';
-import { toggleSwitchTheme, verticalDropdownTheme } from '../../style/flowbiteThemes';
+import { verticalDropdownTheme } from '../../style/flowbiteThemes';
 import { HiOutlinePower } from "react-icons/hi2";
 import { SlSettings } from "react-icons/sl";
 import { GoChevronRight, GoDuplicate, GoFileDirectory, GoLink, GoMoveToEnd, GoPeople, GoTrash } from "react-icons/go";
 
 // Components
-import { Dropdown, ToggleSwitch } from 'flowbite-react';
+import { Dropdown } from 'flowbite-react';
+import ToggleSwitch from '../ToggleSwitch';
 
 // Interfaces
 import { AutomationData } from '../../pages/layouts/automations/interfaces';
@@ -65,25 +66,24 @@ const AutomationCard: React.FC<{automation: AutomationData}> = ({automation}) =>
                         </button>
                     }
                 >
-                    <Dropdown.Item className='vertical-dropdown__item automation__dropdown-item adbc'>
+                    <Dropdown.Item
+                        className='vertical-dropdown__item automation__dropdown-item adbc'
+                        onClick={() => {
+                            updateAutomation({ ...automation, enabled: !automation.enabled })
+                            .then(() => {
+                                refetchAutomations().then((res) => {
+                                    if (res.data) dispatch(setAutomations(res.data));
+                                });
+                            });
+                        }}
+                    >
                         <div className='adbc w-full flex gap-[7px]'>
                             <HiOutlinePower size={17} />
                             Turn on
                         </div>
                         <ToggleSwitch
-                            theme={toggleSwitchTheme}
-                            color='green'
                             disabled={isAutomationUpdating || isAutomationsLoading}
                             className='adbc'
-                            sizing="sm"
-                            onChange={() => {
-                                updateAutomation({ ...automation, enabled: !automation.enabled })
-                                    .then(() => {
-                                        refetchAutomations().then((res) => {
-                                            if (res.data) dispatch(setAutomations(res.data));
-                                        });
-                                    })
-                            }}
                             checked={automation.enabled}
                         />
                     </Dropdown.Item>
@@ -137,7 +137,7 @@ const AutomationCard: React.FC<{automation: AutomationData}> = ({automation}) =>
                     <Dropdown.Divider className='adbc' />
                     <Dropdown.Item
                         className='vertical-dropdown__item automation__dropdown-item text-red-500 adbc'
-                        onClick={() => deleteAutomation(automation.id)}
+                        onClick={() => deleteAutomation(automation.id).then(() => refetchAutomations())}
                     ><GoTrash color='red' size={17} />Delete</Dropdown.Item>
                 </Dropdown>
             </div>
@@ -154,7 +154,7 @@ const AutomationCard: React.FC<{automation: AutomationData}> = ({automation}) =>
                 </div>
                 <div className='automation__account'>
                     <div className='automation__account-icon'>
-                        <img src="https://www.redditstatic.com/avatars/defaults/v2/avatar_default_0.png" alt="account" />
+                        <img src={automation.accountIcon ? automation.accountIcon : "https://www.redditstatic.com/avatars/defaults/v2/avatar_default_0.png"} alt="account" />
                     </div>
                     <div className='automation__account-name'>@{automation.accountName}</div>
                 </div>

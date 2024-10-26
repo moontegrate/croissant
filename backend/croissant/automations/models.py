@@ -18,6 +18,7 @@ class Automation(models.Model):
 class Node(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     created_date = models.DateTimeField(auto_now_add=True)
+    automation = models.ForeignKey('automations.Automation', on_delete=models.CASCADE)
     type = models.CharField(max_length=10)
     x = models.IntegerField()
     y = models.IntegerField()

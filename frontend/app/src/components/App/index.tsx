@@ -17,6 +17,7 @@ import { Toaster } from "react-hot-toast";
 // Routing variables
 const PublicPage = lazy(() => import("../../pages/PublicPage"));
 const PrivatePage = lazy(() => import("../../pages/PrivatePage"));
+const ConnectPageLayout = lazy(() => import("../../pages/layouts/automations/connect"));
 
 function App() {
     return (
@@ -30,6 +31,7 @@ function App() {
                     >
                         <Routes>
                             <Route path="/signin" element={<PublicPage />} />
+                            <Route path="/automations/connect" element={<ConnectPageLayout />} />
                             <Route path="/*" element={<PrivatePage />} />
                         </Routes>
                     </Suspense>

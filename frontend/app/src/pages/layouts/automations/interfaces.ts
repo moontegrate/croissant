@@ -5,6 +5,7 @@ export interface AutomationData {
     name: string,
     account: string,
     accountName: string,
+    accountIcon: string,
     users: number,
     conversion: number,
     channel: string,

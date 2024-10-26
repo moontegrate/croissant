@@ -30,7 +30,16 @@ const SelectAccountInput = () => {
             return (
                 <Dropdown.Item className='select-account__item'>Nothing found</Dropdown.Item>
             );
-        } 
+        } else {
+            const items = accounts.map((account, i) => {
+                return <Dropdown.Item key={i} className='select-account__item' onClick={() => dispatch(setCreateAutomationForm({...formData, selectedAccount: account}))}>
+                    <img className='rounded-full' src={account.img ? account.img : '/account.svg'} alt='account' />
+                    {account.name}
+                </Dropdown.Item>
+            });
+
+            return items;
+        };
     };
 
     return (

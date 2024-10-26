@@ -1,0 +1,90 @@
+@import '../../../../style/variables.scss';
+
+.logo {
+    cursor: pointer;
+    width: 50px;
+    height: 50px;
+}
+
+.connect-page {
+    display: flex;
+    width: 100%;
+
+    &__info {
+        display: flex;
+        justify-content: end;
+        width: 50%;
+        background-color: rgb(248, 248, 248);
+
+        &-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            max-width: 550px;
+            width: 100%;
+        }
+
+        &-message {
+            h2 {
+                font-size: 40px;
+                font-weight: 700;
+            }
+
+            span {
+                color: gray;
+            }
+        }
+
+        &-bottom {
+            cursor: pointer;
+            max-width: fit-content;
+            display: flex;
+            gap: 10px;
+            color: gray;
+        }
+    }
+
+    &__answer {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        justify-content: center;
+
+        &-btn {
+            padding: 15px 20px;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            border: 1px solid $border-color;
+            border-radius: 10px;
+            transition: .2s background-color;
+
+            &-title {
+                text-align: start;
+                line-height: 100%;
+            }
+
+            &-icon {
+                width: 60px;
+            }
+
+            &-body {
+                width: 100%;
+                text-align: start;
+            }
+
+            span {
+                font-size: 14px;
+                color: gray;
+            }
+
+            &:hover {
+                background-color: $border-color;
+            }
+        }
+    }
+
+    &__info, &__answer {
+        padding: 30px;
+    }
+}

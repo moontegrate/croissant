@@ -12,6 +12,10 @@ import { ReactNode } from 'react';
 // Hooks
 import { useState } from 'react';
 
+// Redux
+import { useAppDispatch, useAppSelector } from '../../hooks/state';
+import { setIsHamburgerClicked } from '../App/appSlice';
+
 const SidebarItem: React.FC<SidebarItemProps> = ({
     children,
     icon,
@@ -19,10 +23,14 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
     onClick,
     dropdown
 }) => {
+    const dispatch = useAppDispatch();
+
+    const isHamburgerClicked = useAppSelector((state) => state.appSlice.isHamburgerClicked);
     const [isItemHover, setIsItemHover] = useState<boolean | number>(false);
 
     function handleClick(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
         const target = e.target as HTMLDivElement;
+        if (isHamburgerClicked) dispatch(setIsHamburgerClicked(false));
         if (onClick && !target.classList.contains('sdbbc')) {
             onClick();
         };

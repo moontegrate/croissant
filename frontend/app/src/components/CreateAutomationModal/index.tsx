@@ -14,7 +14,10 @@ import { setIsAutomationAdding, setCurrentModalView, setCreateAutomationForm } f
 import SelectAccountInput from '../SelectAccountInput';
 
 // Server
-import { useCreateAutomationMutation } from '../../api/apiSlice';
+import {
+    useCreateAutomationMutation,
+    useGetAutomationsQuery
+} from '../../api/apiSlice';
 
 const CreateAutomationModal = () => {
     const dispatch = useAppDispatch();
@@ -118,7 +121,12 @@ const View2 = () => {
     const [automationNameError, setAutomationNameError] = useState<boolean>(false);
     const [selectedAccountError, setSelectedAccountError] = useState<boolean>(false);
 
-    const [createAutomation, {isSuccess}] = useCreateAutomationMutation();
+    const [createAutomation, {isError, isSuccess}] = useCreateAutomationMutation();
+    const { data: automationsData = [],
+        isFetching: isAutomationsFetching,
+        isLoading: isAutomationsLoading,
+        refetch: refetchAutomations
+    } = useGetAutomationsQuery();
 
     function checkFields() {
         if (formData.automationName === null || formData.automationName === '') {
@@ -166,14 +174,15 @@ const View2 = () => {
                     className='px-2 py-2'
                     onClick={() => {
                         checkFields();
-                        if (!automationNameError && !selectedAccountError) {
+                        if (formData.automationName !== null || formData.selectedAccount !== null) {
                             createAutomation({automationName: formData.automationName!, selectedAccount: formData.selectedAccount!})
                             .then(() => {
-                                if (isSuccess) {
-                                    dispatch(setIsAutomationAdding(false));
-                                    dispatch(setCreateAutomationForm({automationName: null, selectedAccount: null}));
-                                    dispatch(setCurrentModalView(1));
-                                }
+                                
+                                console.log(isSuccess);
+                                refetchAutomations();
+                                dispatch(setIsAutomationAdding(false));
+                                dispatch(setCreateAutomationForm({automationName: null, selectedAccount: null}));
+                                dispatch(setCurrentModalView(1));
                             })
                         };
                     }}

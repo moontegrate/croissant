@@ -1,0 +1,26 @@
+@import '../../style/variables.scss';
+
+.toggle-switch {
+    background-color: $border-color;
+    width: 50px;
+    height: 20px;
+    border-radius: 10px;
+    padding: 2px;
+    display: flex;
+    transition: .2s all;
+
+    &__round {
+        width: 16px;
+        height: 16px;
+        border-radius: 7px;
+        background-color: white;
+    }
+
+    &__checked {
+        background-color: rgb(107, 211, 155);
+    }
+
+    &__disabled {
+        opacity: .2;
+    }
+}

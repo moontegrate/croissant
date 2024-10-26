@@ -17,13 +17,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from automations.views import AutomationViewSet, GroupViewSet
+from automations.views import AutomationViewSet, GroupViewSet, NodeViewSet
 from accounts.views import AccountViewSet
 
 router = DefaultRouter()
 router.register(r'automations', AutomationViewSet)
 router.register(r'accounts', AccountViewSet)
 router.register(r'automations-groups', GroupViewSet)
+router.register(r'nodes', NodeViewSet)
 
 urlpatterns = [
     path('api/', include(router.urls)),

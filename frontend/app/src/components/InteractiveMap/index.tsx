@@ -65,7 +65,7 @@ const InteractiveMap= () => {
         isSuccess
     } = useGetAutomationQuery(automationId!);
 
-    if (isError) navigate('/error');
+    // if (isError) navigate('/error');
 
     useEffect(() => {
         refetch().then((res) => {
@@ -280,8 +280,7 @@ const InteractiveMap= () => {
                 style={{ backgroundColor: '#fafafa' }}
             >
                 <Layer>
-                    {
-                        nodes.map((node: NodeData, i) => {
+                    {nodes ? nodes.map((node: NodeData, i) => {
                             return (
                                 <React.Fragment key={i}>
                                     <Group
@@ -316,8 +315,7 @@ const InteractiveMap= () => {
                                     </Group>
                                 </React.Fragment>
                             );
-                        })
-                    }
+                        }) : null}
                     {isBinding ? handleLinking(bindingFrom!) : null}
                 </Layer>
             </Stage>}

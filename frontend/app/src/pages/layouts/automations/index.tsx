@@ -39,6 +39,7 @@ import {
     setStatusFilter,
     setIsAutomationAdding
 } from './automationsSlice';
+import { setIsHamburgerClicked } from '../../../components/App/appSlice';
 
 // Components
 import PageHeader from '../../../components/PageHeader';
@@ -87,6 +88,7 @@ const AutomationsPageLayout = () => {
     const navigate = useNavigate();
 
     const isAuthenticated = useAppSelector((state) => state.appSlice.isAuthenticated);
+    const isHamubrgerClicked = useAppSelector((state) => state.appSlice.isHamburgerClicked);
     const accounts = useAppSelector((state) => state.automationsSlice.accounts);
     const automations = useAppSelector((state) => state.automationsSlice.automations);
     const groups = useAppSelector((state) => state.automationsSlice.groups);
@@ -98,7 +100,7 @@ const AutomationsPageLayout = () => {
     const [isGroupAdding, setIsGroupAdding] = useState(false);
     const [isGroupRenaming, setIsGroupRenaming] = useState<boolean | number>(false);
 
-    const filteredAutomationsByGroup = automations.filter(a => a.group === groupsFilter || !groupsFilter);
+    const filteredAutomationsByGroup = automations.filter(a => a.group === groupsFilter || groupsFilter === false);
     const filteredAutomationsByChannel = filteredAutomationsByGroup.filter(a => a.channel === channelsFilter || channelsFilter === "All channels");
     const filteredAutomationsByStatus = filteredAutomationsByChannel.filter(a => a.enabled === (statusFilter === "On") || statusFilter === "All statuses");
 
@@ -129,10 +131,10 @@ const AutomationsPageLayout = () => {
     }, [isAutomationsLoading, isAutomationsFetching, isAccountsLoading, isAccountsFetching, isGroupsLoading, isGroupsFetching]);
 
     const title = () => {
-        if (!groupsFilter) {
-            return "Without group";
-        } else if (groupsFilter === 'all') {
+        if (groupsFilter === false) {
             return "All automations";
+        } else if (groupsFilter === null) {
+            return "Without groups";
         } else {
             return groupsFilter.toString();
         };
@@ -165,7 +167,12 @@ const AutomationsPageLayout = () => {
                         fullSized
                         className='px-1 py-1'
                         size="lg"
-                        onClick={() => dispatch(setIsAutomationAdding(true))}
+                        onClick={() => {
+                            dispatch(setIsAutomationAdding(true));
+                            if (isHamubrgerClicked) {
+                                dispatch(setIsHamburgerClicked(false));
+                            };
+                        }}
                     >
                         + New
                     </Button>
@@ -173,7 +180,14 @@ const AutomationsPageLayout = () => {
 
                 {/* Templates button */}
                 <Sidebar.Group title='Ready-made templates'>
-                    <Sidebar.Item icon={<GoTable size={17} color='#FF7A7A' />} onClick={() => navigate('/templates')}>Choose template</Sidebar.Item>
+                    <Sidebar.Item
+                    icon={<GoTable
+                    size={17}
+                    color='#FF7A7A' />}
+                    onClick={() => navigate('/templates')}
+                >
+                    Choose template
+                </Sidebar.Item>
                 </Sidebar.Group>
 
                 {/* Automations groups */}
@@ -269,12 +283,12 @@ const AutomationsPageLayout = () => {
                 </Sidebar.Group>
 
                 {/* Accounts part of sidebar */}
-                <Sidebar.Group title='Accounts' addButton={<GoPlus className='automations-sidebar__add' onClick={() => { }} />}>
-                    {accounts.map((account, i) => {
+                <Sidebar.Group title='Accounts' addButton={<GoPlus className='automations-sidebar__add' onClick={() => navigate('/automations/connect')} />}>
+                    {accounts.length > 0 ? accounts.map((account, i) => {
                         return (
                             <Sidebar.Item icon={<img className='rounded-full' src={account.img ? account.img : '/account.svg'} alt='account' />} key={i}>@{account.name}</Sidebar.Item>
                         );
-                    })}
+                    }) : <div className='automations-sidebar__empty'>No accounts</div>}
                 </Sidebar.Group>
             </Sidebar>
 
@@ -349,8 +363,9 @@ const AutomationsPageLayout = () => {
                 <div className='automations-page__grid'>
                     {automations.length > 0 ? filteredAutomationsByStatus.map((automation, i) => {
                         return <AutomationCard automation={automation} key={i} />;
-                    }) : <NoElements text="Oops! There are no automations." description="Let's create one."/>}
+                    }) : null}
                 </div>
+                {automations.length === 0 ? <NoElements text="Oops! There are no automations." description="Let's create one."/> : null}
             </div>
 
             {/* Modals */}

@@ -32,11 +32,11 @@ export const apiSlice = createApi({
             query: (automationId) => `/automations/${automationId}/`
         }),
         getAutomationNodes: builder.query<NodeData[], string>({
-            query: (automationId) => `/nodes?automation=${automationId}/`
+            query: (automationId) => `/nodes?automation=${automationId}`
         }),
         updateAutomation: builder.mutation<void, AutomationData>({
             query: (automation) => ({
-                url: '/automations/',
+                url: `/automations/${automation.id}/`,
                 method: "PUT",
                 body: automation
             })
