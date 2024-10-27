@@ -13,7 +13,7 @@ const ToggleSwitch: React.FC<{
                 justifyContent: checked ? 'end' : 'start'
             }}
         >
-            <div className='toggle-switch__round'></div>
+            <div className='toggle-switch__round adbc'></div>
         </div>
     );
 };

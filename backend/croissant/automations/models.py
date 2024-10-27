@@ -25,7 +25,7 @@ class Node(models.Model):
     z_index = models.IntegerField()
     is_entry_point = models.BooleanField()
     is_binded = models.BooleanField()
-    binded_to = models.UUIDField(null=True)
+    binded_to = models.UUIDField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.type} - {self.id}"

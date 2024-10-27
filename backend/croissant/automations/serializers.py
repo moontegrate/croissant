@@ -30,12 +30,23 @@ class GroupSerializer(serializers.ModelSerializer):
 
 
 class NodeSerializer(serializers.ModelSerializer):
-    # createdDate = serializers.CharField(source='created_date', read_only=True)
-    # zIndex = serializers.SerializerMethodField()
-    # isEntryPoint = serializers.SerializerMethodField()
-    # isBinded = serializers.SerializerMethodField()
-    # bindedTo = serializers.SerializerMethodField()
+    createdDate = serializers.CharField(source='created_date', read_only=True)
+    zIndex = serializers.IntegerField(source='z_index')
+    isEntryPoint = serializers.BooleanField(source='is_entry_point')
+    isBinded = serializers.BooleanField(source='is_binded')
+    bindedTo = serializers.UUIDField(source='binded_to', required=False, allow_null=True)
 
     class Meta:
         model = Node
-        fields = '__all__'
+        fields = [
+            'id',
+            'createdDate',
+            'automation',
+            'type',
+            'x',
+            'y',
+            'zIndex',
+            'isEntryPoint',
+            'isBinded',
+            'bindedTo'
+        ]
