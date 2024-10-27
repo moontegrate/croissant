@@ -5,25 +5,29 @@ import ConditionCard from '../FlowCards/ConditionCard';
 import NoteCard from '../FlowCards/NoteCard';
 
 // Interfaces
-import { NodeData } from './interfaces';
+import { NodeType } from './interfaces';
+import { MessageCardData } from '../FlowCards/MessageCard/interfaces';
+import { ConditionCardData } from '../FlowCards/ConditionCard/interfaces';
+import { ActionCardData } from '../FlowCards/ActionCard/interfaces';
+import { NoteCardData } from '../FlowCards/NoteCard/interfaces';
 
-export function renderCardBody(node: NodeData): JSX.Element {
+export function renderCardBody(node: NodeType): JSX.Element {
     switch (node.type) {
         case "Message":
             return (
-                <MessageCard node={node}/>
+                <MessageCard node={node as MessageCardData}/>
             );
         case "Action":
             return (
-                <ActionCard node={node}/>
+                <ActionCard node={node as ActionCardData}/>
             );
         case "Condition":
             return (
-                <ConditionCard node={node}/>
+                <ConditionCard node={node as ConditionCardData}/>
             );
         case "Note":
             return (
-                <NoteCard node={node}/>
+                <NoteCard node={node as NoteCardData}/>
             );
         default:
             return (

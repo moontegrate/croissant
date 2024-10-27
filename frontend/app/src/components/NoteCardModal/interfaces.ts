@@ -1,6 +1,6 @@
-import { NodeData } from "../InteractiveMap/interfaces"
+import { NoteCardData } from "../FlowCards/NoteCard/interfaces"
 
 export interface InitialState {
     isModalOpen: boolean,
-    node: NodeData | null
+    node: NoteCardData | null
 };

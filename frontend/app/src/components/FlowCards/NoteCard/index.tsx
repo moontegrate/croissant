@@ -1,17 +1,16 @@
-// Style imports
+// Style
 import './index.scss';
 
 // Interfaces
-import { CardProps } from '../../InteractiveMap/interfaces';
+import { NoteCardData } from './interfaces';
 
 // Redux
 import { useAppDispatch, useAppSelector } from '../../../hooks/state';
 import { setIsModalOpen, setNode } from '../../NoteCardModal/NoteCardModalSlice';
 
-const NoteCard: React.FC<CardProps> = ({node}) => {
+const NoteCard: React.FC<{node: NoteCardData}> = ({node}) => {
     const dispatch = useAppDispatch();
 
-    const dragId = useAppSelector((state) => state.interactiveMapSlice.dragId);
     const blockClick = useAppSelector((state) => state.interactiveMapSlice.blockCardClick);
 
     return (
@@ -21,7 +20,7 @@ const NoteCard: React.FC<CardProps> = ({node}) => {
                 if (!blockClick) {
                     dispatch(setNode(node!));
                     dispatch(setIsModalOpen(true));
-                }
+                };
             }}
         >
             <div className='flow-card__content'>

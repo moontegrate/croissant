@@ -32,6 +32,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 // Other libraries
 import { v4 as uuidv4 } from 'uuid';
+import TextEditModal from '../FlowCards/MessageCard/TextEditModal';
+import { setNode } from '../NoteCardModal/NoteCardModalSlice';
 
 const InteractiveMap= () => {
     const navigate = useNavigate();
@@ -40,6 +42,18 @@ const InteractiveMap= () => {
     const [updateNode, {isLoading: isNodeUpdating}] = useUpdateNodeMutation();
     const [createNode, {isLoading: isNodeCreating}] = useCreateNodeMutation();
     const [, {isLoading: isNodeDeleting}] = useDeleteNodeMutation();
+
+    const {
+        data: serverNodes,
+        isLoading: isNodesLoading,
+        isError,
+        refetch
+    } = useGetAutomationNodesQuery(automationId!);
+
+    const {
+        data: automation,
+        isSuccess
+    } = useGetAutomationQuery(automationId!);
 
     const dispatch = useAppDispatch();
     const nodes = useAppSelector((state) => state.interactiveMapSlice.nodes);
@@ -54,17 +68,6 @@ const InteractiveMap= () => {
 
     const stageRef = useRef<any>(null);
 
-    const {
-        isLoading: isNodesLoading,
-        isError,
-        refetch
-    } = useGetAutomationNodesQuery(automationId!);
-
-    const {
-        data: automation,
-        isSuccess
-    } = useGetAutomationQuery(automationId!);
-
     // if (isError) navigate('/error');
 
     useEffect(() => {
@@ -73,6 +76,10 @@ const InteractiveMap= () => {
         });
         // eslint-disable-next-line
     }, []);
+
+    useEffect(() => {
+        if (serverNodes) dispatch(setNodes(serverNodes));
+    }, [serverNodes]);
 
     useEffect(() => {
         if (automation) dispatch(setAutomationName(automation.name));
@@ -319,6 +326,8 @@ const InteractiveMap= () => {
                     {isBinding ? handleLinking(bindingFrom!) : null}
                 </Layer>
             </Stage>}
+
+            {/* Map controllers */}
             <div className='flow-control'>
                 <div className='flow-control__add-modal' style={{ "display": isAddModal ? "flex" : "none" }}>
                     <button className='flow-control__add-modal_btn' onClick={() => {
@@ -408,6 +417,9 @@ const InteractiveMap= () => {
                     <GoScreenNormal size={25} />
                 </button>
             </div>
+
+            {/* Modal windows */}
+            <TextEditModal refetch={refetch}/>
         </div>
     );
 };

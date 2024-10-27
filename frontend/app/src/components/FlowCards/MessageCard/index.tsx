@@ -4,17 +4,17 @@ import { GoComment, GoCreditCard, GoFileMedia, GoVideo } from "react-icons/go";
 import { flowCardButtonTheme, verticalDropdownTheme } from '../../../style/flowbiteThemes';
 
 // Components
-import { Button, Dropdown, TextInput } from 'flowbite-react';
+import { Button, Dropdown } from 'flowbite-react';
+import TextSubwindow from './TextSubwindow';
 
 // Interfaces
-import { CardProps } from '../../InteractiveMap/interfaces';
+import { MessageCardData } from './interfaces';
 
 // Hooks
 import { useState } from 'react';
 
-const MessageCard: React.FC<CardProps> = () => {
+const MessageCard: React.FC<{node: MessageCardData}> = ({node}) => {
     const [isTextOn, setIsTextOn] = useState<boolean>(false);
-
 
     return (
         <div className='flow-card message-card'>
@@ -22,13 +22,11 @@ const MessageCard: React.FC<CardProps> = () => {
                 <GoComment color='#2F71F0' size={20} />
                 <h5 className='flow-card__title'>Message</h5>
             </div>
-            <div className='flow-card__body'>
-                {isTextOn ? <div className='flow-card__subwindow'>
+            {isTextOn || node.text ? <TextSubwindow node={node} onClose={() => setIsTextOn(false)}/> : null}
 
-                </div> : null}
-            </div>
+            {/* "Add Content" with dropdown menu */}
             <div className='flow-card__bottom'>
-                <Dropdown className='vertical-dropdown' label='' theme={verticalDropdownTheme} renderTrigger={() => <Button theme={flowCardButtonTheme} className='mb-2 enabled:hover:border-message-card-accent'>+ Add content</Button>}>
+                <Dropdown className='vertical-dropdown' label='' theme={verticalDropdownTheme} renderTrigger={() => <Button disabled={isTextOn} theme={flowCardButtonTheme} className='mb-2 enabled:hover:border-message-card-accent'>+ Add content</Button>}>
                     <Dropdown.Item className='vertical-dropdown__item' onClick={() => {setIsTextOn(true)}}>
                         <GoComment size={17}/>Text + Quick replies
                     </Dropdown.Item>

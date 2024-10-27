@@ -44,6 +44,7 @@ const NoteCardModal = () => {
                     theme={textInputTheme}
                     placeholder='Enter message'
                     defaultValue={node?.noteContent}
+                    maxLength={100}
                     onChange={(e) => {
                         dispatch(setNode({...node!, noteContent: e.target.value}))
                     }}

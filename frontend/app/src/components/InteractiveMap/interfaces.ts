@@ -1,3 +1,8 @@
+import { MessageCardData } from "../FlowCards/MessageCard/interfaces";
+import { ActionCardData } from "../FlowCards/ActionCard/interfaces";
+import { NoteCardData } from "../FlowCards/NoteCard/interfaces";
+import { ConditionCardData } from "../FlowCards/ConditionCard/interfaces";
+
 export interface NodeData {
     id: string;
     automation: string,
@@ -7,9 +12,10 @@ export interface NodeData {
     zIndex: number;
     isEntryPoint: boolean;
     isBinded: boolean;
-    bindedTo: number | null,
-    noteContent?: string;
+    bindedTo: number | null;
 };
+
+export type NodeType = MessageCardData | ConditionCardData | ActionCardData | NoteCardData
 
 export interface ArrowData {
     id: string;
@@ -24,15 +30,17 @@ export interface InitialState {
     isBinding: boolean,
     bindingFrom: string | null,
     isAddModal: boolean,
+    isTextEditModal: boolean,
+    textEditingNode: MessageCardData | null;
     blockCardClick: boolean,
     dragId?: string,
     scale: number,
     automationId: string,
     automationName: string,
-    nodes: NodeData[],
+    nodes: NodeType[],
     arrows: ArrowData[]
 };
 
 export interface CardProps {
-    node?: NodeData
+    node: NodeData
 };

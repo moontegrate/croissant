@@ -1,8 +1,12 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 // Interfaces
-import { NodeData } from "../components/InteractiveMap/interfaces";
+import { MessageCardData } from "../components/FlowCards/MessageCard/interfaces";
+import { ActionCardData } from "../components/FlowCards/ActionCard/interfaces";
+import { ConditionCardData } from "../components/FlowCards/ConditionCard/interfaces";
+import { NoteCardData } from "../components/FlowCards/NoteCard/interfaces";
 import { AccountData, AutomationData, GroupData } from "../pages/layouts/automations/interfaces";
+import { NodeType } from "../components/InteractiveMap/interfaces";
 
 export const apiSlice = createApi({
     reducerPath: "api",
@@ -31,7 +35,7 @@ export const apiSlice = createApi({
         getAutomation: builder.query<AutomationData, string>({
             query: (automationId) => `/automations/${automationId}/`
         }),
-        getAutomationNodes: builder.query<NodeData[], string>({
+        getAutomationNodes: builder.query<NodeType[], string>({
             query: (automationId) => `/nodes?automation=${automationId}`
         }),
         updateAutomation: builder.mutation<void, AutomationData>({
@@ -43,7 +47,7 @@ export const apiSlice = createApi({
         }),
 
         // Nodes
-        createNode: builder.mutation<void, NodeData>({
+        createNode: builder.mutation<void, MessageCardData | ConditionCardData | ActionCardData | NoteCardData>({
             query: (node) => ({
                 url: `/nodes/`,
                 method: "POST",
@@ -56,11 +60,11 @@ export const apiSlice = createApi({
                 method: "DELETE"
             })
         }),
-        updateNode: builder.mutation<void, NodeData>({
+        updateNode: builder.mutation<void, MessageCardData | ConditionCardData | ActionCardData | NoteCardData>({
             query: (node) => ({
                 url: `/nodes/${node.id}/`,
                 method: "PUT",
-                body: node
+                body: {...node, x: Math.round(node.x), y: Math.round(node.y)}
             })
         }),
 
