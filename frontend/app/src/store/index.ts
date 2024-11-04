@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 
 import { apiSlice } from '../api/apiSlice';
+import { authenticationSlice } from '../api/authenticationsSlice';
 import appSlice from '../components/App/appSlice';
 import automationsSlice from '../pages/layouts/automations/automationsSlice';
 import interactiveMapSlice from '../components/InteractiveMap/interactiveMapSlice';
@@ -14,9 +15,10 @@ const store = configureStore({
         interactiveMapSlice,
         noteCardModalSlice,
         templatesSlice,
-        [apiSlice.reducerPath]: apiSlice.reducer
+        [apiSlice.reducerPath]: apiSlice.reducer,
+        [authenticationSlice.reducerPath]: authenticationSlice.reducer
     },
-    middleware: getDefaultMiddleware => getDefaultMiddleware().concat(apiSlice.middleware ),
+    middleware: getDefaultMiddleware => getDefaultMiddleware().concat(apiSlice.middleware, authenticationSlice.middleware),
     devTools: process.env.NODE_ENV !== 'production'
 });
 

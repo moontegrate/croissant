@@ -3,7 +3,7 @@ import './privatePage.scss';
 
 // Routing
 import { lazy, Suspense } from "react";
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 
 // Components
 import Navigation from '../components/Navigation';
@@ -13,15 +13,26 @@ import Spinner from '../components/Spinner';
 import { useAppDispatch, useAppSelector } from '../hooks/state';
 import { setIsHamburgerClicked } from '../components/App/appSlice';
 
+// Hooks
+import { useEffect } from 'react';
+
 // Page layouts
 const AutomationsPageLayout = lazy(() => import("./layouts/automations"));
 const BuilderPageLayout = lazy(() => import("./layouts/builder"));
 const TemplatesPageLayout = lazy(() => import("./layouts/templates"));
 
 const PrivatePage = () => {
+    const navigate = useNavigate();
     const dispatch = useAppDispatch();
 
+    const isAuthenticated = useAppSelector((state) => state.appSlice.isAuthenticated);
     const isHamburgerClicked = useAppSelector((state) => state.appSlice.isHamburgerClicked);
+
+    useEffect(() => {
+        if (isAuthenticated === false) {
+            navigate('/signin/');
+        };
+    }, []);
 
     return (
         <div

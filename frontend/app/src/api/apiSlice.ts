@@ -97,6 +97,15 @@ export const apiSlice = createApi({
         getAccounts: builder.query<AccountData[], void>({
             query: () => `/accounts`
         }),
+
+        // Authentication
+        signIn: builder.mutation<void, {email: string, password: string}>({
+            query: (data) => ({
+                url: `/o/token/`,
+                method: "POST",
+                body: data
+            })
+        })
     })
 });
 
@@ -114,5 +123,5 @@ export const {
     useGetAutomationNodesQuery,
     useUpdateNodeMutation,
     useUpdateAutomationMutation,
-    useUpdateAutomationGroupMutation
+    useUpdateAutomationGroupMutation,
 } = apiSlice;

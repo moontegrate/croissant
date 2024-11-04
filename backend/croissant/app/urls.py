@@ -19,6 +19,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from automations.views import AutomationViewSet, GroupViewSet, NodeViewSet
 from accounts.views import AccountViewSet
+from oauth2_provider import urls as oauth2_urls
 
 router = DefaultRouter()
 router.register(r'automations', AutomationViewSet)
@@ -29,4 +30,5 @@ router.register(r'nodes', NodeViewSet)
 urlpatterns = [
     path('api/', include(router.urls)),
     path('admin/', admin.site.urls),
+    path('o/', include(oauth2_urls)),
 ]

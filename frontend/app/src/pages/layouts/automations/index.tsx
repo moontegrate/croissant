@@ -107,10 +107,6 @@ const AutomationsPageLayout = () => {
     const renamingForm = useRef<HTMLFormElement>(null);
 
     useEffect(() => {
-        if (!isAuthenticated) {
-            navigate('/signin');
-        };
-
         refetchAutomations();
         refetchGroups();
         // eslint-disable-next-line

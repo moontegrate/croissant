@@ -32,4 +32,16 @@
         flex-direction: column;
         gap: 15px;
     }
+
+    &__element {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    &__remember {
+        flex-direction: row;
+        align-items: center;
+        gap: 10px;
+    }
 }

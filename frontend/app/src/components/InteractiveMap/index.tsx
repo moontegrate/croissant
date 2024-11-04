@@ -28,15 +28,13 @@ import { renderCardBody } from './helpers';
 import { useDeleteNodeMutation, useGetAutomationNodesQuery, useGetAutomationQuery, useUpdateNodeMutation, useCreateNodeMutation } from '../../api/apiSlice';
 
 // Routing
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 // Other libraries
 import { v4 as uuidv4 } from 'uuid';
 import TextEditModal from '../FlowCards/MessageCard/TextEditModal';
-import { setNode } from '../NoteCardModal/NoteCardModalSlice';
 
 const InteractiveMap= () => {
-    const navigate = useNavigate();
     const { automationId } = useParams();
 
     const [updateNode, {isLoading: isNodeUpdating}] = useUpdateNodeMutation();
@@ -46,7 +44,6 @@ const InteractiveMap= () => {
     const {
         data: serverNodes,
         isLoading: isNodesLoading,
-        isError,
         refetch
     } = useGetAutomationNodesQuery(automationId!);
 
@@ -79,6 +76,7 @@ const InteractiveMap= () => {
 
     useEffect(() => {
         if (serverNodes) dispatch(setNodes(serverNodes));
+        // eslint-disable-next-line
     }, [serverNodes]);
 
     useEffect(() => {

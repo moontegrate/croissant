@@ -23,7 +23,7 @@ const TextEditModal: React.FC<{ refetch: () => void }> = ({ refetch }) => {
 
     const [inputValue, setInputValue] = useState('');
 
-    const [updateNode, {isLoading: isNodeUpdating}] = useUpdateNodeMutation();
+    const [updateNode] = useUpdateNodeMutation();
     
     useEffect(() => {
         const handler = setTimeout(() => {
@@ -35,6 +35,7 @@ const TextEditModal: React.FC<{ refetch: () => void }> = ({ refetch }) => {
         }, 500);
 
         return () => clearTimeout(handler);
+        // eslint-disable-next-line
     }, [inputValue]);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {

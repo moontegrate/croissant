@@ -1,4 +1,5 @@
 import { buttonTheme } from "./buttonTheme";
+import { checkboxTheme } from "./checkboxTheme";
 import { flowCardButtonTheme } from "./flowCardButtonTheme";
 import { modalTheme } from "./modalTheme";
 import { radioButtonTheme } from "./radioButtonTheme";
@@ -10,6 +11,7 @@ import { verticalDropdownTheme } from "./verticalDropdownTheme";
 
 export {
     buttonTheme,
+    checkboxTheme,
     flowCardButtonTheme,
     modalTheme,
     radioButtonTheme,

@@ -26,7 +26,7 @@ const TextSubwindow: React.FC<{node: MessageCardData, onClose: () => void}> = ({
     const [isHover, setIsHover] = useState<boolean>(false);
 
     const [updateNode] = useUpdateNodeMutation();
-    const {data, refetch} = useGetAutomationNodesQuery(automationId!);
+    const { refetch } = useGetAutomationNodesQuery(automationId!);
 
     function deleteMessage(node: MessageCardData) {
         const item = nodes.find(i => i.id === node.id);

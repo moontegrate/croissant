@@ -1,12 +1,12 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface InitialState {
-    isAuthenticated: boolean,
+    isAuthenticated: boolean | null,
     isHamburgerClicked: boolean
 };
 
 const initialState: InitialState = {
-    isAuthenticated: true,
+    isAuthenticated: null,
     isHamburgerClicked: false
 };
 

@@ -27,17 +27,15 @@ const AutomationCard: React.FC<{automation: AutomationData}> = ({automation}) =>
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
 
-    const {data: automationsData = [],
-        isFetching: isAutomationsFetching,
+    const {
         isLoading: isAutomationsLoading,
         refetch: refetchAutomations
     } = useGetAutomationsQuery();
-    const [updateAutomation, { isLoading: isAutomationUpdating, isSuccess: isAutomationUpdatingSuccess }] = useUpdateAutomationMutation();
+    const [updateAutomation, { isLoading: isAutomationUpdating}] = useUpdateAutomationMutation();
     const [deleteAutomation] = useDeleteAutomationMutation();
 
     const [isMoveHover, setIsMoveHover] = useState(false);
 
-    const automations = useAppSelector((state) => state.automationsSlice.automations);
     const groups = useAppSelector((state) => state.automationsSlice.groups);
     
     return (
@@ -101,13 +99,13 @@ const AutomationCard: React.FC<{automation: AutomationData}> = ({automation}) =>
                             </div>
                             <GoChevronRight size={17} />
                             {isMoveHover ?
-                                <div className='automation__dropdown-sublist'>
+                                <div className='sublist'>
                                     {automation.group ?
                                         <div
-                                            className='automation__dropdown-sublist-item adbc'
+                                            className='sublist__item adbc'
                                             onClick={() => updateAutomation({ ...automation, group: false })}
                                         >
-                                            <GoFileDirectory size={17} className='automation__dropdown-sublist-item__icon adbc' />
+                                            <GoFileDirectory size={17} className='sublist__item__icon adbc' />
                                             All automations
                                         </div>
                                         : null}
@@ -115,11 +113,11 @@ const AutomationCard: React.FC<{automation: AutomationData}> = ({automation}) =>
                                         if (automation.group !== group.name) {
                                             return (
                                                 <div
-                                                    className='automation__dropdown-sublist-item adbc'
+                                                    className='sublist__item adbc'
                                                     key={i}
                                                     onClick={() => updateAutomation({ ...automation, group: group.name })}
                                                 >
-                                                    <GoFileDirectory size={17} className='automation__dropdown-sublist-item__icon adbc' />
+                                                    <GoFileDirectory size={17} className='sublist__item-icon adbc' />
                                                     {group.name}
                                                 </div>
                                             );
