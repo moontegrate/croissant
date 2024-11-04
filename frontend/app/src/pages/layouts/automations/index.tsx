@@ -132,7 +132,8 @@ const AutomationsPageLayout = () => {
         } else if (groupsFilter === null) {
             return "Without groups";
         } else {
-            return groupsFilter.toString();
+            const targetGroup = groups.find(item => item.id === groupsFilter);
+            return targetGroup?.name;
         };
     };
 
@@ -197,8 +198,8 @@ const AutomationsPageLayout = () => {
                     {groups?.map((group, i) => {
                         return (
                             <Sidebar.Item
-                                focused={groupsFilter === group.name}
-                                onClick={() => dispatch(setGroupsFilter(group.name))}
+                                focused={groupsFilter === group.id}
+                                onClick={() => dispatch(setGroupsFilter(group.id))}
                                 key={i}
                                 icon={<GoFileDirectory
                                     size={17}
@@ -214,7 +215,7 @@ const AutomationsPageLayout = () => {
 
                                                 if (target.length > 0) {
                                                     target.forEach((element, i) => {
-                                                        updateAutomation({ ...element, group: false })
+                                                        updateAutomation({ ...element, group: null })
                                                     })
                                                     refetchAutomations();
                                                 };

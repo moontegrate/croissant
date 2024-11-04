@@ -10,7 +10,7 @@ export interface AutomationData {
     conversion: number,
     channel: string,
     enabled: boolean,
-    group: string | boolean,
+    group: string | null,
     nodes: NodeData[]
 };
 

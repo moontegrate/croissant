@@ -103,7 +103,10 @@ const AutomationCard: React.FC<{automation: AutomationData}> = ({automation}) =>
                                     {automation.group ?
                                         <div
                                             className='sublist__item adbc'
-                                            onClick={() => updateAutomation({ ...automation, group: false })}
+                                            onClick={() => {
+                                                updateAutomation({ ...automation, group: null });
+                                                refetchAutomations();
+                                            }}
                                         >
                                             <GoFileDirectory size={17} className='sublist__item__icon adbc' />
                                             All automations
@@ -115,7 +118,10 @@ const AutomationCard: React.FC<{automation: AutomationData}> = ({automation}) =>
                                                 <div
                                                     className='sublist__item adbc'
                                                     key={i}
-                                                    onClick={() => updateAutomation({ ...automation, group: group.name })}
+                                                    onClick={() => {
+                                                        updateAutomation({ ...automation, group: group.id });
+                                                        refetchAutomations();
+                                                    }}
                                                 >
                                                     <GoFileDirectory size={17} className='sublist__item-icon adbc' />
                                                     {group.name}

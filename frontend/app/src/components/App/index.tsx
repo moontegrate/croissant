@@ -48,10 +48,6 @@ function App() {
                 localStorage.setItem("refresh_token", data.refresh_token);
                 localStorage.setItem("expires_in", `${data.expires_in}`);
                 dispatch(setIsAuthenticated(true));
-                toast('Successfully signed in', {
-                    position: 'bottom-right',
-                    icon: '🥳'
-                });
             })
             .catch((error) => {
                 console.error(error);
