@@ -25,7 +25,7 @@ import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../../hooks/state";
 
 // Interfaces
-import { GroupData } from './interfaces';
+import { AutomationData, GroupData } from './interfaces';
 
 // Redux
 import { useAppDispatch } from '../../../hooks/state';
@@ -103,6 +103,29 @@ const AutomationsPageLayout = () => {
     const filteredAutomationsByGroup = automations.filter(a => a.group === groupsFilter || groupsFilter === false);
     const filteredAutomationsByChannel = filteredAutomationsByGroup.filter(a => a.channel === channelsFilter || channelsFilter === "All channels");
     const filteredAutomationsByStatus = filteredAutomationsByChannel.filter(a => a.enabled === (statusFilter === "On") || statusFilter === "All statuses");
+
+    // Automations sort
+    function sortAutomations(automations: AutomationData[]): AutomationData[] {
+        switch (sortBy) {
+            case 'Created date':
+                return automations.sort((a, b) => +a.createdDate - +b.createdDate);
+            case 'Name A-Z':
+                return automations.sort((a, b) => a.name.localeCompare(b.name));
+            case 'Name Z-A':
+                return automations.sort((a, b) => b.name.localeCompare(a.name));
+            case 'Less clients':
+                return automations.sort((a, b) => a.users - b.users);
+            case 'More clients':
+                return automations.sort((a, b) => b.users - a.users);
+            case 'Best conversion':
+                return automations.sort((a, b) => a.conversion - b.conversion);
+            case 'Worst conversion':
+                return automations.sort((a, b) => b.conversion - a.conversion);
+            default:
+                return automations;
+        };
+    };
+    const sortedAutomations = sortAutomations(filteredAutomationsByStatus);
 
     const renamingForm = useRef<HTMLFormElement>(null);
 
@@ -345,7 +368,6 @@ const AutomationsPageLayout = () => {
                             </div>}
                         >
                             <Dropdown.Item onClick={() => dispatch(setSortBy('Created date'))}>Created date</Dropdown.Item>
-                            <Dropdown.Item onClick={() => dispatch(setSortBy('Updated date'))}>Updated date</Dropdown.Item>
                             <Dropdown.Item onClick={() => dispatch(setSortBy('Name A-Z'))}>Name A-Z</Dropdown.Item>
                             <Dropdown.Item onClick={() => dispatch(setSortBy('Name Z-A'))}>Name Z-A</Dropdown.Item>
                             <Dropdown.Item onClick={() => dispatch(setSortBy('Less clients'))}>Less clients</Dropdown.Item>
@@ -358,7 +380,7 @@ const AutomationsPageLayout = () => {
 
                 {/* Content */}
                 <div className='automations-page__grid'>
-                    {automations.length > 0 ? filteredAutomationsByStatus.map((automation, i) => {
+                    {automations.length > 0 ? sortedAutomations.map((automation, i) => {
                         return <AutomationCard automation={automation} key={i} />;
                     }) : null}
                 </div>

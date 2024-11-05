@@ -9,6 +9,7 @@ export interface AutomationData {
     users: number,
     conversion: number,
     channel: string,
+    createdDate: string,
     enabled: boolean,
     group: string | null,
     nodes: NodeData[]
