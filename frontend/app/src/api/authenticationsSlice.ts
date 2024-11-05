@@ -3,9 +3,6 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 // Interfaces
 import { ResponseData } from "../components/SignInForm/interfaces";
 
-const clientId = 'XAS9MzADKPOO8a1ZlmNRoujox7KhZoYtxBrQKGHV';
-const clientSecret = 'TslTcmf2WYlpquqpMR1YEDzfh1PYWnBXdN1pKSmmDm6lED7RRvMtUgyZIPqmV1qZItc7h96L87KexoN4ECho6R0EuajKvUIBfvZGvmueuRqyNkh4LIDaMEy21VraeoU8';
-
 export const authenticationSlice = createApi({
     reducerPath: "authentication",
     baseQuery: fetchBaseQuery({baseUrl: "http://localhost:8000/"}),
@@ -22,8 +19,8 @@ export const authenticationSlice = createApi({
                     grant_type: 'password',
                     username: data.email,
                     password: data.password,
-                    client_id: clientId,
-                    client_secret: clientSecret
+                    client_id: process.env.REACT_APP_OAUTH_CLIENT_ID!,
+                    client_secret: process.env.REACT_APP_OAUTH_CLIENT_SECRET!
                 })
             })
         }),
@@ -37,8 +34,8 @@ export const authenticationSlice = createApi({
                 body: new URLSearchParams({
                     grant_type: 'refresh_token',
                     refresh_token: token,
-                    client_id: clientId,
-                    client_secret: clientSecret
+                    client_id: process.env.REACT_APP_OAUTH_CLIENT_ID!,
+                    client_secret: process.env.REACT_APP_OAUTH_CLIENT_SECRET!
                 })
             })
         })

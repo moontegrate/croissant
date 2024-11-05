@@ -40,6 +40,14 @@ function App() {
     useEffect(() => {
         const refreshTokenValue = localStorage.getItem("refresh_token");
 
+        function handleError() {
+            localStorage.removeItem("access_token");
+            localStorage.removeItem("refresh_token");
+            localStorage.removeItem("expires_in");
+            localStorage.removeItem('remember');
+            dispatch(setIsAuthenticated(false));
+        };
+
         if (rememberMe === "true") {
             refreshToken(refreshTokenValue!)
             .unwrap()
@@ -55,13 +63,10 @@ function App() {
                     position: "bottom-right",
                     icon: '😰'
                 });
+                handleError();
             });
         } else {
-            localStorage.removeItem("access_token");
-            localStorage.removeItem("refresh_token");
-            localStorage.removeItem("expires_in");
-            localStorage.removeItem("remember");
-            dispatch(setIsAuthenticated(false));
+            handleError();
         };
     }, []);
 

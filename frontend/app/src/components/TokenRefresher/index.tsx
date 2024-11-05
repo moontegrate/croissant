@@ -17,7 +17,7 @@ const TokenRefresher = () => {
             if (isAuthorized) {
                 await refreshToken('');
             }
-        }, 180000);
+        }, 30000);
 
         return () => clearInterval(intervalId);
     }, [refreshToken, isAuthorized]);
