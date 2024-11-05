@@ -3,6 +3,9 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 // Interfaces
 import { ResponseData } from "../components/SignInForm/interfaces";
 
+const clientId = 'XAS9MzADKPOO8a1ZlmNRoujox7KhZoYtxBrQKGHV';
+const clientSecret = 'TslTcmf2WYlpquqpMR1YEDzfh1PYWnBXdN1pKSmmDm6lED7RRvMtUgyZIPqmV1qZItc7h96L87KexoN4ECho6R0EuajKvUIBfvZGvmueuRqyNkh4LIDaMEy21VraeoU8';
+
 export const authenticationSlice = createApi({
     reducerPath: "authentication",
     baseQuery: fetchBaseQuery({baseUrl: "http://localhost:8000/"}),
@@ -19,8 +22,8 @@ export const authenticationSlice = createApi({
                     grant_type: 'password',
                     username: data.email,
                     password: data.password,
-                    client_id: 'Vc8lBEb1JeW309UrjgUPMLwF4CssK8CNzmllTc38',
-                    client_secret: 'je09W8e9GZiN2LLxhUW95omm1od48uacJ5kng7QvLyRMp7nqETGMk4wazntZGcAgy3zFugoULRcfsUXHnZ11nKZsYmARnR4kjLgLo6H4LW7ejBtUiSGwTJId2pImo846'
+                    client_id: clientId,
+                    client_secret: clientSecret
                 })
             })
         }),
@@ -34,8 +37,8 @@ export const authenticationSlice = createApi({
                 body: new URLSearchParams({
                     grant_type: 'refresh_token',
                     refresh_token: token,
-                    client_id: 'Vc8lBEb1JeW309UrjgUPMLwF4CssK8CNzmllTc38',
-                    client_secret: 'je09W8e9GZiN2LLxhUW95omm1od48uacJ5kng7QvLyRMp7nqETGMk4wazntZGcAgy3zFugoULRcfsUXHnZ11nKZsYmARnR4kjLgLo6H4LW7ejBtUiSGwTJId2pImo846'
+                    client_id: clientId,
+                    client_secret: clientSecret
                 })
             })
         })
