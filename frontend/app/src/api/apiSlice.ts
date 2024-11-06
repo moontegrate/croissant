@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 // Interfaces
+import { RootState } from "../store";
 import { MessageCardData } from "../components/FlowCards/MessageCard/interfaces";
 import { ActionCardData } from "../components/FlowCards/ActionCard/interfaces";
 import { ConditionCardData } from "../components/FlowCards/ConditionCard/interfaces";
@@ -10,7 +11,16 @@ import { NodeType } from "../components/InteractiveMap/interfaces";
 
 export const apiSlice = createApi({
     reducerPath: "api",
-    baseQuery: fetchBaseQuery({baseUrl: "http://localhost:8000/api"}),
+    baseQuery: fetchBaseQuery({
+        baseUrl: "http://localhost:8000/api",
+        prepareHeaders: (headers, { getState }) => {
+            const accessToken = (getState() as RootState).appSlice.accessToken;
+
+            if (accessToken) headers.set('Authorization', 'Bearer ' + accessToken);
+
+            return headers;
+        }
+    }),
     endpoints: builder => ({
         // Automations
         createAutomation: builder.mutation<void, {automationName: string, selectedAccount: AccountData}>({
@@ -27,10 +37,7 @@ export const apiSlice = createApi({
             })
         }),
         getAutomations: builder.query<AutomationData[], void>({
-            query: () => ({
-                url: '/automations',
-                credentials: 'include'
-            })
+            query: () => '/automations'
         }),
         getAutomation: builder.query<AutomationData, string>({
             query: (automationId) => `/automations/${automationId}/`

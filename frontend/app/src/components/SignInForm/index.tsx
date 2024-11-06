@@ -20,7 +20,7 @@ import toast from 'react-hot-toast';
 
 // Redux
 import { useAppDispatch } from '../../hooks/state';
-import { setIsAuthenticated } from '../App/appSlice';
+import { setAccessToken, setIsAuthenticated } from '../App/appSlice';
 
 // Interfaces
 import { SignInError } from './interfaces';
@@ -53,6 +53,7 @@ const LoginForm = () => {
                 icon: '🥳'
             });
             localStorage.setItem("access_token", data.access_token);
+            dispatch(setAccessToken(data.access_token));
             localStorage.setItem("refresh_token", data.refresh_token);
             localStorage.setItem("expires_in", `${data.expires_in}`);
             if (formData.remember) {

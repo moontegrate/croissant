@@ -37,22 +37,8 @@ import TextEditModal from '../FlowCards/MessageCard/TextEditModal';
 const InteractiveMap= () => {
     const { automationId } = useParams();
 
-    const [updateNode, {isLoading: isNodeUpdating}] = useUpdateNodeMutation();
-    const [createNode, {isLoading: isNodeCreating}] = useCreateNodeMutation();
-    const [, {isLoading: isNodeDeleting}] = useDeleteNodeMutation();
-
-    const {
-        data: serverNodes,
-        isLoading: isNodesLoading,
-        refetch
-    } = useGetAutomationNodesQuery(automationId!);
-
-    const {
-        data: automation,
-        isSuccess
-    } = useGetAutomationQuery(automationId!);
-
     const dispatch = useAppDispatch();
+    const isTokenReady = useAppSelector((state) => state.appSlice.isTokenReady);
     const nodes = useAppSelector((state) => state.interactiveMapSlice.nodes);
     const arrows = useAppSelector((state) => state.interactiveMapSlice.arrows);
     const isDragging = useAppSelector((state) => state.interactiveMapSlice.isDragging);
@@ -63,19 +49,26 @@ const InteractiveMap= () => {
     const dragId = useAppSelector((state) => state.interactiveMapSlice.dragId);
     const scale = useAppSelector((state) => state.interactiveMapSlice.scale);
 
+    const [updateNode, {isLoading: isNodeUpdating}] = useUpdateNodeMutation();
+    const [createNode, {isLoading: isNodeCreating}] = useCreateNodeMutation();
+    const [, {isLoading: isNodeDeleting}] = useDeleteNodeMutation();
+
+    const {
+        data: serverNodes = [],
+        isLoading: isNodesLoading,
+        refetch
+    } = useGetAutomationNodesQuery(automationId!, {skip: !isTokenReady});
+    const {
+        data: automation,
+        isSuccess
+    } = useGetAutomationQuery(automationId!, {skip: !isTokenReady});
+
     const stageRef = useRef<any>(null);
 
     // if (isError) navigate('/error');
 
     useEffect(() => {
-        refetch().then((res) => {
-            dispatch(setNodes(res.data!))
-        });
-        // eslint-disable-next-line
-    }, []);
-
-    useEffect(() => {
-        if (serverNodes) dispatch(setNodes(serverNodes));
+        if (serverNodes.length > 0) dispatch(setNodes(serverNodes));
         // eslint-disable-next-line
     }, [serverNodes]);
 

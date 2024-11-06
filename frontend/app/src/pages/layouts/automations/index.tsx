@@ -65,20 +65,24 @@ import {
 import { v4 as uuidv4 } from 'uuid';
 
 const AutomationsPageLayout = () => {
+    const isTokenReady = useAppSelector((state) => state.appSlice.isTokenReady);
+    
     const { data: automationsData = [],
         isFetching: isAutomationsFetching,
         isLoading: isAutomationsLoading,
         refetch: refetchAutomations
-    } = useGetAutomationsQuery();
+    } = useGetAutomationsQuery(undefined, {skip: !isTokenReady});
     const { data: accountsData = [],
         isFetching: isAccountsFetching,
         isLoading: isAccountsLoading
-    } = useGetAccountsQuery();
+    } = useGetAccountsQuery(undefined, {skip: !isTokenReady});
     const { data: groupsData = [],
         isFetching: isGroupsFetching,
         isLoading: isGroupsLoading,
         refetch: refetchGroups
-    } = useGetAutomationGroupsQuery();
+    } = useGetAutomationGroupsQuery(undefined, {skip: !isTokenReady});
+
+    
     const [updateAutomation, { isLoading: isAutomationUpdating, isSuccess: isAutomationUpdatingSuccess }] = useUpdateAutomationMutation();
     const [createGroup] = useCreateAutomationGroupMutation();
     const [updateGroup] = useUpdateAutomationGroupMutation();
@@ -130,24 +134,10 @@ const AutomationsPageLayout = () => {
     const renamingForm = useRef<HTMLFormElement>(null);
 
     useEffect(() => {
-        refetchAutomations();
-        refetchGroups();
-        // eslint-disable-next-line
-    }, []);
-
-    useEffect(() => {
-        refetchAutomations().then((res) => {
-            if (res.data) dispatch(setAutomations(res.data));
-        });
-        // eslint-disable-next-line
-    }, [isAutomationUpdatingSuccess]);
-
-    useEffect(() => {
-        dispatch(setAutomations(automationsData));
-        dispatch(setAccounts(accountsData));
-        dispatch(setGroups(groupsData));
-        // eslint-disable-next-line
-    }, [isAutomationsLoading, isAutomationsFetching, isAccountsLoading, isAccountsFetching, isGroupsLoading, isGroupsFetching]);
+        if (automationsData.length > 0) dispatch(setAutomations(automationsData));
+        if (accountsData.length > 0) dispatch(setAccounts(accountsData));
+        if (groupsData.length > 0) dispatch(setGroups(groupsData));
+    }, [automationsData, accountsData, groupsData, dispatch]);
 
     const title = () => {
         if (groupsFilter === false) {

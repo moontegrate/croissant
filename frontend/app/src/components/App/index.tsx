@@ -23,7 +23,7 @@ import { useRefreshTokenMutation } from '../../api/authenticationsSlice';
 
 // Redux
 import { useAppDispatch } from '../../hooks/state';
-import { setIsAuthenticated } from './appSlice';
+import { setAccessToken, setIsAuthenticated, setIsTokenReady } from './appSlice';
 
 // Routing variables
 const PrivatePage = lazy(() => import("../../pages/PrivatePage"));
@@ -45,7 +45,9 @@ function App() {
             localStorage.removeItem("refresh_token");
             localStorage.removeItem("expires_in");
             localStorage.removeItem('remember');
+            dispatch(setAccessToken(null));
             dispatch(setIsAuthenticated(false));
+            dispatch(setIsTokenReady(false));
         };
 
         if (rememberMe === "true") {
@@ -53,6 +55,8 @@ function App() {
             .unwrap()
             .then((data) => {
                 localStorage.setItem("access_token", data.access_token);
+                dispatch(setAccessToken(data.access_token));
+                dispatch(setIsTokenReady(true));
                 localStorage.setItem("refresh_token", data.refresh_token);
                 localStorage.setItem("expires_in", `${data.expires_in}`);
                 dispatch(setIsAuthenticated(true));

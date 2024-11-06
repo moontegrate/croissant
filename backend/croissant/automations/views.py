@@ -3,10 +3,21 @@ from rest_framework import viewsets, status
 from rest_framework.response import Response
 from .serializers import AutomationSerializer, GroupSerializer, NodeSerializer
 from .models import Automation, Group, Node
+from rest_framework.permissions import IsAuthenticated
+from users.permissions import IsAuthorOrAdmin
 
 class AutomationViewSet(viewsets.ModelViewSet):
     queryset = Automation.objects.all()
     serializer_class = AutomationSerializer
+    permission_classes = [IsAuthenticated, IsAuthorOrAdmin]
+
+    def get_queryset(self):
+        if self.request.user.is_staff:
+            return Automation.objects.all()
+        return Automation.objects.filter(author=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
 
     def create(self, request, *args, **kwargs):
         data = request.data
@@ -25,7 +36,7 @@ class AutomationViewSet(viewsets.ModelViewSet):
         })
 
         serializer.is_valid(raise_exception=True)
-        automation = serializer.save()
+        automation = serializer.save(author=self.request.user)
 
         Node.objects.create(
             automation=automation,
@@ -35,7 +46,8 @@ class AutomationViewSet(viewsets.ModelViewSet):
             z_index=0,
             is_entry_point=True,
             is_binded=False,
-            binded_to=None
+            binded_to=None,
+            author=request.user
         )
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -67,15 +79,30 @@ class AutomationViewSet(viewsets.ModelViewSet):
 class GroupViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
+    permission_classes = [IsAuthenticated, IsAuthorOrAdmin]
+
+    def get_queryset(self):
+        if self.request.user.is_staff:
+            return Group.objects.all()
+        return Group.objects.filter(author=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
 
 class NodeViewSet(viewsets.ModelViewSet):
     queryset = Node.objects.all()
     serializer_class = NodeSerializer
+    permission_classes = [IsAuthenticated, IsAuthorOrAdmin]
 
     def get_queryset(self):
         automation_id = self.request.query_params.get('automation')
         
-        if automation_id:
-            return Node.objects.filter(automation__id=automation_id)
+        if self.request.user.is_staff:
+            if automation_id:
+                return Node.objects.filter(automation__id=automation_id)
+            return Node.objects.all()
         
-        return super().get_queryset()
+        if automation_id:
+            return Node.objects.filter(automation__id=automation_id, automation__author=self.request.user)
+        
+        return Node.objects.none()

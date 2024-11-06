@@ -19,15 +19,7 @@ import { useAppSelector } from '../../../hooks/state';
 const BuilderPageLayout = () => {
     const navigate = useNavigate();
 
-    const isAuthenticated = useAppSelector((state) => state.appSlice.isAuthenticated);
     const automation = useAppSelector((state) => state.interactiveMapSlice.automationName);
-
-    useEffect(() => {
-        if (!isAuthenticated) {
-            navigate('/signin');
-        };
-    // eslint-disable-next-line
-    }, []);
 
     return (
         <div className="public-page builder-page">
