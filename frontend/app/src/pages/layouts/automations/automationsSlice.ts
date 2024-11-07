@@ -16,7 +16,8 @@ const initialState: InitialState = {
     createAutomationForm: {
         automationName: null,
         selectedAccount: null
-    }
+    },
+    automationSettingsState: null
 };
 
 const automationsSlice = createSlice({
@@ -32,7 +33,8 @@ const automationsSlice = createSlice({
         setSortBy: (state, action: PayloadAction<string>) => { state.sort = action.payload },
         setIsAutomationAdding: (state, action: PayloadAction<boolean>) => { state.isAutomationAdding = action.payload },
         setCurrentModalView: (state, action: PayloadAction<number>) => { state.currentModalView = action.payload },
-        setCreateAutomationForm: (state, action: PayloadAction<{automationName: string | null, selectedAccount: AccountData | null}>) => { state.createAutomationForm = action.payload }
+        setCreateAutomationForm: (state, action: PayloadAction<{automationName: string | null, selectedAccount: AccountData | null}>) => { state.createAutomationForm = action.payload },
+        setAutomationSettingsState: (state, action: PayloadAction<{automation: AutomationData} | null>) => { state.automationSettingsState = action.payload }
     }
 });
 
@@ -40,6 +42,7 @@ export default automationsSlice.reducer;
 export const {
     setAccounts,
     setAutomations,
+    setAutomationSettingsState,
     setChannelsFilter,
     setCreateAutomationForm,
     setCurrentModalView,

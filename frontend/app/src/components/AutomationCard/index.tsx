@@ -18,7 +18,7 @@ import { useNavigate } from 'react-router-dom';
 
 // Redux
 import { useAppDispatch, useAppSelector } from '../../hooks/state';
-import { setAutomations } from '../../pages/layouts/automations/automationsSlice';
+import { setAutomations, setAutomationSettingsState } from '../../pages/layouts/automations/automationsSlice';
 
 // Server
 import { useDeleteAutomationMutation, useGetAutomationsQuery, useUpdateAutomationMutation } from '../../api/apiSlice';
@@ -137,7 +137,7 @@ const AutomationCard: React.FC<{automation: AutomationData}> = ({automation}) =>
                         : null}
                     <Dropdown.Item className='vertical-dropdown__item automation__dropdown-item adbc'><GoLink size={17} />Bot link</Dropdown.Item>
                     <Dropdown.Item className='vertical-dropdown__item automation__dropdown-item adbc'><GoPeople size={17} />Clients</Dropdown.Item>
-                    <Dropdown.Item className='vertical-dropdown__item automation__dropdown-item adbc'><SlSettings size={17} />Settings</Dropdown.Item>
+                    <Dropdown.Item className='vertical-dropdown__item automation__dropdown-item adbc' onClick={() => dispatch(setAutomationSettingsState({automation: automation}))}><SlSettings size={17} />Settings</Dropdown.Item>
                     <Dropdown.Divider className='adbc' />
                     <Dropdown.Item
                         className='vertical-dropdown__item automation__dropdown-item text-red-500 adbc'
@@ -158,7 +158,7 @@ const AutomationCard: React.FC<{automation: AutomationData}> = ({automation}) =>
                 </div>
                 <div className='automation__account'>
                     <div className='automation__account-icon'>
-                        <img src={automation.accountIcon ? automation.accountIcon : "https://www.redditstatic.com/avatars/defaults/v2/avatar_default_0.png"} alt="account" />
+                        <img src={automation.accountIcon ? automation.accountIcon : '/account.svg'} alt="account" />
                     </div>
                     <div className='automation__account-name'>@{automation.accountName}</div>
                 </div>

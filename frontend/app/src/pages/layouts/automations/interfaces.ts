@@ -39,5 +39,8 @@ export interface InitialState {
     createAutomationForm: {
         automationName: string | null,
         selectedAccount: AccountData | null
-    }
+    },
+    automationSettingsState: {
+        automation: AutomationData
+    } | null
 };
