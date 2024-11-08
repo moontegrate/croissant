@@ -106,3 +106,6 @@ class NodeViewSet(viewsets.ModelViewSet):
             return Node.objects.filter(automation__id=automation_id, automation__author=self.request.user)
         
         return Node.objects.none()
+    
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)

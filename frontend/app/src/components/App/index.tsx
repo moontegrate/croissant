@@ -64,7 +64,6 @@ function App() {
             .catch((error) => {
                 console.error(error);
                 toast(error.data.error_description === "Invalid credentials given." ? 'E-mail or password are incorrect' : 'Oops! Something get wrong', {
-                    position: "bottom-right",
                     icon: '😰'
                 });
                 handleError();
@@ -78,7 +77,6 @@ function App() {
         <Router>
             <HelmetProvider>
                 <div className="App">
-                    <TokenRefresher/>
                     <Suspense
                         fallback={
                             <Spinner />
@@ -90,7 +88,8 @@ function App() {
                             <Route path="/*" element={<PrivatePage />} />
                         </Routes>
                     </Suspense>
-                    <Toaster />
+                    <Toaster position='bottom-right'/>
+                    <TokenRefresher/>
                 </div>
             </HelmetProvider>
         </Router>

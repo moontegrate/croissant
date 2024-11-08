@@ -31,7 +31,6 @@ const TokenRefresher = () => {
                 }).catch((error) => {
                     console.error(error);
                     toast(error.data.error_description === "Invalid credentials given." ? 'E-mail or password are incorrect' : 'Oops! Something get wrong', {
-                        position: "bottom-right",
                         icon: '😰'
                     });
                     localStorage.removeItem("access_token");

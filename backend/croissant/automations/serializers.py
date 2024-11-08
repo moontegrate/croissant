@@ -35,7 +35,7 @@ class NodeSerializer(serializers.ModelSerializer):
     isEntryPoint = serializers.BooleanField(source='is_entry_point')
     isBinded = serializers.BooleanField(source='is_binded')
     bindedTo = serializers.UUIDField(source='binded_to', required=False, allow_null=True)
-    noteContent = serializers.CharField(source='note_content', required=False, allow_null=True)
+    noteContent = serializers.CharField(source='note_content', required=False, allow_null=True, allow_blank=True)
 
     class Meta:
         model = Node

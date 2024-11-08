@@ -49,7 +49,6 @@ const LoginForm = () => {
         .unwrap()
         .then((data) => {
             toast('Successfully signed in', {
-                position: 'bottom-right',
                 icon: '🥳'
             });
             localStorage.setItem("access_token", data.access_token);
@@ -66,7 +65,6 @@ const LoginForm = () => {
         .catch((error: SignInError) => {
             console.error(error);
             toast(error.data.error_description === "Invalid credentials given." ? 'E-mail or password are incorrect' : 'Oops! Something get wrong', {
-                position: 'bottom-right',
                 icon: '😰'
             });
         });

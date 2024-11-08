@@ -8,6 +8,7 @@ import { GoComment, GoDuplicate, GoFile, GoRepoForked, GoRocket, GoScreenNormal 
 // Components
 import FlowCardContainer from '../FlowCardContainer';
 import { BarLoader } from 'react-spinners';
+import TextEditModal from '../FlowCards/MessageCard/TextEditModal';
 
 // Interfaces
 import { ArrowData, NodeData } from './interfaces';
@@ -32,7 +33,7 @@ import { useParams } from 'react-router-dom';
 
 // Other libraries
 import { v4 as uuidv4 } from 'uuid';
-import TextEditModal from '../FlowCards/MessageCard/TextEditModal';
+import toast from 'react-hot-toast';
 
 const InteractiveMap= () => {
     const { automationId } = useParams();
@@ -333,7 +334,9 @@ const InteractiveMap= () => {
                             isEntryPoint: nodes.length === 0 ? true : false,
                             isBinded: false,
                             bindedTo: null
-                        }).then(() => {
+                        })
+                        .unwrap()
+                        .then(() => {
                             refetch().then((res) => res.data ? dispatch(setNodes(res.data)) : null);
                         });
                     }}>
@@ -352,7 +355,9 @@ const InteractiveMap= () => {
                             isEntryPoint: nodes.length === 0 ? true : false,
                             isBinded: false,
                             bindedTo: null
-                        }).then(() => {
+                        })
+                        .unwrap()
+                        .then(() => {
                             refetch().then((res) => res.data ? dispatch(setNodes(res.data)) : null);
                         });
                     }}>
@@ -371,7 +376,9 @@ const InteractiveMap= () => {
                             isEntryPoint: nodes.length === 0 ? true : false,
                             isBinded: false,
                             bindedTo: null
-                        }).then(() => {
+                        })
+                        .unwrap()
+                        .then(() => {
                             refetch().then((res) => res.data ? dispatch(setNodes(res.data)) : null);
                         });
                     }}>
@@ -391,8 +398,16 @@ const InteractiveMap= () => {
                             isBinded: false,
                             bindedTo: null,
                             noteContent: ''
-                        }).then(() => {
+                        })
+                        .unwrap()
+                        .then(() => {
                             refetch().then((res) => res.data ? dispatch(setNodes(res.data)) : null);
+                        })
+                        .catch((error) => {
+                            console.error(error);
+                            toast("Something went wrong", {
+                                icon: '😰'
+                            });
                         });
                     }}>
                         <GoFile color='#6C9FFF' size={20} />
