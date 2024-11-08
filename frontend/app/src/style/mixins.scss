@@ -1,1 +1,9 @@
 @import './variables.scss';
+
+@mixin backButton {
+    cursor: pointer;
+    max-width: fit-content;
+    display: flex;
+    gap: 10px;
+    color: gray;
+}

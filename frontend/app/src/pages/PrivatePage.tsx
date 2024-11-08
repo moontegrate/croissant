@@ -20,6 +20,7 @@ import { useEffect } from 'react';
 const AutomationsPageLayout = lazy(() => import("./layouts/automations"));
 const BuilderPageLayout = lazy(() => import("./layouts/builder"));
 const TemplatesPageLayout = lazy(() => import("./layouts/templates"));
+const ClientsPageLayout = lazy(() => import("./layouts/automations/clients"));
 
 const PrivatePage = () => {
     const navigate = useNavigate();
@@ -51,10 +52,11 @@ const PrivatePage = () => {
                 }
             >
                 <Routes>
-                    <Route path="/" element={<Navigate to="/automations" replace/>} />
-                    <Route path="/automations" element={<AutomationsPageLayout />} />
-                    <Route path="/builder/:automationId" element={<BuilderPageLayout />} />
-                    <Route path="/templates" element={<TemplatesPageLayout />} />
+                    <Route path="/" element={<Navigate to="/automations/" replace/>} />
+                    <Route path="/automations/" element={<AutomationsPageLayout />} />
+                    <Route path="/automations/:automationId/clients/" element={<ClientsPageLayout />} />
+                    <Route path="/builder/:automationId/" element={<BuilderPageLayout />} />
+                    <Route path="/templates/" element={<TemplatesPageLayout />} />
                 </Routes>
             </Suspense>
         </div>

@@ -136,7 +136,7 @@ const AutomationCard: React.FC<{automation: AutomationData}> = ({automation}) =>
                         </Dropdown.Item>
                         : null}
                     <Dropdown.Item className='vertical-dropdown__item automation__dropdown-item adbc'><GoLink size={17} />Bot link</Dropdown.Item>
-                    <Dropdown.Item className='vertical-dropdown__item automation__dropdown-item adbc'><GoPeople size={17} />Clients</Dropdown.Item>
+                    <Dropdown.Item className='vertical-dropdown__item automation__dropdown-item adbc' onClick={() => navigate(`/automations/${automation.id}/clients/`)}><GoPeople size={17} />Clients</Dropdown.Item>
                     <Dropdown.Item className='vertical-dropdown__item automation__dropdown-item adbc' onClick={() => dispatch(setAutomationSettingsState({automation: automation}))}><SlSettings size={17} />Settings</Dropdown.Item>
                     <Dropdown.Divider className='adbc' />
                     <Dropdown.Item
