@@ -232,11 +232,11 @@ const AutomationsPageLayout = () => {
                                                     target.forEach((element, i) => {
                                                         updateAutomation({ ...element, group: null })
                                                     })
-                                                    refetchAutomations();
                                                 };
 
                                                 deleteGroup(group.id).then(() => {
                                                     if (groupsFilter === group.name) dispatch(setGroupsFilter("All automations"));
+                                                    refetchAutomations();
                                                     refetchGroups();
                                                 });
                                             }}
