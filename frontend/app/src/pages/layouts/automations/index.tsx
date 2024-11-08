@@ -50,6 +50,7 @@ import { Button, Dropdown, TextInput } from 'flowbite-react';
 import AutomationCard from '../../../components/AutomationCard';
 import CreateAutomationModal from '../../../components/CreateAutomationModal';
 import AutomationSettings from '../../../components/AutomationSettings';
+import BotLinkModal from '../../../components/BotLinkModal';
 
 // Server
 import {
@@ -381,6 +382,7 @@ const AutomationsPageLayout = () => {
             {/* Modals */}
             <CreateAutomationModal/>
             <AutomationSettings/>
+            <BotLinkModal/>
         </div>
     );
 };

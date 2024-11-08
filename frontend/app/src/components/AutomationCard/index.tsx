@@ -18,7 +18,7 @@ import { useNavigate } from 'react-router-dom';
 
 // Redux
 import { useAppDispatch, useAppSelector } from '../../hooks/state';
-import { setAutomations, setAutomationSettingsState } from '../../pages/layouts/automations/automationsSlice';
+import { setAutomations, setAutomationSettingsState, setBotLinkData } from '../../pages/layouts/automations/automationsSlice';
 
 // Server
 import { useDeleteAutomationMutation, useGetAutomationsQuery, useUpdateAutomationMutation } from '../../api/apiSlice';
@@ -135,7 +135,19 @@ const AutomationCard: React.FC<{automation: AutomationData}> = ({automation}) =>
                                 : null}
                         </Dropdown.Item>
                         : null}
-                    <Dropdown.Item className='vertical-dropdown__item automation__dropdown-item adbc'><GoLink size={17} />Bot link</Dropdown.Item>
+                    <Dropdown.Item
+                        className='vertical-dropdown__item automation__dropdown-item adbc'
+                        onClick={() => {
+                            dispatch(setBotLinkData({
+                                id: automation.id,
+                                name: automation.name,
+                                channel: automation.channel
+                            }));
+                        }}
+                    >
+                        <GoLink size={17} />
+                        Bot link
+                    </Dropdown.Item>
                     <Dropdown.Item className='vertical-dropdown__item automation__dropdown-item adbc' onClick={() => navigate(`/automations/${automation.id}/clients/`)}><GoPeople size={17} />Clients</Dropdown.Item>
                     <Dropdown.Item className='vertical-dropdown__item automation__dropdown-item adbc' onClick={() => dispatch(setAutomationSettingsState({automation: automation}))}><SlSettings size={17} />Settings</Dropdown.Item>
                     <Dropdown.Divider className='adbc' />

@@ -17,7 +17,8 @@ const initialState: InitialState = {
         automationName: null,
         selectedAccount: null
     },
-    automationSettingsState: null
+    automationSettingsState: null,
+    botLinkData: null
 };
 
 const automationsSlice = createSlice({
@@ -34,7 +35,8 @@ const automationsSlice = createSlice({
         setIsAutomationAdding: (state, action: PayloadAction<boolean>) => { state.isAutomationAdding = action.payload },
         setCurrentModalView: (state, action: PayloadAction<number>) => { state.currentModalView = action.payload },
         setCreateAutomationForm: (state, action: PayloadAction<{automationName: string | null, selectedAccount: AccountData | null}>) => { state.createAutomationForm = action.payload },
-        setAutomationSettingsState: (state, action: PayloadAction<{automation: AutomationData} | null>) => { state.automationSettingsState = action.payload }
+        setAutomationSettingsState: (state, action: PayloadAction<{automation: AutomationData} | null>) => { state.automationSettingsState = action.payload },
+        setBotLinkData: (state, action: PayloadAction<{id: string, name: string, channel: string} | null>) => { state.botLinkData = action.payload }
     }
 });
 
@@ -43,6 +45,7 @@ export const {
     setAccounts,
     setAutomations,
     setAutomationSettingsState,
+    setBotLinkData,
     setChannelsFilter,
     setCreateAutomationForm,
     setCurrentModalView,

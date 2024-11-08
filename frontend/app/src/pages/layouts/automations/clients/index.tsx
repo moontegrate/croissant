@@ -4,7 +4,6 @@ import { GoArrowLeft } from "react-icons/go";
 
 // Hooks
 import { useNavigate, useParams } from 'react-router-dom';
-import { useState } from 'react';
 
 // Metadata
 import { Helmet } from "react-helmet-async";

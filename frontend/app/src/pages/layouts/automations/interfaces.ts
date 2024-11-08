@@ -42,5 +42,10 @@ export interface InitialState {
     },
     automationSettingsState: {
         automation: AutomationData
+    } | null,
+    botLinkData: {
+        id: string,
+        name: string,
+        channel: string,
     } | null
 };
