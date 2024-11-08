@@ -276,6 +276,8 @@ const InteractiveMap= () => {
                 ref={stageRef}
                 onWheel={handleWheel}
                 draggable
+                onDragMove={() => {}}
+                onDragEnd={() => {}}
                 style={{ backgroundColor: '#fafafa' }}
             >
                 <Layer>

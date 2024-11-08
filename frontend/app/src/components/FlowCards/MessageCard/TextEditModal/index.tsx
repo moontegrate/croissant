@@ -28,9 +28,9 @@ const TextEditModal: React.FC<{ refetch: () => void }> = ({ refetch }) => {
     useEffect(() => {
         const handler = setTimeout(() => {
             if (node) {
-                updateNode({...node, text: inputValue});
-            } else {
-                console.log('Error while edit message card text');
+                updateNode({...node, text: inputValue})
+                .unwrap()
+                .catch((error) => console.error(error));
             };
         }, 500);
 
