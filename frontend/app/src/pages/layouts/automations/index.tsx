@@ -93,7 +93,6 @@ const AutomationsPageLayout = () => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
 
-    const isAuthenticated = useAppSelector((state) => state.appSlice.isAuthenticated);
     const isHamubrgerClicked = useAppSelector((state) => state.appSlice.isHamburgerClicked);
     const accounts = useAppSelector((state) => state.automationsSlice.accounts);
     const automations = useAppSelector((state) => state.automationsSlice.automations);
@@ -114,7 +113,11 @@ const AutomationsPageLayout = () => {
     function sortAutomations(automations: AutomationData[]): AutomationData[] {
         switch (sortBy) {
             case 'Created date':
-                return automations.sort((a, b) => +a.createdDate - +b.createdDate);
+                return automations.sort((a, b) => {
+                    const dateA = new Date(a.createdDate).getTime();
+                    const dateB = new Date(b.createdDate).getTime();
+                    return dateA - dateB;
+                });
             case 'Name A-Z':
                 return automations.sort((a, b) => a.name.localeCompare(b.name));
             case 'Name Z-A':
