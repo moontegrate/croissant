@@ -85,6 +85,7 @@ const AutomationsPageLayout = () => {
     const { data: automationsData = [],
         isFetching: isAutomationsFetching,
         isLoading: isAutomationsLoading,
+        isSuccess: isAutomationsSuccess,
         refetch: refetchAutomations
     } = useGetAutomationsQuery(undefined, {skip: !isTokenReady});
     const { data: accountsData = [] } = useGetAccountsQuery(undefined, {skip: !isTokenReady});
@@ -294,7 +295,7 @@ const AutomationsPageLayout = () => {
                 <PageHeader>
                     {/* Title */}
                     <PageHeader.Core>
-                        <h2 className='automations-page__title'>{title()} <span>{filteredAutomationsByStatus.length}</span></h2>
+                        <h2 className='automations-page__title'>{title()} <span>{isAutomationsSuccess ? filteredAutomationsByStatus.length : null}</span></h2>
                     </PageHeader.Core>
 
                     {/* Filters */}
@@ -357,7 +358,7 @@ const AutomationsPageLayout = () => {
                         return <AutomationCard automation={automation} key={i} />;
                     }) : null }
                 </div>
-                { automations.length === 0 ? <NoElements text="Oops! There are no automations." description="Let's create one."/> : null }
+                { isAutomationsSuccess && automations.length === 0 ? <NoElements text="Oops! There are no automations." description="Let's create one."/> : null }
             </div>
 
             {/* Modals */}
