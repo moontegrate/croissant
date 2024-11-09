@@ -1,7 +1,7 @@
-// React imports
-import React, { useEffect, useRef } from 'react';
+// React
+import React, { useEffect, useRef, useState } from 'react';
 
-// Style imports
+// Style
 import './index.scss';
 import { GoComment, GoDuplicate, GoFile, GoRepoForked, GoRocket, GoScreenNormal } from "react-icons/go";
 
@@ -9,6 +9,7 @@ import { GoComment, GoDuplicate, GoFile, GoRepoForked, GoRocket, GoScreenNormal 
 import FlowCardContainer from '../FlowCardContainer';
 import { BarLoader } from 'react-spinners';
 import TextEditModal from '../FlowCards/MessageCard/TextEditModal';
+import NodeBindingArrow from '../NodeBindingArrow';
 
 // Interfaces
 import { ArrowData, NodeData } from './interfaces';
@@ -54,6 +55,8 @@ const InteractiveMap= () => {
     const [createNode, {isLoading: isNodeCreating}] = useCreateNodeMutation();
     const [, {isLoading: isNodeDeleting}] = useDeleteNodeMutation();
 
+    const [mousePosition, setMousePosition] = useState<{ x: number; y: number } | null>(null);
+
     const {
         data: serverNodes = [],
         isLoading: isNodesLoading,
@@ -65,6 +68,7 @@ const InteractiveMap= () => {
     } = useGetAutomationQuery(automationId!, {skip: !isTokenReady});
 
     const stageRef = useRef<any>(null);
+    const stage = stageRef.current;
 
     // if (isError) navigate('/error');
 
@@ -98,6 +102,29 @@ const InteractiveMap= () => {
         // eslint-disable-next-line
     }, [isDragging, dragId, nodes]);
 
+    const handleDragStart = (id: string) => {
+        dispatch(setIsDragging(true));
+        dispatch(setDragId(id));
+
+        const indexes = nodes.map((a: NodeData) => {
+            return a.zIndex;
+        });
+
+        const newNodes = nodes.map((a: NodeData) => {
+            if (a.id === id) {
+                return { ...a, zIndex: nodes.length };
+            };
+
+            if (a.zIndex === nodes.length) {
+                const newZIndex = indexes.find((i) => !indexes.includes(i)) || a.zIndex - 1;
+                return { ...a, zIndex: newZIndex };
+            };
+
+            return a;
+        });
+        dispatch(setNodes(newNodes));
+    };
+
     const handleDragMove = (e: MouseEvent) => {
         if (isDragging && dragId !== null) {
             if (!blockClick) dispatch(setBlockCardClick(true));
@@ -126,29 +153,6 @@ const InteractiveMap= () => {
         };
     };
 
-    const handleDragStart = (id: string) => {
-        dispatch(setIsDragging(true));
-        dispatch(setDragId(id));
-
-        const indexes = nodes.map((a: NodeData) => {
-            return a.zIndex;
-        });
-
-        const newNodes = nodes.map((a: NodeData) => {
-            if (a.id === id) {
-                return { ...a, zIndex: nodes.length };
-            };
-
-            if (a.zIndex === nodes.length) {
-                const newZIndex = indexes.find((i) => !indexes.includes(i)) || a.zIndex - 1;
-                return { ...a, zIndex: newZIndex };
-            };
-
-            return a;
-        });
-        dispatch(setNodes(newNodes));
-    };
-
     const handleDragEnd = () => {
         updateNode(nodes.find(i => i.id === dragId)!);
         dispatch(setIsDragging(false));
@@ -156,31 +160,6 @@ const InteractiveMap= () => {
         setTimeout(() => {
             dispatch(setBlockCardClick(false));
         }, 10);
-    };
-
-    const handleWheel = (e: KonvaEventObject<WheelEvent>) => {
-        e.evt.preventDefault();
-
-        const stage = stageRef.current;
-        const scaleBy = 1.05;
-
-        if (stage) {
-            const oldScale = stage.scaleX();
-            const pointer = stage.getPointerPosition();
-            const mousePos = { x: pointer.x, y: pointer.y };
-            const newScale = e.evt.deltaY < 0 ? oldScale * scaleBy : oldScale / scaleBy;
-            const newPos = {
-                x: stage.x() - (mousePos.x - stage.x()) * (newScale / oldScale - 1),
-                y: stage.y() - (mousePos.y - stage.y()) * (newScale / oldScale - 1),
-            };
-
-            if (newScale < 4 && newScale > 0.5) {
-                dispatch(setScale(newScale));
-                stage.scale({ x: newScale, y: newScale });
-                stage.position(newPos);
-                stage.batchDraw();
-            };
-        };
     };
 
     // Handle scaling
@@ -218,7 +197,6 @@ const InteractiveMap= () => {
         const maxX = Math.max(...nodePositions.map(pos => pos.x));
         const maxY = Math.max(...nodePositions.map(pos => pos.y));
 
-        const stage = stageRef.current;
         const containerWidth = stage.width();
         const containerHeight = stage.height();
 
@@ -245,26 +223,6 @@ const InteractiveMap= () => {
         stage.batchDraw();
     };
 
-    const handleLinking = (id: string) => {
-        const stage = stageRef.current;
-        const node = nodes.find(item => item.id === id);
-        const pointer = stage.getPointerPosition();
-
-        return (
-            <div className='bind-arrow'>
-                <Arrow
-                    points={[node!.x + 335, node!.y + 110, pointer.x, pointer.y]}
-                    pointerLength={10}
-                    pointerWidth={10}
-                    fill="gray"
-                    stroke="gray"
-                    strokeWidth={1}
-                    tension={10}
-                />
-            </div>
-        )
-    };
-
     return (
         <div className='flow'>
             {isNodesLoading || isNodeUpdating || isNodeCreating || isNodeDeleting ? <div className='loading-spinner'><BarLoader color='#FF7A7A' width="100%"/></div> : null}
@@ -274,10 +232,51 @@ const InteractiveMap= () => {
                 x={70}
                 y={140}
                 ref={stageRef}
-                onWheel={handleWheel}
+                onWheel={(e) => {
+                    e.evt.preventDefault();
+
+                    const scaleBy = 1.05;
+
+                    if (stage) {
+                        const oldScale = stage.scaleX();
+                        const pointer = stage.getPointerPosition();
+                        const mousePos = { x: pointer.x, y: pointer.y };
+                        const newScale = e.evt.deltaY < 0 ? oldScale * scaleBy : oldScale / scaleBy;
+                        const newPos = {
+                            x: stage.x() - (mousePos.x - stage.x()) * (newScale / oldScale - 1),
+                            y: stage.y() - (mousePos.y - stage.y()) * (newScale / oldScale - 1),
+                        };
+
+                        if (newScale < 4 && newScale > 0.5) {
+                            dispatch(setScale(newScale));
+                            stage.scale({ x: newScale, y: newScale });
+                            stage.position(newPos);
+                            stage.batchDraw();
+                        };
+                    };
+                }}
                 draggable
                 onDragMove={() => {}}
                 onDragEnd={() => {}}
+                onMouseMove={(e) => {
+                    if (isBinding) {
+                        const pointerPosition = stage?.getPointerPosition();
+                        if (pointerPosition) {
+                            setMousePosition({ x: pointerPosition.x, y: pointerPosition.y });
+                        }
+                    }
+                }}
+                onMouseUp={() => {
+                    if (isBinding) {
+                        // const targetNodeId = findNodeUnderCursor(e); // Логика определения карточки под курсором
+                        // if (targetNodeId && bindingFrom) {
+                        //     bindCards(bindingFrom, targetNodeId); // Логика связывания карточек
+                        // }
+                        // setIsBinding(false);
+                        // setBindingFrom(null);
+                        // setMousePosition(null);
+                    }
+                }}
                 style={{ backgroundColor: '#fafafa' }}
             >
                 <Layer>
@@ -297,7 +296,6 @@ const InteractiveMap= () => {
                                                     zIndex: node.zIndex
                                                 }
                                             }}
-
                                         >
                                             <FlowCardContainer
                                                 node={node}
@@ -317,7 +315,14 @@ const InteractiveMap= () => {
                                 </React.Fragment>
                             );
                         }) : null}
-                    {isBinding ? handleLinking(bindingFrom!) : null}
+                    {isBinding&& bindingFrom && mousePosition && <NodeBindingArrow
+                        node={nodes.find((item) => item.id === bindingFrom)!}
+                        pointer={[
+                            nodes.find((node) => node.id === bindingFrom)!.x + 336,
+                            nodes.find((node) => node.id === bindingFrom)!.y + 108,
+                            mousePosition.x,
+                            mousePosition.y,
+                        ]}/>}
                 </Layer>
             </Stage>}
 

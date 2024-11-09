@@ -66,33 +66,12 @@ import {
 // Libraires
 import { v4 as uuidv4 } from 'uuid';
 
+// Helpers
+import { sortAutomations } from './helpers';
+
 const AutomationsPageLayout = () => {
+    // States
     const isTokenReady = useAppSelector((state) => state.appSlice.isTokenReady);
-    
-    const { data: automationsData = [],
-        isFetching: isAutomationsFetching,
-        isLoading: isAutomationsLoading,
-        refetch: refetchAutomations
-    } = useGetAutomationsQuery(undefined, {skip: !isTokenReady});
-    const { data: accountsData = [],
-        isFetching: isAccountsFetching,
-        isLoading: isAccountsLoading
-    } = useGetAccountsQuery(undefined, {skip: !isTokenReady});
-    const { data: groupsData = [],
-        isFetching: isGroupsFetching,
-        isLoading: isGroupsLoading,
-        refetch: refetchGroups
-    } = useGetAutomationGroupsQuery(undefined, {skip: !isTokenReady});
-
-    
-    const [updateAutomation, { isLoading: isAutomationUpdating, isSuccess: isAutomationUpdatingSuccess }] = useUpdateAutomationMutation();
-    const [createGroup] = useCreateAutomationGroupMutation();
-    const [updateGroup] = useUpdateAutomationGroupMutation();
-    const [deleteGroup] = useDeleteAutomationGroupMutation();
-
-    const dispatch = useAppDispatch();
-    const navigate = useNavigate();
-
     const isHamubrgerClicked = useAppSelector((state) => state.appSlice.isHamburgerClicked);
     const accounts = useAppSelector((state) => state.automationsSlice.accounts);
     const automations = useAppSelector((state) => state.automationsSlice.automations);
@@ -101,6 +80,22 @@ const AutomationsPageLayout = () => {
     const channelsFilter = useAppSelector((state) => state.automationsSlice.channelsFilter);
     const statusFilter = useAppSelector((state) => state.automationsSlice.statusFilter);
     const sortBy = useAppSelector((state) => state.automationsSlice.sort);
+    
+    // Server
+    const { data: automationsData = [],
+        isFetching: isAutomationsFetching,
+        isLoading: isAutomationsLoading,
+        refetch: refetchAutomations
+    } = useGetAutomationsQuery(undefined, {skip: !isTokenReady});
+    const { data: accountsData = [] } = useGetAccountsQuery(undefined, {skip: !isTokenReady});
+    const { data: groupsData = [], refetch: refetchGroups } = useGetAutomationGroupsQuery(undefined, {skip: !isTokenReady});
+    const [updateAutomation] = useUpdateAutomationMutation();
+    const [createGroup] = useCreateAutomationGroupMutation();
+    const [updateGroup] = useUpdateAutomationGroupMutation();
+    const [deleteGroup] = useDeleteAutomationGroupMutation();
+
+    const dispatch = useAppDispatch();
+    const navigate = useNavigate();
 
     const [isGroupAdding, setIsGroupAdding] = useState(false);
     const [isGroupRenaming, setIsGroupRenaming] = useState<boolean | number>(false);
@@ -109,32 +104,7 @@ const AutomationsPageLayout = () => {
     const filteredAutomationsByChannel = filteredAutomationsByGroup.filter(a => a.channel === channelsFilter || channelsFilter === "All channels");
     const filteredAutomationsByStatus = filteredAutomationsByChannel.filter(a => a.enabled === (statusFilter === "On") || statusFilter === "All statuses");
 
-    // Automations sort
-    function sortAutomations(automations: AutomationData[]): AutomationData[] {
-        switch (sortBy) {
-            case 'Created date':
-                return automations.sort((a, b) => {
-                    const dateA = new Date(a.createdDate).getTime();
-                    const dateB = new Date(b.createdDate).getTime();
-                    return dateA - dateB;
-                });
-            case 'Name A-Z':
-                return automations.sort((a, b) => a.name.localeCompare(b.name));
-            case 'Name Z-A':
-                return automations.sort((a, b) => b.name.localeCompare(a.name));
-            case 'Less clients':
-                return automations.sort((a, b) => a.users - b.users);
-            case 'More clients':
-                return automations.sort((a, b) => b.users - a.users);
-            case 'Best conversion':
-                return automations.sort((a, b) => a.conversion - b.conversion);
-            case 'Worst conversion':
-                return automations.sort((a, b) => b.conversion - a.conversion);
-            default:
-                return automations;
-        };
-    };
-    const sortedAutomations = sortAutomations(filteredAutomationsByStatus);
+    const sortedAutomations = sortAutomations(filteredAutomationsByStatus, sortBy);
 
     const renamingForm = useRef<HTMLFormElement>(null);
 
@@ -298,7 +268,15 @@ const AutomationsPageLayout = () => {
                 </Sidebar.Group>
 
                 {/* Accounts part of sidebar */}
-                <Sidebar.Group title='Accounts' addButton={<GoPlus className='automations-sidebar__add' onClick={() => navigate('/automations/connect')} />}>
+                <Sidebar.Group
+                    title='Accounts'
+                    addButton={
+                        <GoPlus
+                            className='automations-sidebar__add'
+                            onClick={() => navigate('/automations/connect')}
+                        />
+                    }
+                >
                     {accounts.length > 0 ? accounts.map((account, i) => {
                         return (
                             <Sidebar.Item icon={<img className='rounded-full' src={account.img ? account.img : '/account.svg'} alt='account' />} key={i}>@{account.name}</Sidebar.Item>
@@ -375,11 +353,11 @@ const AutomationsPageLayout = () => {
 
                 {/* Content */}
                 <div className='automations-page__grid'>
-                    {automations.length > 0 ? sortedAutomations.map((automation, i) => {
+                    { automations.length > 0 ? sortedAutomations.map((automation, i) => {
                         return <AutomationCard automation={automation} key={i} />;
-                    }) : null}
+                    }) : null }
                 </div>
-                {automations.length === 0 ? <NoElements text="Oops! There are no automations." description="Let's create one."/> : null}
+                { automations.length === 0 ? <NoElements text="Oops! There are no automations." description="Let's create one."/> : null }
             </div>
 
             {/* Modals */}

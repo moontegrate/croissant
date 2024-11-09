@@ -13,8 +13,14 @@ import { MessageCardData } from './interfaces';
 // Hooks
 import { useState } from 'react';
 
+// Redux
+import { useAppDispatch } from '../../../hooks/state';
+import { setIsBinding, setBindingFrom } from '../../InteractiveMap/interactiveMapSlice';
+
 const MessageCard: React.FC<{node: MessageCardData}> = ({node}) => {
     const [isTextOn, setIsTextOn] = useState<boolean>(false);
+
+    const dispatch = useAppDispatch();
 
     return (
         <div className='flow-card message-card'>
@@ -43,7 +49,16 @@ const MessageCard: React.FC<{node: MessageCardData}> = ({node}) => {
                         <GoCreditCard size={17}/>Audio
                     </Dropdown.Item>
                 </Dropdown>
-                <div className='flow-card__connect message-card__connect'></div>
+                <div
+                    className='flow-card__connect message-card__connect'
+                    onClick={() => {
+                        dispatch(setIsBinding(true));
+                        dispatch(setBindingFrom(node.id));
+                    }}
+                    style={{
+                        zIndex: node.zIndex + 2
+                    }}
+                ></div>
             </div>
         </div>
     );
