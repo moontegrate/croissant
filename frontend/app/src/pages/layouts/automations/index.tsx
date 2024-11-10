@@ -82,14 +82,24 @@ const AutomationsPageLayout = () => {
     const sortBy = useAppSelector((state) => state.automationsSlice.sort);
     
     // Server
-    const { data: automationsData = [],
+    const {
+        data: automationsData = [],
         isFetching: isAutomationsFetching,
         isLoading: isAutomationsLoading,
         isSuccess: isAutomationsSuccess,
         refetch: refetchAutomations
     } = useGetAutomationsQuery(undefined, {skip: !isTokenReady});
-    const { data: accountsData = [] } = useGetAccountsQuery(undefined, {skip: !isTokenReady});
-    const { data: groupsData = [], refetch: refetchGroups } = useGetAutomationGroupsQuery(undefined, {skip: !isTokenReady});
+    const {
+        data: accountsData = [],
+        isSuccess: isAccountsSuccess,
+        isLoading: isAccountsLoading
+    } = useGetAccountsQuery(undefined, {skip: !isTokenReady});
+    const {
+        data: groupsData = [],
+        isSuccess: isGroupsSuccess,
+        isLoading: isGroupsLoading,
+        refetch: refetchGroups
+    } = useGetAutomationGroupsQuery(undefined, {skip: !isTokenReady});
     const [updateAutomation] = useUpdateAutomationMutation();
     const [createGroup] = useCreateAutomationGroupMutation();
     const [updateGroup] = useUpdateAutomationGroupMutation();
@@ -184,7 +194,7 @@ const AutomationsPageLayout = () => {
                     <Sidebar.Item focused={groupsFilter === false} onClick={() => dispatch(setGroupsFilter(false))}>All automations</Sidebar.Item>
                     <Sidebar.Item focused={groupsFilter === null} onClick={() => dispatch(setGroupsFilter(null))}>Without group</Sidebar.Item>
 
-                    {groups?.map((group, i) => {
+                    {isGroupsSuccess && groups.length > 0 ? groups.map((group, i) => {
                         return (
                             <Sidebar.Item
                                 focused={groupsFilter === group.id}
@@ -242,7 +252,7 @@ const AutomationsPageLayout = () => {
                                     : group.name}
                             </Sidebar.Item>
                         )
-                    })}
+                    }) : null}
 
                     {/* If user clicks to add group button a group name input will appear*/}
                     {isGroupAdding ?
@@ -278,11 +288,13 @@ const AutomationsPageLayout = () => {
                         />
                     }
                 >
-                    {accounts.length > 0 ? accounts.map((account, i) => {
+                    {isAccountsSuccess && accounts.length > 0 ? accounts.map((account, i) => {
                         return (
                             <Sidebar.Item icon={<img className='rounded-full' src={account.img ? account.img : '/account.svg'} alt='account' />} key={i}>@{account.name}</Sidebar.Item>
                         );
-                    }) : <div className='automations-sidebar__empty'>No accounts</div>}
+                    }) : null}
+                    {isAccountsSuccess && accounts.length === 0 ? <div className='automations-sidebar__message'>No accounts</div> : null}
+                    {isAccountsLoading ? <div className='automations-sidebar__message'>Loading</div> : null}
                 </Sidebar.Group>
             </Sidebar>
 
