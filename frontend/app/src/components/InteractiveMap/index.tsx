@@ -1,30 +1,32 @@
-// React
-import React, { useEffect, useRef, useState } from 'react';
-
 // Style
 import './index.scss';
 import { GoComment, GoDuplicate, GoFile, GoRepoForked, GoRocket, GoScreenNormal } from "react-icons/go";
 
 // Components
-import FlowCardContainer from '../FlowCardContainer';
 import { BarLoader } from 'react-spinners';
+import MessageCard from '../FlowCards/MessageCard';
+import ActionCard from '../FlowCards/ActionCard';
+import ConditionCard from '../FlowCards/ConditionCard';
+import NoteCard from '../FlowCards/NoteCard';
 import TextEditModal from '../FlowCards/MessageCard/TextEditModal';
-import NodeBindingArrow from '../NodeBindingArrow';
+import NoteCardModal from '../NoteCardModal';
+
+// Hooks
+import { useEffect, useRef } from 'react';
 
 // Interfaces
-import { ArrowData, NodeData } from './interfaces';
+import { NodeData } from '../FlowCards/__base/interfaces';
+import { MessageCardData } from '../FlowCards/MessageCard/interfaces';
+import { ActionCardData } from '../FlowCards/ActionCard/interfaces';
+import { ConditionCardData } from '../FlowCards/ConditionCard/interfaces';
+import { NoteCardData } from '../FlowCards/NoteCard/interfaces';
 
 // Redux
 import { useAppDispatch, useAppSelector } from '../../hooks/state';
-import { setArrows, setBlockCardClick, setDragId, setIsDragging, setIsAddModal, setNodes, setScale, setAutomationId, setAutomationName } from './interactiveMapSlice';
+import { setIsAddModal, setNodes, setScale, setAutomationId, setAutomationName } from './interactiveMapSlice';
 
 // Map library
-import { Group, Layer, Stage, Arrow } from 'react-konva';
-import { Html } from 'react-konva-utils';
-import { KonvaEventObject } from 'konva/lib/Node';
-
-// Helpers
-import { renderCardBody } from './helpers';
+import { Layer, Stage } from 'react-konva';
 
 // Server
 import { useDeleteNodeMutation, useGetAutomationNodesQuery, useGetAutomationQuery, useUpdateNodeMutation, useCreateNodeMutation } from '../../api/apiSlice';
@@ -36,26 +38,18 @@ import { useParams } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import toast from 'react-hot-toast';
 
+
 const InteractiveMap= () => {
     const { automationId } = useParams();
 
     const dispatch = useAppDispatch();
     const isTokenReady = useAppSelector((state) => state.appSlice.isTokenReady);
     const nodes = useAppSelector((state) => state.interactiveMapSlice.nodes);
-    const arrows = useAppSelector((state) => state.interactiveMapSlice.arrows);
-    const isDragging = useAppSelector((state) => state.interactiveMapSlice.isDragging);
-    const isBinding = useAppSelector((state) => state.interactiveMapSlice.isBinding);
-    const bindingFrom = useAppSelector((state) => state.interactiveMapSlice.bindingFrom);
-    const blockClick = useAppSelector((state) => state.interactiveMapSlice.blockCardClick);
     const isAddModal = useAppSelector((state) => state.interactiveMapSlice.isAddModal);
-    const dragId = useAppSelector((state) => state.interactiveMapSlice.dragId);
-    const scale = useAppSelector((state) => state.interactiveMapSlice.scale);
 
-    const [updateNode, {isLoading: isNodeUpdating}] = useUpdateNodeMutation();
+    const [, {isLoading: isNodeUpdating}] = useUpdateNodeMutation();
     const [createNode, {isLoading: isNodeCreating}] = useCreateNodeMutation();
     const [, {isLoading: isNodeDeleting}] = useDeleteNodeMutation();
-
-    const [mousePosition, setMousePosition] = useState<{ x: number; y: number } | null>(null);
 
     const {
         data: serverNodes = [],
@@ -92,75 +86,6 @@ const InteractiveMap= () => {
         };
         // eslint-disable-next-line
     }, []);
-
-    useEffect(() => {
-        document.addEventListener('mousemove', handleDragMove);
-
-        return () => {
-            document.removeEventListener('mousemove', handleDragMove);
-        };
-        // eslint-disable-next-line
-    }, [isDragging, dragId, nodes]);
-
-    const handleDragStart = (id: string) => {
-        dispatch(setIsDragging(true));
-        dispatch(setDragId(id));
-
-        const indexes = nodes.map((a: NodeData) => {
-            return a.zIndex;
-        });
-
-        const newNodes = nodes.map((a: NodeData) => {
-            if (a.id === id) {
-                return { ...a, zIndex: nodes.length };
-            };
-
-            if (a.zIndex === nodes.length) {
-                const newZIndex = indexes.find((i) => !indexes.includes(i)) || a.zIndex - 1;
-                return { ...a, zIndex: newZIndex };
-            };
-
-            return a;
-        });
-        dispatch(setNodes(newNodes));
-    };
-
-    const handleDragMove = (e: MouseEvent) => {
-        if (isDragging && dragId !== null) {
-            if (!blockClick) dispatch(setBlockCardClick(true));
-
-            const newNodes = nodes.map((node: NodeData) => {
-                if (node.id === dragId) {
-                    return { ...node, x: node.x + e.movementX / scale, y: node.y + e.movementY / scale };
-                };
-                return node;
-            });
-
-            const node = nodes.find(item => item.id === dragId);
-
-            if (node?.isBinded) {
-                const newArrows = arrows.map((arrow: ArrowData) => {
-                    if (arrow.from === node.id) {
-                        return {...arrow, x: arrow.x || 0 + e.movementX / scale, y: arrow.y || 0 + e.movementY / scale };
-                    };
-                    return arrow;
-                });
-
-                dispatch(setArrows(newArrows));
-            };
-
-            dispatch(setNodes(newNodes));
-        };
-    };
-
-    const handleDragEnd = () => {
-        updateNode(nodes.find(i => i.id === dragId)!);
-        dispatch(setIsDragging(false));
-        dispatch(setDragId(undefined));
-        setTimeout(() => {
-            dispatch(setBlockCardClick(false));
-        }, 10);
-    };
 
     // Handle scaling
     const handleScale = (type: string) => {
@@ -258,71 +183,23 @@ const InteractiveMap= () => {
                 draggable
                 onDragMove={() => {}}
                 onDragEnd={() => {}}
-                onMouseMove={(e) => {
-                    if (isBinding) {
-                        const pointerPosition = stage?.getPointerPosition();
-                        if (pointerPosition) {
-                            setMousePosition({ x: pointerPosition.x, y: pointerPosition.y });
-                        }
-                    }
-                }}
-                onMouseUp={() => {
-                    if (isBinding) {
-                        // const targetNodeId = findNodeUnderCursor(e); // Логика определения карточки под курсором
-                        // if (targetNodeId && bindingFrom) {
-                        //     bindCards(bindingFrom, targetNodeId); // Логика связывания карточек
-                        // }
-                        // setIsBinding(false);
-                        // setBindingFrom(null);
-                        // setMousePosition(null);
-                    }
-                }}
                 style={{ backgroundColor: '#fafafa' }}
             >
                 <Layer>
                     {nodes ? nodes.map((node: NodeData, i) => {
-                            return (
-                                <React.Fragment key={i}>
-                                    <Group
-                                        x={node.x}
-                                        y={node.y}
-                                        width={500}
-                                        height={300}
-                                    >
-                                        <Html
-                                            divProps={{
-                                                style: {
-                                                    pointerEvents: "auto",
-                                                    zIndex: node.zIndex
-                                                }
-                                            }}
-                                        >
-                                            <FlowCardContainer
-                                                node={node}
-                                                stageRef={stageRef}
-                                                canBeEntryPoint={node.type === "Note" ? false : true}
-                                                onMouseDown={(e) => {
-                                                    if (e.button === 0) {
-                                                        handleDragStart(node.id);
-                                                    };
-                                                }}
-                                                onMouseUp={handleDragEnd}
-                                            >
-                                                {renderCardBody(node)}
-                                            </FlowCardContainer>
-                                        </Html>
-                                    </Group>
-                                </React.Fragment>
-                            );
+                            switch (node.type) {
+                                case "Message":
+                                    return <MessageCard node={node as MessageCardData} key={i}/>
+                                case "Condition":
+                                    return <ConditionCard node={node as ConditionCardData} key={i}></ConditionCard>
+                                case "Action":
+                                    return <ActionCard node={node as ActionCardData} key={i}></ActionCard>
+                                case "Note":
+                                    return <NoteCard node={node as NoteCardData} key={i}></NoteCard>
+                                default:
+                                    break;
+                            }
                         }) : null}
-                    {isBinding&& bindingFrom && mousePosition && <NodeBindingArrow
-                        node={nodes.find((item) => item.id === bindingFrom)!}
-                        pointer={[
-                            nodes.find((node) => node.id === bindingFrom)!.x + 336,
-                            nodes.find((node) => node.id === bindingFrom)!.y + 108,
-                            mousePosition.x,
-                            mousePosition.y,
-                        ]}/>}
                 </Layer>
             </Stage>}
 
@@ -337,7 +214,6 @@ const InteractiveMap= () => {
                             x: 0,
                             y: 0,
                             automation: automationId!,
-                            zIndex: nodes.length + 1,
                             isEntryPoint: nodes.length === 0 ? true : false,
                             isBinded: false,
                             bindedTo: null
@@ -358,7 +234,6 @@ const InteractiveMap= () => {
                             type: 'Condition',
                             x: 0,
                             y: 0,
-                            zIndex: nodes.length + 1,
                             isEntryPoint: nodes.length === 0 ? true : false,
                             isBinded: false,
                             bindedTo: null
@@ -379,7 +254,6 @@ const InteractiveMap= () => {
                             type: 'Action',
                             x: 0,
                             y: 0,
-                            zIndex: nodes.length + 1,
                             isEntryPoint: nodes.length === 0 ? true : false,
                             isBinded: false,
                             bindedTo: null
@@ -400,7 +274,6 @@ const InteractiveMap= () => {
                             type: 'Note',
                             x: 0,
                             y: 0,
-                            zIndex: nodes.length + 1,
                             isEntryPoint: false,
                             isBinded: false,
                             bindedTo: null,
@@ -433,6 +306,7 @@ const InteractiveMap= () => {
 
             {/* Modal windows */}
             <TextEditModal refetch={refetch}/>
+            <NoteCardModal refetch={refetch}/>
         </div>
     );
 };

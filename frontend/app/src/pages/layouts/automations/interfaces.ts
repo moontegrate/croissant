@@ -1,4 +1,4 @@
-import { NodeData } from "../../../components/InteractiveMap/interfaces"
+import { NodeData } from "../../../components/FlowCards/__base/interfaces"
 
 export interface AutomationData {
     id: string,

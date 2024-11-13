@@ -1,4 +1,4 @@
-import { NodeData } from "../../InteractiveMap/interfaces";
+import { NodeData } from "../__base/interfaces";
 
 export interface ConditionCardData extends NodeData {
 };

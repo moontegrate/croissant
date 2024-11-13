@@ -7,7 +7,7 @@ import { ActionCardData } from "../components/FlowCards/ActionCard/interfaces";
 import { ConditionCardData } from "../components/FlowCards/ConditionCard/interfaces";
 import { NoteCardData } from "../components/FlowCards/NoteCard/interfaces";
 import { AccountData, AutomationData, GroupData } from "../pages/layouts/automations/interfaces";
-import { NodeType } from "../components/InteractiveMap/interfaces";
+import { NodeType } from "../components/FlowCards/__base/interfaces";
 
 export const apiSlice = createApi({
     reducerPath: "api",

@@ -18,7 +18,7 @@ module.exports = {
                 'action-card-accent': "#FFC93F",
                 'condition-card-accent': '#4CE99E'
             }
-        },
+        }
     },
     plugins: [flowbite.plugin()],
 }

@@ -7,30 +7,45 @@ import { Modal, TextInput } from 'flowbite-react';
 
 // Redux
 import { useAppDispatch, useAppSelector } from '../../hooks/state';
+import { setNode } from './NoteCardModalSlice';
 import { setNodes } from '../InteractiveMap/interactiveMapSlice';
-import { setIsModalOpen, setNode } from './NoteCardModalSlice';
 
 // Server
 import { useUpdateNodeMutation } from '../../api/apiSlice';
 
-const NoteCardModal = () => {
-    const [updateNode] = useUpdateNodeMutation();
+// Interfaces
+import { NoteCardModalProps } from './interfaces';
 
+// Notifications
+import toast from 'react-hot-toast';
+
+const NoteCardModal: React.FC<NoteCardModalProps> = ({refetch}) => {
     const dispatch = useAppDispatch();
-    const isModalOpen = useAppSelector((state) => state.noteCardModalSlice.isModalOpen);
     const node = useAppSelector((state) => state.noteCardModalSlice.node);
     const nodes = useAppSelector((state) => state.interactiveMapSlice.nodes);
 
+    const [updateNode] = useUpdateNodeMutation();
+
     return (
         <Modal
-            show={isModalOpen}
+            show={node !== null}
             dismissible
             position='center'
             theme={modalTheme}
             onClose={() => {
-                dispatch(setIsModalOpen(false));
                 dispatch(setNodes([...nodes, node!]))
-                updateNode(node!).then(() => dispatch(setNode(null)))
+                updateNode(node!).then(() => {
+                    dispatch(setNode(null));
+                    refetch()
+                    .unwrap()
+                    .then((data) => {
+                        dispatch(setNodes(data));
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                        toast('Oops! Something get wrong', {icon: '😰'});
+                    });
+                });
             }}
         >
             <Modal.Header className='pb-0'>
@@ -46,7 +61,7 @@ const NoteCardModal = () => {
                     defaultValue={node?.noteContent}
                     maxLength={100}
                     onChange={(e) => {
-                        dispatch(setNode({...node!, noteContent: e.target.value}))
+                        dispatch(setNode({...node!, noteContent: e.target.value}));
                     }}
                 />
             </Modal.Body>

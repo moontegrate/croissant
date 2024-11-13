@@ -1,32 +1,30 @@
-// Style
-import './index.scss';
-
 // Interfaces
 import { NoteCardData } from './interfaces';
 
 // Redux
-import { useAppDispatch, useAppSelector } from '../../../hooks/state';
-import { setIsModalOpen, setNode } from '../../NoteCardModal/NoteCardModalSlice';
+import { useAppDispatch } from '../../../hooks/state';
+import { setNode } from '../../NoteCardModal/NoteCardModalSlice';
+
+// Components
+import { CardContainer } from '../__base/components';
+import { Text } from 'react-konva';
 
 const NoteCard: React.FC<{node: NoteCardData}> = ({node}) => {
     const dispatch = useAppDispatch();
 
-    const blockClick = useAppSelector((state) => state.interactiveMapSlice.blockCardClick);
-
     return (
-        <div
-            className='flow-card note-card'
+        <CardContainer 
+            node={node}
             onClick={() => {
-                if (!blockClick) {
-                    dispatch(setNode(node!));
-                    dispatch(setIsModalOpen(true));
-                };
+                dispatch(setNode(node));
             }}
         >
-            <div className='flow-card__content'>
-                {node?.noteContent ? node?.noteContent : "Enter note text"}
-            </div>
-        </div>
+            <Text
+                x={10}
+                y={10}
+                text={node?.noteContent ? node?.noteContent : "Enter note text"}
+            />
+        </CardContainer>
     );
 };
 

@@ -1,6 +1,16 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface InitialState {
+    theme: {
+        colors: {
+            flowCardsAccent: {
+                messageCard: string,
+                actionCard: string,
+                conditionCard: string,
+                noteCard: string
+            }
+        }
+    },
     accessToken: string | null,
     isTokenReady: boolean,
     isAuthenticated: boolean | null,
@@ -8,6 +18,16 @@ interface InitialState {
 };
 
 const initialState: InitialState = {
+    theme: {
+        colors: {
+            flowCardsAccent: {
+                messageCard: "#2F71F0",
+                actionCard: "#FFC93F",
+                conditionCard: "#4CE99E",
+                noteCard: "#6C9FFF"
+            }
+        }
+    },
     accessToken: null,
     isTokenReady: false,
     isAuthenticated: null,

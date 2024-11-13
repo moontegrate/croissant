@@ -1,37 +1,38 @@
-// Style imports
-import './index.scss';
-import { GoRocket } from "react-icons/go";
-import { flowCardButtonTheme } from '../../../style/flowbiteThemes';
-
 // Components
-import { Button } from 'flowbite-react';
+import { Text } from 'react-konva';
+import { CardButton, CardContainer, defaultBackgroundWidth } from '../__base/components';
+import ActionIcon from './icon';
 
 // Interfaces
-import { CardProps } from '../../InteractiveMap/interfaces';
+import { ActionCardData } from './interfaces';
 
 // Redux
-import { useAppDispatch, useAppSelector } from '../../../hooks/state';
-import { setBindingFrom, setIsBinding } from '../../InteractiveMap/interactiveMapSlice';
+import { useAppSelector } from '../../../hooks/state';
 
-const ActionCard: React.FC<CardProps> = ({node}) => {
-    const dispatch = useAppDispatch();
-
-    const isBinding = useAppSelector((state) => state.interactiveMapSlice.isBinding);
+const ActionCard: React.FC<{
+    node: ActionCardData
+}> = ({ node }) => {
+    const theme = useAppSelector((state) => state.appSlice.theme);
 
     return (
-        <div className='flow-card action-card'>
-            <div className='flow-card__head'>
-                <GoRocket color='#FFC93F' size={20} />
-                <h5 className='flow-card__title'>Action</h5>
-            </div>
-            <div className='flow-card__bottom'>
-                <Button theme={flowCardButtonTheme} className='mb-2 enabled:hover:border-action-card-accent'>Click to add an action</Button>
-                <div className={isBinding ? 'flow-card__connect action-card__connect binding' : 'flow-card__connect action-card__connect'} onClick={() => {
-                    dispatch(setIsBinding(true));
-                    dispatch(setBindingFrom(node!.id));
-                }}></div>
-            </div>
-        </div>
+        <CardContainer node={node}>
+            <ActionIcon
+                x={20}
+                y={17}
+                size={0.8}
+                strokeColor={theme.colors.flowCardsAccent.actionCard}
+            />
+            <Text
+                x={50}
+                y={20}
+                text='Action'
+                fontSize={16}
+                fontStyle='bold'
+            />
+
+            {/* "Add content" button */}
+            <CardButton x={defaultBackgroundWidth * 0.05} y={50} text='+ Add an action' strokeColor={theme.colors.flowCardsAccent.actionCard}/>
+        </CardContainer>
     );
 };
 

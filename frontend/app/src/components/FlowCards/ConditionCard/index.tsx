@@ -1,26 +1,41 @@
-// Style imports
-import './index.scss';
-import { GoRepoForked } from "react-icons/go";
-import { flowCardButtonTheme } from '../../../style/flowbiteThemes';
-
 // Components
-import { Button } from 'flowbite-react';
+import { Group, Rect, Text } from 'react-konva';
+import { CardButton, CardContainer, defaultBackgroundWidth } from '../__base/components';
+import ConditionIcon from './icon';
+
+// Hooks
+import { useEffect, useRef, useState } from 'react';
 
 // Interfaces
-import { CardProps } from '../../InteractiveMap/interfaces';
+import { ConditionCardData } from './interfaces';
 
-const ConditionCard: React.FC<CardProps> = () => {
+// Redux
+import { useAppSelector } from '../../../hooks/state';
+
+const ConditionCard: React.FC<{
+    node: ConditionCardData
+}> = ({ node }) => {
+    const theme = useAppSelector((state) => state.appSlice.theme);    
+
     return (
-        <div className='flow-card condition-card'>
-            <div className='flow-card__head'>
-                <GoRepoForked color='#4CE99E' size={20} />
-                <h5 className='flow-card__title'>Condition</h5>
-            </div>
-            <div className='flow-card__bottom'>
-                <Button theme={flowCardButtonTheme} className='mb-2 enabled:hover:border-condition-card-accent'>+ Add condition</Button>
-                <div className='flow-card__connect condition-card__connect'></div>
-            </div>
-        </div>
+        <CardContainer node={node}>
+            <ConditionIcon
+                x={20}
+                y={17}
+                size={0.8}
+                strokeColor={theme.colors.flowCardsAccent.conditionCard}
+            />
+            <Text
+                x={50}
+                y={20}
+                text='Condition'
+                fontSize={16}
+                fontStyle='bold'
+            />
+
+            {/* "Add condition" button */}
+            <CardButton x={defaultBackgroundWidth * 0.05} y={50} text='+ Add condition' strokeColor={theme.colors.flowCardsAccent.conditionCard}/>
+        </CardContainer>
     );
 };
 

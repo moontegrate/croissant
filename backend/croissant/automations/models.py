@@ -24,7 +24,6 @@ class Node(models.Model):
     type = models.CharField(max_length=10)
     x = models.IntegerField()
     y = models.IntegerField()
-    z_index = models.IntegerField()
     is_entry_point = models.BooleanField()
     is_binded = models.BooleanField()
     binded_to = models.UUIDField(null=True, blank=True)

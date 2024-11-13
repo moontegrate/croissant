@@ -1,66 +1,58 @@
-// Style imports
-import './index.scss';
-import { GoComment, GoCreditCard, GoFileMedia, GoVideo } from "react-icons/go";
-import { flowCardButtonTheme, verticalDropdownTheme } from '../../../style/flowbiteThemes';
-
 // Components
-import { Button, Dropdown } from 'flowbite-react';
-import TextSubwindow from './TextSubwindow';
-
-// Interfaces
-import { MessageCardData } from './interfaces';
+import { Group, Rect, Text } from 'react-konva';
+import { CardButton, CardContainer, defaultBackgroundWidth } from '../__base/components';
+import MessageIcon from "./icon";
 
 // Hooks
 import { useState } from 'react';
 
+// Interfaces
+import { MessageCardData } from './interfaces';
+
 // Redux
-import { useAppDispatch } from '../../../hooks/state';
-import { setIsBinding, setBindingFrom } from '../../InteractiveMap/interactiveMapSlice';
+import { useAppSelector } from '../../../hooks/state';
 
-const MessageCard: React.FC<{node: MessageCardData}> = ({node}) => {
-    const [isTextOn, setIsTextOn] = useState<boolean>(false);
-
-    const dispatch = useAppDispatch();
+const MessageCard: React.FC<{
+    node: MessageCardData
+}> = ({ node }) => {
+    const theme = useAppSelector((state) => state.appSlice.theme);
+    const [isDropdownShow, setIsDropdownShow] = useState<boolean>(false);
 
     return (
-        <div className='flow-card message-card'>
-            <div className='flow-card__head'>
-                <GoComment color='#2F71F0' size={20} />
-                <h5 className='flow-card__title'>Message</h5>
-            </div>
-            {isTextOn || node.text ? <TextSubwindow node={node} onClose={() => setIsTextOn(false)}/> : null}
+        <>
+            <CardContainer node={node}>
+                <MessageIcon
+                    x={20}
+                    y={17}
+                    size={0.8}
+                    strokeColor={theme.colors.flowCardsAccent.messageCard}
+                />
+                <Text
+                    x={50}
+                    y={20}
+                    text='Message'
+                    fontSize={16}
+                    fontStyle='bold'
+                />
 
-            {/* "Add Content" with dropdown menu */}
-            <div className='flow-card__bottom'>
-                <Dropdown className='vertical-dropdown' label='' theme={verticalDropdownTheme} renderTrigger={() => <Button disabled={isTextOn} theme={flowCardButtonTheme} className='mb-2 enabled:hover:border-message-card-accent'>+ Add content</Button>}>
-                    <Dropdown.Item className='vertical-dropdown__item' onClick={() => {setIsTextOn(true)}}>
-                        <GoComment size={17}/>Text + Quick replies
-                    </Dropdown.Item>
-                    <Dropdown.Item className='vertical-dropdown__item' onClick={() => {}}>
-                        <GoCreditCard size={17}/>Card template
-                    </Dropdown.Item>
-                    <Dropdown.Item className='vertical-dropdown__item' onClick={() => {}}>
-                        <GoFileMedia size={17}/>Image
-                    </Dropdown.Item>
-                    <Dropdown.Item className='vertical-dropdown__item' onClick={() => {}}>
-                        <GoVideo size={17}/>Video
-                    </Dropdown.Item>
-                    <Dropdown.Item className='vertical-dropdown__item' onClick={() => {}}>
-                        <GoCreditCard size={17}/>Audio
-                    </Dropdown.Item>
-                </Dropdown>
-                <div
-                    className='flow-card__connect message-card__connect'
-                    onClick={() => {
-                        dispatch(setIsBinding(true));
-                        dispatch(setBindingFrom(node.id));
-                    }}
-                    style={{
-                        zIndex: node.zIndex + 2
-                    }}
-                ></div>
-            </div>
-        </div>
+                {/* "Add content" button */}
+                <CardButton x={defaultBackgroundWidth * 0.05} y={50} text='+ Add content' strokeColor={theme.colors.flowCardsAccent.messageCard}/>
+            </CardContainer>
+
+            {/* "Add content" button dropdown */}
+            {
+                isDropdownShow ?
+                    <Group>
+                        <Rect
+                            width={defaultBackgroundWidth * 0.9}
+                            height={200}
+                            stroke='#F5F5F5'
+                            strokeWidth={1}
+                        />
+                    </Group>
+                : null
+            }
+        </>
     );
 };
 
