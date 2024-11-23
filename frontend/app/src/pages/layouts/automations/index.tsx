@@ -20,7 +20,7 @@ import { HiOutlinePower } from "react-icons/hi2";
 import { Helmet } from "react-helmet-async";
 
 // Hooks
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../../hooks/state";
 
@@ -136,6 +136,88 @@ const AutomationsPageLayout = () => {
         };
     };
 
+    const renderGroups = useMemo(() => {
+        const items = groups.map((group, i) => {
+            return (
+                <Sidebar.Item
+                    focused={groupsFilter === group.id}
+                    onClick={() => dispatch(setGroupsFilter(group.id))}
+                    key={i}
+                    icon={<GoFileDirectory
+                        size={17}
+                        className='automations-sidebar__group-icon' />}
+                    dropdown={
+                        <>
+                            <Dropdown.Item className='vertical-dropdown__item' onClick={() => setIsGroupRenaming(i)}><GoPencil size={17} />Rename</Dropdown.Item>
+                            <Dropdown.Divider />
+                            <Dropdown.Item
+                                className='vertical-dropdown__item text-red-500'
+                                onClick={() => {
+                                    const target = automations.filter(a => a.group === group.name);
+
+                                    if (target.length > 0) {
+                                        target.forEach((element, i) => {
+                                            updateAutomation({ ...element, group: null })
+                                        })
+                                    };
+
+                                    deleteGroup(group.id).then(() => {
+                                        if (groupsFilter === group.name) dispatch(setGroupsFilter("All automations"));
+                                        refetchAutomations();
+                                        refetchGroups();
+                                    });
+                                }}
+                            >
+                                <GoTrash size={17} />
+                                Delete
+                            </Dropdown.Item>
+                        </>
+                    }
+                >
+                    {isGroupRenaming === i ?
+                        <form
+                            ref={renamingForm}
+                            onSubmit={(e) => {
+                                e.preventDefault();
+                                handleSubmit(group);
+                            }}
+                        >
+                            <TextInput
+                                theme={textInputTheme}
+                                sizing="sm"
+                                defaultValue={group.name}
+                                onBlur={() => {
+                                    handleSubmit(group);
+                                }}
+                                required
+                            />
+                        </form>
+                        : group.name}
+                </Sidebar.Item>
+            );
+        });
+
+        return items;
+    }, [groups]);
+
+    const renderAccounts = useMemo(() => {
+        const items = accounts.map((account, i) => {
+            return (
+                <Sidebar.Item icon={<img className='rounded-full' src={account.img ? account.img : '/account.svg'} alt='account' />} key={i}>@{account.name}</Sidebar.Item>
+            );
+        });
+
+        return items;
+    }, [accounts]);
+
+    const renderAutomations = useMemo(() => {
+        const items = sortedAutomations.map((automation, i) => {
+            return <AutomationCard automation={automation} key={i} />;
+        });
+
+        return items;
+    }, [automations, groupsFilter, statusFilter, channelsFilter, sortBy]);
+
     const handleSubmit = (group: GroupData) => {
         const form = renamingForm.current;
         if (form) {
@@ -194,65 +276,7 @@ const AutomationsPageLayout = () => {
                     <Sidebar.Item focused={groupsFilter === false} onClick={() => dispatch(setGroupsFilter(false))}>All automations</Sidebar.Item>
                     <Sidebar.Item focused={groupsFilter === null} onClick={() => dispatch(setGroupsFilter(null))}>Without group</Sidebar.Item>
 
-                    {isGroupsSuccess && groups.length > 0 ? groups.map((group, i) => {
-                        return (
-                            <Sidebar.Item
-                                focused={groupsFilter === group.id}
-                                onClick={() => dispatch(setGroupsFilter(group.id))}
-                                key={i}
-                                icon={<GoFileDirectory
-                                    size={17}
-                                    className='automations-sidebar__group-icon' />}
-                                dropdown={
-                                    <>
-                                        <Dropdown.Item className='vertical-dropdown__item' onClick={() => setIsGroupRenaming(i)}><GoPencil size={17} />Rename</Dropdown.Item>
-                                        <Dropdown.Divider />
-                                        <Dropdown.Item
-                                            className='vertical-dropdown__item text-red-500'
-                                            onClick={() => {
-                                                const target = automations.filter(a => a.group === group.name);
-
-                                                if (target.length > 0) {
-                                                    target.forEach((element, i) => {
-                                                        updateAutomation({ ...element, group: null })
-                                                    })
-                                                };
-
-                                                deleteGroup(group.id).then(() => {
-                                                    if (groupsFilter === group.name) dispatch(setGroupsFilter("All automations"));
-                                                    refetchAutomations();
-                                                    refetchGroups();
-                                                });
-                                            }}
-                                        >
-                                            <GoTrash size={17} />
-                                            Delete
-                                        </Dropdown.Item>
-                                    </>
-                                }
-                            >
-                                {isGroupRenaming === i ?
-                                    <form
-                                        ref={renamingForm}
-                                        onSubmit={(e) => {
-                                            e.preventDefault();
-                                            handleSubmit(group);
-                                        }}
-                                    >
-                                        <TextInput
-                                            theme={textInputTheme}
-                                            sizing="sm"
-                                            defaultValue={group.name}
-                                            onBlur={() => {
-                                                handleSubmit(group);
-                                            }}
-                                            required
-                                        />
-                                    </form>
-                                    : group.name}
-                            </Sidebar.Item>
-                        )
-                    }) : null}
+                    {isGroupsSuccess && groups.length > 0 ? renderGroups : null}
 
                     {/* If user clicks to add group button a group name input will appear*/}
                     {isGroupAdding ?
@@ -288,11 +312,7 @@ const AutomationsPageLayout = () => {
                         />
                     }
                 >
-                    {isAccountsSuccess && accounts.length > 0 ? accounts.map((account, i) => {
-                        return (
-                            <Sidebar.Item icon={<img className='rounded-full' src={account.img ? account.img : '/account.svg'} alt='account' />} key={i}>@{account.name}</Sidebar.Item>
-                        );
-                    }) : null}
+                    {isAccountsSuccess && accounts.length > 0 ? renderAccounts : null}
                     {isAccountsSuccess && accounts.length === 0 ? <div className='automations-sidebar__message'>No accounts</div> : null}
                     {isAccountsLoading ? <div className='automations-sidebar__message'>Loading</div> : null}
                 </Sidebar.Group>
@@ -366,9 +386,7 @@ const AutomationsPageLayout = () => {
 
                 {/* Content */}
                 <div className='automations-page__grid'>
-                    { automations.length > 0 ? sortedAutomations.map((automation, i) => {
-                        return <AutomationCard automation={automation} key={i} />;
-                    }) : null }
+                    { automations.length > 0 ? renderAutomations : null }
                 </div>
                 { isAutomationsSuccess && automations.length === 0 ? <NoElements text="Oops! There are no automations." description="Let's create one."/> : null }
             </div>

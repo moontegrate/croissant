@@ -22,11 +22,7 @@ const AutomationSettings = () => {
     const [updateAutomation] = useUpdateAutomationMutation();
     const isTokenReady = useAppSelector((state) => state.appSlice.isTokenReady);
     
-    const { data: automationsData = [],
-        isFetching: isAutomationsFetching,
-        isLoading: isAutomationsLoading,
-        refetch: refetchAutomations
-    } = useGetAutomationsQuery(undefined, {skip: !isTokenReady});
+    const {refetch: refetchAutomations} = useGetAutomationsQuery(undefined, {skip: !isTokenReady});
 
     // Redux
     const dispatch = useAppDispatch();
@@ -49,8 +45,8 @@ const AutomationSettings = () => {
             .then((res) => {
                 dispatch(setAutomationSettingsState(null));
                 refetchAutomations();
-            }) 
-        }
+            });
+        };
     };
 
     return (

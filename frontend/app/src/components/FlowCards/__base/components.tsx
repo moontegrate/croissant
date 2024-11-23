@@ -28,7 +28,7 @@ export const CardContainer: React.FC<CardContainerProps> = ({node, children, onC
     const [backgroundHeight, setBackgroundHeight] = useState(node.type !== "Note" ? defaultBackgroundHeight : 30 );
 
     // Server
-    const [updateNode, {isLoading: isNodeUpdating}] = useUpdateNodeMutation();
+    const [updateNode] = useUpdateNodeMutation();
     const {refetch} = useGetAutomationNodesQuery(node.automation);
 
     // Connect circle variables

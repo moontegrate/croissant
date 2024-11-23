@@ -7,7 +7,7 @@ import { GoChevronDown } from "react-icons/go";
 import { Dropdown } from 'flowbite-react';
 
 // Hooks
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 
 // Redux
 import { useAppDispatch, useAppSelector } from '../../hooks/state';
@@ -25,7 +25,7 @@ const SelectAccountInput = () => {
         if (accounts.length !== 0) dispatch(setCreateAutomationForm({...formData, selectedAccount: accounts[0]}));
     }, []);
 
-    function renderItems() {
+    const renderItems = useMemo(() => {
         if (accounts.length === 0) {
             return (
                 <Dropdown.Item className='select-account__item'>Nothing found</Dropdown.Item>
@@ -40,7 +40,7 @@ const SelectAccountInput = () => {
 
             return items;
         };
-    };
+    }, [accounts]);
 
     return (
         <Dropdown theme={verticalDropdownTheme} label="" renderTrigger={() => {
@@ -56,7 +56,7 @@ const SelectAccountInput = () => {
                 </div>
             );
         }}>
-            {renderItems()}
+            {renderItems}
         </Dropdown>
     );
 };

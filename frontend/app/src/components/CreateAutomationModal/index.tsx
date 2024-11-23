@@ -33,8 +33,8 @@ const CreateAutomationModal = () => {
                 return <View2 />
             default:
                 break;
-        }
-    }
+        };
+    };
 
     return (
         <Modal
@@ -121,12 +121,8 @@ const View2 = () => {
     const [automationNameError, setAutomationNameError] = useState<boolean>(false);
     const [selectedAccountError, setSelectedAccountError] = useState<boolean>(false);
 
-    const [createAutomation, {isError, isSuccess}] = useCreateAutomationMutation();
-    const { data: automationsData = [],
-        isFetching: isAutomationsFetching,
-        isLoading: isAutomationsLoading,
-        refetch: refetchAutomations
-    } = useGetAutomationsQuery();
+    const [createAutomation, {isSuccess}] = useCreateAutomationMutation();
+    const {refetch: refetchAutomations} = useGetAutomationsQuery();
 
     function checkFields() {
         if (formData.automationName === null || formData.automationName === '') {
