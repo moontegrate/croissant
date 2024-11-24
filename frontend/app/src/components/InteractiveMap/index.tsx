@@ -12,7 +12,7 @@ import TextEditModal from '../FlowCards/MessageCard/TextEditModal';
 import NoteCardModal from '../NoteCardModal';
 
 // Hooks
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 
 // Interfaces
 import { NodeData } from '../FlowCards/__base/interfaces';
@@ -148,6 +148,25 @@ const InteractiveMap= () => {
         stage.batchDraw();
     };
 
+    const renderNodes = useMemo(() => {
+        const items = nodes.map((node: NodeData, i) => {
+            switch (node.type) {
+                case "Message":
+                    return <MessageCard node={node as MessageCardData} key={i}/>
+                case "Condition":
+                    return <ConditionCard node={node as ConditionCardData} key={i}></ConditionCard>
+                case "Action":
+                    return <ActionCard node={node as ActionCardData} key={i}></ActionCard>
+                case "Note":
+                    return <NoteCard node={node as NoteCardData} key={i}></NoteCard>
+                default:
+                    break;
+            }
+        });
+
+        return items;
+    }, [nodes]);
+
     return (
         <div className='flow'>
             {isNodesLoading || isNodeUpdating || isNodeCreating || isNodeDeleting ? <div className='loading-spinner'><BarLoader color='#FF7A7A' width="100%"/></div> : null}
@@ -186,20 +205,7 @@ const InteractiveMap= () => {
                 style={{ backgroundColor: '#fafafa' }}
             >
                 <Layer>
-                    {nodes ? nodes.map((node: NodeData, i) => {
-                            switch (node.type) {
-                                case "Message":
-                                    return <MessageCard node={node as MessageCardData} key={i}/>
-                                case "Condition":
-                                    return <ConditionCard node={node as ConditionCardData} key={i}></ConditionCard>
-                                case "Action":
-                                    return <ActionCard node={node as ActionCardData} key={i}></ActionCard>
-                                case "Note":
-                                    return <NoteCard node={node as NoteCardData} key={i}></NoteCard>
-                                default:
-                                    break;
-                            }
-                        }) : null}
+                    {nodes ? renderNodes : null}
                 </Layer>
             </Stage>}
 
